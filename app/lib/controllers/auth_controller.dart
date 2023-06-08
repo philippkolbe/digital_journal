@@ -8,7 +8,7 @@ import 'package:app/repositories/auth_repository.dart';
 final authControllerProvider = StateNotifierProvider<AuthController, AuthState>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final userRepository = ref.watch(userRepositoryProvider);
-  return AuthController(authRepository, userRepository);
+  return AuthController(authRepository, userRepository)..appStarted();
 });
 
 class AuthController extends StateNotifier<AuthState> {
@@ -18,24 +18,34 @@ class AuthController extends StateNotifier<AuthState> {
   AuthController(this._authRepository, this._userRepository) : super(AuthInitial());
 
   void init() {
-    _authRepository.authStateChanges.listen((firestoreUser) async {
-      try {
-        if (firestoreUser != null) {
-          final currentUser = await _fetchOrCreateCurrentUser(firestoreUser);
-          state = AuthAuthenticated(currentUser, firestoreUser);
-        } else {
-          state = AuthUnauthenticated();
-        }
-      } catch (e) {
-        print('Failed to sign in anonymously: $e');
-        state = AuthError('An error occured while fetching current user');
+    _authRepository.authStateChanges.listen(onAuthStateChanged);
+  }
+
+  void appStarted() {
+    signInAnonymously();
+  }
+
+  void onAuthStateChanged(firestoreUser) async {
+    try {
+      if (firestoreUser != null) {
+        final currentUser = await _fetchOrCreateCurrentUser(firestoreUser);
+        state = AuthAuthenticated(currentUser, firestoreUser);
+      } else {
+        state = AuthUnauthenticated();
       }
-    });
+    } catch (e) {
+      print('Failed to sign in anonymously: $e');
+      state = AuthError('An error occured while fetching current user');
+    }
   }
 
   Future<UserObj> _fetchOrCreateCurrentUser(User firestoreUser) async {
-    final currentUser = await _userRepository.readUser(firestoreUser.uid);
+    final currentUser = await _fetchUser(firestoreUser);
     return currentUser ?? await _createUser(firestoreUser);
+  }
+
+  Future<UserObj?> _fetchUser(User firestoreUser) {
+    return _userRepository.readUser(firestoreUser.uid);
   }
 
   Future<UserObj> _createUser(User firestoreUser) async {
