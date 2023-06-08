@@ -1,21 +1,21 @@
 import 'package:app/controllers/auth_state.dart';
 import 'package:app/repositories/user_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:app/models/user.dart';
 import 'package:app/repositories/auth_repository.dart';
 
-final authControllerProvider = StateNotifierProvider<AuthController, AuthState>((ref) {
+final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<AuthState?>>((ref) {
   final authRepository = ref.watch(authRepositoryProvider);
   final userRepository = ref.watch(userRepositoryProvider);
   return AuthController(authRepository, userRepository)..appStarted();
 });
 
-class AuthController extends StateNotifier<AuthState> {
+class AuthController extends StateNotifier<AsyncValue<AuthState?>> {
   final AuthRepository _authRepository;
   final UserRepository _userRepository;
 
-  AuthController(this._authRepository, this._userRepository) : super(AuthInitial());
+  AuthController(this._authRepository, this._userRepository) : super(const AsyncValue.data(null));
 
   void init() {
     _authRepository.authStateChanges.listen(onAuthStateChanged);
@@ -28,14 +28,15 @@ class AuthController extends StateNotifier<AuthState> {
   void onAuthStateChanged(firestoreUser) async {
     try {
       if (firestoreUser != null) {
+        state = const AsyncLoading();
         final currentUser = await _fetchOrCreateCurrentUser(firestoreUser);
-        state = AuthAuthenticated(currentUser, firestoreUser);
+        state = AsyncData(AuthState(currentUser, firestoreUser));
       } else {
-        state = AuthUnauthenticated();
+        state = const AsyncData(null);
       }
     } catch (e) {
       print('Failed to sign in anonymously: $e');
-      state = AuthError('An error occured while fetching current user');
+      state = AsyncError('An error occured while fetching current user', StackTrace.current);
     }
   }
 
@@ -57,10 +58,11 @@ class AuthController extends StateNotifier<AuthState> {
 
   Future<void> signInAnonymously() async {
     try {
+      state = const AsyncLoading();
       await _authRepository.signInAnonymously();
     } catch (e) {
       print('Failed to sign in anonymously: $e');
-      state = AuthError('An error occurred while signing in.');
+      state = AsyncError('An error occurred while signing in.', StackTrace.current);
     }
   }
 
