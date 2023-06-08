@@ -1,0 +1,15 @@
+# Python-specific
+*.pyc
+__pycache__/
+
+# Virtual Environment
+venv/
+env/
+
+# .env file (contains sensitive information)
+.env
+
+# Dependency directories
+dist/
+build/
+*.egg-info/
