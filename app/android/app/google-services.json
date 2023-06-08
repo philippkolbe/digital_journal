@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "635829394211",
+    "project_id": "digitaljournal-14768",
+    "storage_bucket": "digitaljournal-14768.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:635829394211:android:02ee12993aa3d317d18a96",
+        "android_client_info": {
+          "package_name": "com.example.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "635829394211-82haase7il5fbio0f4ush40ku2tsf099.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD7Y5Yztc9tr-chHfJ4K2syMJYQRLZcG5M"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "635829394211-82haase7il5fbio0f4ush40ku2tsf099.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "635829394211-kakc835j0qnv6gdkci4enmoi4cul12l1.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.app.RunnerTests"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

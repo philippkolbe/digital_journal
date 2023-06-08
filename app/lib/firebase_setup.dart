@@ -1,8 +1,11 @@
+import 'package:app/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 
-Future<void> initializeFirebase() async {
-  await Firebase.initializeApp();
+Future<FirebaseApp> initializeFirebase() {
+  return Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 }
 
 Future<UserCredential> signInAnonymously() async {
