@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 
@@ -18,5 +19,8 @@ class UserObj with _$User {
 
   factory UserObj.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
 
-  factory UserObj.fromDocument(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory UserObj.fromDocument(DocumentSnapshot doc) => UserObj(
+    id: doc.id,
+    name: doc['name'] ?? 'Anonymous',
+  );
 }
