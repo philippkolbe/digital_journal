@@ -12,7 +12,7 @@ class UserObj with _$User {
     String? name,
   }) = _User;
 
-  factory UserObj.fromFirestoreUser(auth.User user) => UserObj(
+  factory UserObj.fromFirebaseUser(auth.User user) => UserObj(
     id: user.uid,
     name: user.displayName ?? 'Anonymous',  
   );

@@ -22,13 +22,13 @@ class AuthController extends StateNotifier<AsyncValue<AuthState?>> {
     signInAnonymously();
   }
 
-  void onAuthStateChanged(firestoreUser) async {
+  void onAuthStateChanged(firebaseUser) async {
     try {
-      print("Auth state $firestoreUser");
-      if (firestoreUser != null) {
+      print("Auth state $firebaseUser");
+      if (firebaseUser != null) {
         state = const AsyncLoading();
-        final currentUser = await _fetchOrCreateCurrentUser(firestoreUser);
-        state = AsyncData(AuthState(currentUser, firestoreUser));
+        final currentUser = await _fetchOrCreateCurrentUser(firebaseUser);
+        state = AsyncData(AuthState(currentUser, firebaseUser));
       } else {
         state = const AsyncData(null);
       }
@@ -38,17 +38,17 @@ class AuthController extends StateNotifier<AsyncValue<AuthState?>> {
     }
   }
 
-  Future<UserObj> _fetchOrCreateCurrentUser(User firestoreUser) async {
-    final currentUser = await _fetchUser(firestoreUser);
-    return currentUser ?? await _createUser(firestoreUser);
+  Future<UserObj> _fetchOrCreateCurrentUser(User firebaseUser) async {
+    final currentUser = await _fetchUser(firebaseUser);
+    return currentUser ?? await _createUser(firebaseUser);
   }
 
-  Future<UserObj?> _fetchUser(User firestoreUser) {
-    return _userRepository.readUser(firestoreUser.uid);
+  Future<UserObj?> _fetchUser(User firebaseUser) {
+    return _userRepository.readUser(firebaseUser.uid);
   }
 
-  Future<UserObj> _createUser(User firestoreUser) async {
-    final createdUserObj = UserObj.fromFirestoreUser(firestoreUser);
+  Future<UserObj> _createUser(User firebaseUser) async {
+    final createdUserObj = UserObj.fromFirebaseUser(firebaseUser);
     await _userRepository.createUser(createdUserObj);
     return createdUserObj;
   }
