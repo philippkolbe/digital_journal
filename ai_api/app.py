@@ -21,4 +21,4 @@ def chat():
     return jsonify({'response': bot_response})
 
 if __name__ == '__main__':
-    app.run()
+    app.run(port=6000)

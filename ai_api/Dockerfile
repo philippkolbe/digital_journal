@@ -7,8 +7,9 @@ COPY .env .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
+COPY app.py .
 COPY . .
 
-EXPOSE 5000
+EXPOSE 6000
 
 CMD ["python", "app.py"]
