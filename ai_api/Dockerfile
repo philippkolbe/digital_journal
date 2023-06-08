@@ -10,6 +10,6 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY app.py .
 COPY . .
 
-EXPOSE 6000
+EXPOSE 5001
 
-CMD ["python", "app.py"]
+CMD ["flask", "run", "--host", "0.0.0.0", "--port", "5001"]
