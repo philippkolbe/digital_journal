@@ -25,6 +25,7 @@ class AuthRepository implements BaseAuthRepository {
       final userCredential = await _firebaseAuth.signInAnonymously();
       return userCredential;
     } catch (e) {
+      print('Signing in anonymously failed: $e');
       throw AuthException('Failed to create anonymous user');
     }
   }
@@ -34,6 +35,7 @@ class AuthRepository implements BaseAuthRepository {
     try {
       await _firebaseAuth.signOut();
     } catch (e) {
+      print('Signing out failed: $e');
       throw AuthException('Failed to sign out');
     }
   }

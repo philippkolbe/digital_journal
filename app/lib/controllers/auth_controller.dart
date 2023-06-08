@@ -15,18 +15,16 @@ class AuthController extends StateNotifier<AsyncValue<AuthState?>> {
   final AuthRepository _authRepository;
   final UserRepository _userRepository;
 
-  AuthController(this._authRepository, this._userRepository) : super(const AsyncValue.data(null));
-
-  void init() {
-    _authRepository.authStateChanges.listen(onAuthStateChanged);
-  }
+  AuthController(this._authRepository, this._userRepository) : super(const AsyncData(null));
 
   void appStarted() {
+    _authRepository.authStateChanges.listen(onAuthStateChanged);
     signInAnonymously();
   }
 
   void onAuthStateChanged(firestoreUser) async {
     try {
+      print("Auth state $firestoreUser");
       if (firestoreUser != null) {
         state = const AsyncLoading();
         final currentUser = await _fetchOrCreateCurrentUser(firestoreUser);
@@ -35,8 +33,8 @@ class AuthController extends StateNotifier<AsyncValue<AuthState?>> {
         state = const AsyncData(null);
       }
     } catch (e) {
-      print('Failed to sign in anonymously: $e');
-      state = AsyncError('An error occured while fetching current user', StackTrace.current);
+      print('Failed to fetch current user: $e');
+      state = AsyncError('An error occured while loading your data.', StackTrace.current);
     }
   }
 
