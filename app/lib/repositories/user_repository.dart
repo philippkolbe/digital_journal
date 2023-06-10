@@ -4,18 +4,18 @@ import 'package:app/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final userRepositoryProvider = Provider<UserRepository>((ref) {
+final userRepositoryProvider = Provider<BaseUserRepository>((ref) {
   final firebaseFirestore = ref.watch(firebaseFirestoreProvider);
  
   return UserRepository(firebaseFirestore);
 });
 
-abstract class BaseUserRepostory {
+abstract class BaseUserRepository {
   Future<void> createUser(UserObj user);
   Future<UserObj?> readUser(String id);
 }
 
-class UserRepository implements BaseUserRepostory {
+class UserRepository implements BaseUserRepository {
   final FirebaseFirestore _firebaseFirestore;
 
   UserRepository(this._firebaseFirestore);

@@ -12,13 +12,13 @@ final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<
 });
 
 class AuthController extends StateNotifier<AsyncValue<AuthState?>> {
-  final AuthRepository _authRepository;
-  final UserRepository _userRepository;
+  final BaseAuthRepository _authRepository;
+  final BaseUserRepository _userRepository;
 
   AuthController(this._authRepository, this._userRepository) : super(const AsyncData(null));
 
   void appStarted() {
-    _authRepository.authStateChanges.listen(onAuthStateChanged);
+    _authRepository.authStateChangesStream.listen(onAuthStateChanged);
     signInAnonymously();
   }
 
