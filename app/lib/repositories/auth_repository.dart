@@ -1,4 +1,4 @@
-import 'package:app/providers/general_providers.dart';
+import 'package:app/providers/firebase_providers.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -10,7 +10,7 @@ final authRepositoryProvider = Provider<BaseAuthRepository>((ref) {
 abstract class BaseAuthRepository {
   Future<UserCredential> signInAnonymously();
   Future<void> signOut();
-  Stream<User?> get authStateChanges;
+  Stream<User?> get authStateChangesStream;
 }
 
 class AuthRepository implements BaseAuthRepository {
@@ -18,7 +18,8 @@ class AuthRepository implements BaseAuthRepository {
 
   AuthRepository(this._firebaseAuth);
 
-  Stream<User?> get authStateChanges => _firebaseAuth.authStateChanges();
+  @override
+  Stream<User?> get authStateChangesStream => _firebaseAuth.authStateChanges();
 
   @override
   Future<UserCredential> signInAnonymously() async {
