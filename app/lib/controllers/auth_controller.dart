@@ -1,4 +1,4 @@
-import 'package:app/controllers/auth_state.dart';
+import 'package:app/controllers/states/auth_state.dart';
 import 'package:app/repositories/user_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
