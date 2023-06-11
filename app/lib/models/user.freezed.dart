@@ -14,32 +14,32 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#custom-getters-and-methods');
 
-UserObj _$UserFromJson(Map<String, dynamic> json) {
+UserObj _$UserObjFromJson(Map<String, dynamic> json) {
   return _User.fromJson(json);
 }
 
 /// @nodoc
-mixin _$User {
+mixin _$UserObj {
   String get id => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
-  $UserCopyWith<UserObj> get copyWith => throw _privateConstructorUsedError;
+  $UserObjCopyWith<UserObj> get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $UserCopyWith<$Res> {
-  factory $UserCopyWith(UserObj value, $Res Function(UserObj) then) =
-      _$UserCopyWithImpl<$Res, UserObj>;
+abstract class $UserObjCopyWith<$Res> {
+  factory $UserObjCopyWith(UserObj value, $Res Function(UserObj) then) =
+      _$UserObjCopyWithImpl<$Res, UserObj>;
   @useResult
   $Res call({String id, String? name});
 }
 
 /// @nodoc
-class _$UserCopyWithImpl<$Res, $Val extends UserObj>
-    implements $UserCopyWith<$Res> {
-  _$UserCopyWithImpl(this._value, this._then);
+class _$UserObjCopyWithImpl<$Res, $Val extends UserObj>
+    implements $UserObjCopyWith<$Res> {
+  _$UserObjCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -66,7 +66,7 @@ class _$UserCopyWithImpl<$Res, $Val extends UserObj>
 }
 
 /// @nodoc
-abstract class _$$_UserCopyWith<$Res> implements $UserCopyWith<$Res> {
+abstract class _$$_UserCopyWith<$Res> implements $UserObjCopyWith<$Res> {
   factory _$$_UserCopyWith(_$_User value, $Res Function(_$_User) then) =
       __$$_UserCopyWithImpl<$Res>;
   @override
@@ -75,7 +75,7 @@ abstract class _$$_UserCopyWith<$Res> implements $UserCopyWith<$Res> {
 }
 
 /// @nodoc
-class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
+class __$$_UserCopyWithImpl<$Res> extends _$UserObjCopyWithImpl<$Res, _$_User>
     implements _$$_UserCopyWith<$Res> {
   __$$_UserCopyWithImpl(_$_User _value, $Res Function(_$_User) _then)
       : super(_value, _then);
@@ -101,8 +101,8 @@ class __$$_UserCopyWithImpl<$Res> extends _$UserCopyWithImpl<$Res, _$_User>
 
 /// @nodoc
 @JsonSerializable()
-class _$_User implements _User {
-  const _$_User({required this.id, this.name});
+class _$_User extends _User {
+  const _$_User({required this.id, this.name}) : super._();
 
   factory _$_User.fromJson(Map<String, dynamic> json) => _$$_UserFromJson(json);
 
@@ -113,7 +113,7 @@ class _$_User implements _User {
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name)';
+    return 'UserObj(id: $id, name: $name)';
   }
 
   @override
@@ -143,8 +143,9 @@ class _$_User implements _User {
   }
 }
 
-abstract class _User implements UserObj {
+abstract class _User extends UserObj {
   const factory _User({required final String id, final String? name}) = _$_User;
+  const _User._() : super._();
 
   factory _User.fromJson(Map<String, dynamic> json) = _$_User.fromJson;
 

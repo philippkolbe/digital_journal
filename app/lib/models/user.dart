@@ -6,7 +6,9 @@ part 'user.freezed.dart';
 part 'user.g.dart';
 
 @freezed
-class UserObj with _$User {
+abstract class UserObj with _$UserObj {
+  const UserObj._();
+
   const factory UserObj({
     required String id,
     String? name,
@@ -17,10 +19,15 @@ class UserObj with _$User {
     name: user.displayName ?? 'Anonymous',  
   );
 
-  factory UserObj.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory UserObj.fromJson(Map<String, dynamic> json) => _$UserObjFromJson(json);
 
   factory UserObj.fromDocument(DocumentSnapshot doc) => UserObj(
     id: doc.id,
     name: doc['name'] ?? 'Anonymous',
   );
+
+  Map<String, dynamic> toDocument() {
+    final json = toJson();
+    return json..remove('id');
+  }
 }
