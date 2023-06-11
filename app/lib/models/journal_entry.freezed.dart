@@ -29,36 +29,36 @@ JournalEntryObj _$JournalEntryObjFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$JournalEntryObj {
-  String get id => throw _privateConstructorUsedError;
+  String? get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   @DateConverter()
   DateTime get date => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String id, String name,
+    required TResult Function(String? id, String name,
             @DateConverter() DateTime date, String? content)
         simple,
-    required TResult Function(String id, String name,
+    required TResult Function(String? id, String name,
             @DateConverter() DateTime date, String? goal)
         chat,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String id, String name, @DateConverter() DateTime date,
+    TResult? Function(String? id, String name, @DateConverter() DateTime date,
             String? content)?
         simple,
-    TResult? Function(String id, String name, @DateConverter() DateTime date,
+    TResult? Function(String? id, String name, @DateConverter() DateTime date,
             String? goal)?
         chat,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String id, String name, @DateConverter() DateTime date,
+    TResult Function(String? id, String name, @DateConverter() DateTime date,
             String? content)?
         simple,
-    TResult Function(String id, String name, @DateConverter() DateTime date,
+    TResult Function(String? id, String name, @DateConverter() DateTime date,
             String? goal)?
         chat,
     required TResult orElse(),
@@ -95,7 +95,7 @@ abstract class $JournalEntryObjCopyWith<$Res> {
           JournalEntryObj value, $Res Function(JournalEntryObj) then) =
       _$JournalEntryObjCopyWithImpl<$Res, JournalEntryObj>;
   @useResult
-  $Res call({String id, String name, @DateConverter() DateTime date});
+  $Res call({String? id, String name, @DateConverter() DateTime date});
 }
 
 /// @nodoc
@@ -111,15 +111,15 @@ class _$JournalEntryObjCopyWithImpl<$Res, $Val extends JournalEntryObj>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = null,
     Object? date = null,
   }) {
     return _then(_value.copyWith(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -141,7 +141,7 @@ abstract class _$$SimpleJournalEntryObjCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id,
+      {String? id,
       String name,
       @DateConverter() DateTime date,
       String? content});
@@ -158,16 +158,16 @@ class __$$SimpleJournalEntryObjCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = null,
     Object? date = null,
     Object? content = freezed,
   }) {
     return _then(_$SimpleJournalEntryObj(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -188,10 +188,10 @@ class __$$SimpleJournalEntryObjCopyWithImpl<$Res>
 @JsonSerializable()
 class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
   const _$SimpleJournalEntryObj(
-      {required this.id,
+      {this.id,
       required this.name,
       @DateConverter() required this.date,
-      this.content,
+      this.content = "",
       final String? $type})
       : $type = $type ?? 'simple',
         super._();
@@ -200,13 +200,14 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
       _$$SimpleJournalEntryObjFromJson(json);
 
   @override
-  final String id;
+  final String? id;
   @override
   final String name;
   @override
   @DateConverter()
   final DateTime date;
   @override
+  @JsonKey()
   final String? content;
 
   @JsonKey(name: 'runtimeType')
@@ -242,10 +243,10 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String id, String name,
+    required TResult Function(String? id, String name,
             @DateConverter() DateTime date, String? content)
         simple,
-    required TResult Function(String id, String name,
+    required TResult Function(String? id, String name,
             @DateConverter() DateTime date, String? goal)
         chat,
   }) {
@@ -255,10 +256,10 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String id, String name, @DateConverter() DateTime date,
+    TResult? Function(String? id, String name, @DateConverter() DateTime date,
             String? content)?
         simple,
-    TResult? Function(String id, String name, @DateConverter() DateTime date,
+    TResult? Function(String? id, String name, @DateConverter() DateTime date,
             String? goal)?
         chat,
   }) {
@@ -268,10 +269,10 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String id, String name, @DateConverter() DateTime date,
+    TResult Function(String? id, String name, @DateConverter() DateTime date,
             String? content)?
         simple,
-    TResult Function(String id, String name, @DateConverter() DateTime date,
+    TResult Function(String? id, String name, @DateConverter() DateTime date,
             String? goal)?
         chat,
     required TResult orElse(),
@@ -323,7 +324,7 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
 
 abstract class SimpleJournalEntryObj extends JournalEntryObj {
   const factory SimpleJournalEntryObj(
-      {required final String id,
+      {final String? id,
       required final String name,
       @DateConverter() required final DateTime date,
       final String? content}) = _$SimpleJournalEntryObj;
@@ -333,7 +334,7 @@ abstract class SimpleJournalEntryObj extends JournalEntryObj {
       _$SimpleJournalEntryObj.fromJson;
 
   @override
-  String get id;
+  String? get id;
   @override
   String get name;
   @override
@@ -355,7 +356,7 @@ abstract class _$$ChatJournalEntryObjCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String id, String name, @DateConverter() DateTime date, String? goal});
+      {String? id, String name, @DateConverter() DateTime date, String? goal});
 }
 
 /// @nodoc
@@ -369,16 +370,16 @@ class __$$ChatJournalEntryObjCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = null,
+    Object? id = freezed,
     Object? name = null,
     Object? date = null,
     Object? goal = freezed,
   }) {
     return _then(_$ChatJournalEntryObj(
-      id: null == id
+      id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -399,7 +400,7 @@ class __$$ChatJournalEntryObjCopyWithImpl<$Res>
 @JsonSerializable()
 class _$ChatJournalEntryObj extends ChatJournalEntryObj {
   const _$ChatJournalEntryObj(
-      {required this.id,
+      {this.id,
       required this.name,
       @DateConverter() required this.date,
       this.goal,
@@ -411,7 +412,7 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
       _$$ChatJournalEntryObjFromJson(json);
 
   @override
-  final String id;
+  final String? id;
   @override
   final String name;
   @override
@@ -453,10 +454,10 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String id, String name,
+    required TResult Function(String? id, String name,
             @DateConverter() DateTime date, String? content)
         simple,
-    required TResult Function(String id, String name,
+    required TResult Function(String? id, String name,
             @DateConverter() DateTime date, String? goal)
         chat,
   }) {
@@ -466,10 +467,10 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String id, String name, @DateConverter() DateTime date,
+    TResult? Function(String? id, String name, @DateConverter() DateTime date,
             String? content)?
         simple,
-    TResult? Function(String id, String name, @DateConverter() DateTime date,
+    TResult? Function(String? id, String name, @DateConverter() DateTime date,
             String? goal)?
         chat,
   }) {
@@ -479,10 +480,10 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String id, String name, @DateConverter() DateTime date,
+    TResult Function(String? id, String name, @DateConverter() DateTime date,
             String? content)?
         simple,
-    TResult Function(String id, String name, @DateConverter() DateTime date,
+    TResult Function(String? id, String name, @DateConverter() DateTime date,
             String? goal)?
         chat,
     required TResult orElse(),
@@ -534,7 +535,7 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
 
 abstract class ChatJournalEntryObj extends JournalEntryObj {
   const factory ChatJournalEntryObj(
-      {required final String id,
+      {final String? id,
       required final String name,
       @DateConverter() required final DateTime date,
       final String? goal}) = _$ChatJournalEntryObj;
@@ -544,7 +545,7 @@ abstract class ChatJournalEntryObj extends JournalEntryObj {
       _$ChatJournalEntryObj.fromJson;
 
   @override
-  String get id;
+  String? get id;
   @override
   String get name;
   @override

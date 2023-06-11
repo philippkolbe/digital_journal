@@ -15,14 +15,14 @@ class JournalEntryObj with _$JournalEntryObj {
   const JournalEntryObj._();
 
   const factory JournalEntryObj.simple({
-    required String id,
+    String? id,
     required String name,
     @DateConverter() required DateTime date,
-    String? content,
+    @Default("") String? content,
   }) = SimpleJournalEntryObj;
 
   const factory JournalEntryObj.chat({
-    required String id,
+    String? id,
     required String name,
     @DateConverter() required DateTime date,
     String? goal, 
@@ -47,6 +47,7 @@ class JournalEntryObj with _$JournalEntryObj {
           id: doc.id,
           name: data['name'] as String,
           date: dateConverter.fromJson(data['date'] as Timestamp),
+          content: data['content'],
         );
       case JournalEntryType.chat:
         return JournalEntryObj.chat(
@@ -66,7 +67,6 @@ class JournalEntryObj with _$JournalEntryObj {
 
     if (this is SimpleJournalEntryObj) {
       return json
-        ..remove('content')
         ..addEntries([MapEntry('type', JournalEntryType.simple.name)]);
     } else if (this is ChatJournalEntryObj) {
       return json

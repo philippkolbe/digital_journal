@@ -9,10 +9,10 @@ part of 'journal_entry.dart';
 _$SimpleJournalEntryObj _$$SimpleJournalEntryObjFromJson(
         Map<String, dynamic> json) =>
     _$SimpleJournalEntryObj(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       name: json['name'] as String,
       date: const DateConverter().fromJson(json['date'] as Timestamp),
-      content: json['content'] as String?,
+      content: json['content'] as String? ?? "",
       $type: json['runtimeType'] as String?,
     );
 
@@ -29,7 +29,7 @@ Map<String, dynamic> _$$SimpleJournalEntryObjToJson(
 _$ChatJournalEntryObj _$$ChatJournalEntryObjFromJson(
         Map<String, dynamic> json) =>
     _$ChatJournalEntryObj(
-      id: json['id'] as String,
+      id: json['id'] as String?,
       name: json['name'] as String,
       date: const DateConverter().fromJson(json['date'] as Timestamp),
       goal: json['goal'] as String?,

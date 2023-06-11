@@ -26,83 +26,97 @@ class JournalRepository implements BaseJournalRepository {
   @override
   Future<String> createSimpleJournalEntry(String userId, SimpleJournalEntryObj entry) async {
     try {
-      final docRef = await _firestore.collection('users').doc(userId).collection('journalEntries').add(entry.toJson());
-      return docRef.id;
+      final collection = _getJournalEntriesCollection(userId);
+      final doc = entry.toDocument();
+
+      return _addOrSetDocument(collection, doc, entry.id);
     } catch (e) {
-      // Handle error
-      throw e;
+      throw JournalException('An error occured while creating a simple journal entry', userId: userId, entryId: entry.id);
     }
   }
 
   @override
   Future<String> createChatJournalEntry(String userId, ChatJournalEntryObj entry) async {
     try {
-      final docRef = await _firestore.collection('users').doc(userId).collection('journalEntries').add(entry.toJson());
-      return docRef.id;
+      final collection = _getJournalEntriesCollection(userId);
+      final doc = entry.toDocument();
+
+      return _addOrSetDocument(collection, doc, entry.id);
     } catch (e) {
-      // Handle error
-      throw e;
+      throw JournalException('An error occured while creating a chat journal entry', userId: userId, entryId: entry.id);
     }
   }
 
   @override
   Future<List<JournalEntryObj>> readAllJournalEntries(String userId) async {
     try {
-      final snapshot =
-          await _firestore.collection('users').doc(userId).collection('journalEntries').get();
-      return snapshot.docs.map((doc) => _convertToJournalEntry(doc)).toList();
+      final snapshot = await _getJournalEntriesCollection(userId)
+        .orderBy('date', descending: true)
+        .get();
+      return snapshot.docs.map((doc) => JournalEntryObj.fromDocument(doc)).toList();
     } catch (e) {
-      // Handle error
-      throw e;
+      throw JournalException('An error occured while reading all journal entry', userId: userId);
     }
   }
 
   @override
   Future<JournalEntryObj> readJournalEntry(String userId, String entryId) async {
     try {
-      final docSnapshot = await _firestore.collection('users').doc(userId).collection('journalEntries').doc(entryId).get();
+      final docSnapshot = await _getJournalEntriesCollection(userId).doc(entryId).get();
       if (docSnapshot.exists) {
-        return _convertToJournalEntry(docSnapshot);
+        return JournalEntryObj.fromDocument(docSnapshot);
       } else {
         // Entry does not exist
         throw Exception('Journal entry not found.');
       }
     } catch (e) {
-      // Handle error
-      throw e;
+      throw JournalException('An error occured while reading the journal entry', userId: userId, entryId: entryId);
     }
   }
 
   @override
   Future<void> updateJournalEntry(String userId, JournalEntryObj entry) async {
     try {
-      await _firestore.collection('users').doc(userId).collection('journalEntries').doc(entry.id).update(entry.toJson());
+      assert(entry.id != null, 'Define an entry id for updating it.');
+      await _getJournalEntriesCollection(userId)
+        .doc(entry.id)
+        .update(entry.toDocument());
     } catch (e) {
-      // Handle error
-      throw e;
+      throw JournalException('An error occured while updating the journal entry', userId: userId, entryId: entry.id);
     }
   }
 
   @override
   Future<void> deleteJournalEntry(String userId, String entryId) async {
     try {
-      await _firestore.collection('users').doc(userId).collection('journalEntries').doc(entryId).delete();
+      await _getJournalEntriesCollection(userId).doc(entryId).delete();
     } catch (e) {
-      // Handle error
-      throw e;
+      throw JournalException('An error occured while deleting the journal entry', userId: userId, entryId: entryId);
     }
   }
 
-  JournalEntryObj _convertToJournalEntry(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
-    final type = data['type'] as String;
-
-    if (type == 'simple') {
-      return SimpleJournalEntryObj.fromJson(data);
-    } else if (type == 'chat') {
-      return ChatJournalEntryObj.fromJson(data);
+  Future<String> _addOrSetDocument(CollectionReference collection, Map<String, dynamic> doc, String? id) async {
+    if (id != null) {
+      await collection.doc(id).set(doc);
+      return id;
     } else {
-      throw Exception('Invalid journal entry type.');
+      final newDoc = await collection.add(doc);
+      return newDoc.id;
     }
   }
+
+  CollectionReference _getJournalEntriesCollection(String userId) {
+    return _firestore
+      .collection('users')
+      .doc(userId)
+      .collection('journalEntries');
+  }
+}
+
+class JournalException implements Exception {
+  String message;
+  String userId;
+  String? entryId;
+  JournalException(String message, { required this.userId, this.entryId }) :
+    message = '$message. UserId: $userId. ${entryId != null ? 'EntryId: $entryId' : ''}';
 }
