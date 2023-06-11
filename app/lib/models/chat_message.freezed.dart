@@ -20,8 +20,8 @@ ChatMessageObj _$ChatMessageObjFromJson(Map<String, dynamic> json) {
 
 /// @nodoc
 mixin _$ChatMessageObj {
+  String? get id => throw _privateConstructorUsedError;
   bool get isFromBot => throw _privateConstructorUsedError;
-  String get id => throw _privateConstructorUsedError;
   @DateConverter()
   DateTime get date => throw _privateConstructorUsedError;
   String get content => throw _privateConstructorUsedError;
@@ -39,8 +39,8 @@ abstract class $ChatMessageObjCopyWith<$Res> {
       _$ChatMessageObjCopyWithImpl<$Res, ChatMessageObj>;
   @useResult
   $Res call(
-      {bool isFromBot,
-      String id,
+      {String? id,
+      bool isFromBot,
       @DateConverter() DateTime date,
       String content});
 }
@@ -58,20 +58,20 @@ class _$ChatMessageObjCopyWithImpl<$Res, $Val extends ChatMessageObj>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? isFromBot = null,
-    Object? id = null,
     Object? date = null,
     Object? content = null,
   }) {
     return _then(_value.copyWith(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       isFromBot: null == isFromBot
           ? _value.isFromBot
           : isFromBot // ignore: cast_nullable_to_non_nullable
               as bool,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -93,8 +93,8 @@ abstract class _$$_ChatMessageCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {bool isFromBot,
-      String id,
+      {String? id,
+      bool isFromBot,
       @DateConverter() DateTime date,
       String content});
 }
@@ -110,20 +110,20 @@ class __$$_ChatMessageCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? isFromBot = null,
-    Object? id = null,
     Object? date = null,
     Object? content = null,
   }) {
     return _then(_$_ChatMessage(
+      id: freezed == id
+          ? _value.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       isFromBot: null == isFromBot
           ? _value.isFromBot
           : isFromBot // ignore: cast_nullable_to_non_nullable
               as bool,
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
       date: null == date
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
@@ -140,8 +140,8 @@ class __$$_ChatMessageCopyWithImpl<$Res>
 @JsonSerializable()
 class _$_ChatMessage extends _ChatMessage {
   const _$_ChatMessage(
-      {required this.isFromBot,
-      required this.id,
+      {this.id,
+      required this.isFromBot,
       @DateConverter() required this.date,
       required this.content})
       : super._();
@@ -150,9 +150,9 @@ class _$_ChatMessage extends _ChatMessage {
       _$$_ChatMessageFromJson(json);
 
   @override
-  final bool isFromBot;
+  final String? id;
   @override
-  final String id;
+  final bool isFromBot;
   @override
   @DateConverter()
   final DateTime date;
@@ -161,7 +161,7 @@ class _$_ChatMessage extends _ChatMessage {
 
   @override
   String toString() {
-    return 'ChatMessageObj(isFromBot: $isFromBot, id: $id, date: $date, content: $content)';
+    return 'ChatMessageObj(id: $id, isFromBot: $isFromBot, date: $date, content: $content)';
   }
 
   @override
@@ -169,16 +169,16 @@ class _$_ChatMessage extends _ChatMessage {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$_ChatMessage &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.isFromBot, isFromBot) ||
                 other.isFromBot == isFromBot) &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.content, content) || other.content == content));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, isFromBot, id, date, content);
+  int get hashCode => Object.hash(runtimeType, id, isFromBot, date, content);
 
   @JsonKey(ignore: true)
   @override
@@ -196,8 +196,8 @@ class _$_ChatMessage extends _ChatMessage {
 
 abstract class _ChatMessage extends ChatMessageObj {
   const factory _ChatMessage(
-      {required final bool isFromBot,
-      required final String id,
+      {final String? id,
+      required final bool isFromBot,
       @DateConverter() required final DateTime date,
       required final String content}) = _$_ChatMessage;
   const _ChatMessage._() : super._();
@@ -206,9 +206,9 @@ abstract class _ChatMessage extends ChatMessageObj {
       _$_ChatMessage.fromJson;
 
   @override
-  bool get isFromBot;
+  String? get id;
   @override
-  String get id;
+  bool get isFromBot;
   @override
   @DateConverter()
   DateTime get date;

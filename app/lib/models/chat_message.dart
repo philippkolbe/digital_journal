@@ -10,8 +10,8 @@ abstract class ChatMessageObj with _$ChatMessageObj {
   const ChatMessageObj._();
 
   const factory ChatMessageObj({
+    String? id,
     required bool isFromBot,
-    required String id,
     @DateConverter() required DateTime date,
     required String content,
   }) = _ChatMessage;

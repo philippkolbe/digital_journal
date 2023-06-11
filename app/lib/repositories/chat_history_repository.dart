@@ -15,10 +15,16 @@ class ChatHistoryRepository implements BaseChatHistoryRepository {
   @override
   Future<String> createChatMessage(String userId, String journalEntryId, ChatMessageObj chatMessageObj) async {
     try {
-      final docRef = await _getChatHistoryCollection(userId, journalEntryId)
-        .add(chatMessageObj.toDocument());
+      final collection = _getChatHistoryCollection(userId, journalEntryId);
+      final doc = chatMessageObj.toDocument();
 
-      return docRef.id;
+      if (chatMessageObj.id != null) {
+        collection.doc(chatMessageObj.id).set(doc);
+        return chatMessageObj.id!;
+      } else {
+        final newDoc = await collection.add(doc);
+        return newDoc.id;
+      }
     } catch (e) {
       throw ChatHistoryException("Error while creating chat entry for user $userId and journal entry $journalEntryId");
     }
@@ -40,7 +46,7 @@ class ChatHistoryRepository implements BaseChatHistoryRepository {
   CollectionReference _getChatHistoryCollection(String userId, String journalEntryId) {
     return _firestore
       .collection('users')
-      .doc()
+      .doc(userId)
       .collection('journalEntries')
       .doc(journalEntryId)
       .collection('chatHistory');
