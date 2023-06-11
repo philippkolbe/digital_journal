@@ -1,6 +1,14 @@
 
 import 'package:app/models/chat_message.dart';
+import 'package:app/providers/firebase_providers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+final chatHistoryRepositoryProvider = Provider<BaseChatHistoryRepository>((Ref ref) {
+  final firestore = ref.read(firebaseFirestoreProvider);
+
+  return ChatHistoryRepository(firestore);
+});
 
 abstract class BaseChatHistoryRepository {
   Future<String> createChatMessage(String userId, String jornalEntryId, ChatMessageObj chatMessageObj);
