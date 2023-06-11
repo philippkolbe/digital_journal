@@ -1,4 +1,4 @@
-import 'package:app/providers/general_providers.dart';
+import 'package:app/providers/firebase_providers.dart';
 
 import 'package:app/models/user.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
