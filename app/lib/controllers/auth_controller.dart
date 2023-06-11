@@ -28,7 +28,10 @@ class AuthController extends StateNotifier<AsyncValue<AuthState?>> {
       if (firebaseUser != null) {
         state = const AsyncLoading();
         final currentUser = await _fetchOrCreateCurrentUser(firebaseUser);
-        state = AsyncData(AuthState(currentUser, firebaseUser));
+        state = AsyncData(AuthState(
+          currentUser: currentUser,
+          firestoreUser: firebaseUser
+        ));
       } else {
         state = const AsyncData(null);
       }

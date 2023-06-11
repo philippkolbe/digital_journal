@@ -2,10 +2,12 @@ import 'package:app/models/user.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-@freezed
-class AuthState {
-  final UserObj currentUser;
-  final User firestoreUser;
+part 'auth_state.freezed.dart';
 
-  AuthState(this.currentUser, this.firestoreUser);
+@freezed
+abstract class AuthState with _$AuthState {
+  const factory AuthState({
+    required UserObj currentUser,
+    required User firestoreUser,
+  }) = _AuthState;
 }
