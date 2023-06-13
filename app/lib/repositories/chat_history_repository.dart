@@ -42,7 +42,7 @@ class ChatHistoryRepository implements BaseChatHistoryRepository {
   Future<List<ChatMessageObj>> readChatHistory(String userId, String journalEntryId) async {
     try {
       final snapshot = await _getChatHistoryCollection(userId, journalEntryId)
-        .orderBy('date')
+        .orderBy('date', descending: true)
         .get();
 
       return snapshot.docs.map((doc) => ChatMessageObj.fromDocument(doc)).toList();
