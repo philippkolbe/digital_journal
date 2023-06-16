@@ -1,0 +1,51 @@
+import 'package:app/common/async_widget.dart';
+import 'package:app/common/error_widget.dart' as error;
+import 'package:app/models/journal_entry.dart';
+import 'package:app/providers/selected_journal_entry_provider.dart';
+import 'package:app/views/journal/chat_journal_view.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+class JournalEntryView extends ConsumerWidget {
+
+  const JournalEntryView({ super.key });
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final asyncSelectedJournalEntry = ref.watch(selectedJournalEntryProvider);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(asyncSelectedJournalEntry.valueOrNull?.name ?? ''),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
+      ),
+      body: AsyncWidget(
+        asyncValue: asyncSelectedJournalEntry,
+        buildWidget: (selectedJournalEntry) => _buildSpecificJournalEntryView(selectedJournalEntry),
+        retryText: 'Back',
+        onRetryAfterError: () => Navigator.pop(context),
+      ),
+    );
+  }
+
+  Widget _buildSpecificJournalEntryView(JournalEntryObj? journalEntry) {
+    if (journalEntry is SimpleJournalEntryObj) {
+      return const Text('Simple');
+    } else if (journalEntry is ChatJournalEntryObj) {
+      return ChatJournalView(
+        journalEntry: journalEntry
+      );
+    } else if (journalEntry == null) {
+      return error.ErrorWidget(
+        error: 'Can not show a journal entry if none is selected.',
+      );
+    } else {
+      return error.ErrorWidget(
+        error: 'Unknown Journal Entry Type: ${journalEntry.runtimeType}',
+      );
+    }
+  }
+}
