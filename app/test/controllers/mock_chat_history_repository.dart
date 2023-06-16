@@ -15,7 +15,7 @@ class MockChatHistoryRepository implements BaseChatHistoryRepository {
   /// Its assuming that there is only one user and journal entry
   @override
   Future<List<ChatMessageObj>> readChatHistory(String userId, String journalEntryId) {
-    return Future.value(chatHistory);
+    return Future.value([...chatHistory]);
   }
 
   @override
