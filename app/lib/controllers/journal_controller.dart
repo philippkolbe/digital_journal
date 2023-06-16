@@ -36,23 +36,25 @@ class JournalController extends StateNotifier<AsyncValue<List<JournalEntryObj>>>
     }
   }
 
-  Future<void> addJournalEntry(JournalEntryObj entryObj) async {
-    try {
-      assert(state is AsyncData, "Journal entries must be loaded to add new journal entries.");
+  Future<JournalEntryObj?> addJournalEntry(JournalEntryObj entryObj) async {
+    // TODO: Error handling... we do want to throw an error because when creating new journal entries fails the selected journal entry should contain an error.
+    // TODO: Probably move the selectedJournalEntry into this state or at least modify it via this controller so that it can handle errors.
+    assert(state is AsyncData, "Journal entries must be loaded to add new journal entries.");
 
-      if (entryObj is ChatJournalEntryObj) {
-        await _journalRepository.createChatJournalEntry(_userId!, entryObj);
-      } else if (entryObj is SimpleJournalEntryObj) {
-        await _journalRepository.createSimpleJournalEntry(_userId!, entryObj);
-      } else {
-        throw Exception('Unknown Journal Entry Type $entryObj');
-      }
-
-      state = AsyncData(state.value!..insert(0, entryObj));
-    } catch (error, stackTrace) {
-      // TODO: Handle error by showing it in popup instead of this state
-      state = AsyncError(error, stackTrace);
+    String newId;
+    if (entryObj is ChatJournalEntryObj) {
+      newId = await _journalRepository.createChatJournalEntry(_userId!, entryObj);
+    } else if (entryObj is SimpleJournalEntryObj) {
+      newId = await _journalRepository.createSimpleJournalEntry(_userId!, entryObj);
+    } else {
+      throw Exception('Unknown Journal Entry Type $entryObj');
     }
+
+    entryObj = entryObj.copyWith(id: newId);
+
+    state = AsyncData(state.value!..insert(0, entryObj));
+
+    return entryObj;
   }
 
   Future<void> deleteJournalEntry(String entryId) async {
