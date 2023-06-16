@@ -1,3 +1,5 @@
+import 'package:app/common/async_widget.dart';
+import 'package:app/views/journal/journal_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_setup.dart';
@@ -6,44 +8,38 @@ import 'package:app/controllers/auth_controller.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
-  runApp(const ProviderScope(child: MyApp()));
+  runApp(const ProviderScope(child: App()));
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class App extends StatelessWidget {
+  const App({super.key});
 
   @override
   Widget build(BuildContext context) {
     return const MaterialApp(
       title: 'Digital Journal',
-      home: MyHomePage(),
+      home: HomeWidget(),
     );
   }
 }
 
-class MyHomePage extends ConsumerWidget {
-  const MyHomePage({super.key});
+class HomeWidget extends ConsumerWidget {
+  const HomeWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final authState = ref.watch(authControllerProvider);
+    final asyncAuthState = ref.watch(authControllerProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Digital Journal'),
-      ),
-      body: Center(
-        child: authState.when(
-          data: (authState) {
-            if (authState != null) {
-              return Text('Welcome to the Digital Journal, ${authState.currentUser.id}');
-            } else {
-              return const Text('Welcome to the Digital Journal!');
-            }
-          },
-          loading: () => const CircularProgressIndicator(),
-          error: (err, st) => Text('An error occured while signing in: $err'),
-        ),
+      body: AsyncWidget(
+        asyncValue: asyncAuthState,
+        buildWidget: (authState) {
+          if (authState != null) {
+            return const JournalPage();
+          } else {
+            return const Text('Welcome to the Digital Journal!');
+          }
+        }
       ),
     );
   }
