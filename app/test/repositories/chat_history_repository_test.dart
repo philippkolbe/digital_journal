@@ -20,10 +20,10 @@ void main() {
       final chatMessageObj = testChatMessageObj.copyWith(id: overwriteId);
       
       // Execute the method
-      final messageId = await repository.createChatMessage(testUserId, testSimpleJournalEntryId, chatMessageObj);
+      final message = await repository.createChatMessage(testUserId, testSimpleJournalEntryId, chatMessageObj);
       
       // Verify the result
-      expect(messageId, isNotEmpty);
+      expect(message.id, isNotEmpty);
       
       // Check if the chat message is added to the collection
       final chatHistoryCollection = firestore
@@ -33,7 +33,7 @@ void main() {
         .doc(testSimpleJournalEntryId)
         .collection('chatHistory');
         
-      final snapshot = await chatHistoryCollection.doc(messageId).get();
+      final snapshot = await chatHistoryCollection.doc(message.id).get();
       expect(snapshot.exists, isTrue);
     });
     

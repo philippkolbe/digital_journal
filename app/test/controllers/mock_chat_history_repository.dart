@@ -19,9 +19,10 @@ class MockChatHistoryRepository implements BaseChatHistoryRepository {
   }
 
   @override
-  Future<String> createChatMessage(String userId, String journalEntryId, ChatMessageObj entry) {
+  Future<ChatMessageObj> createChatMessage(String userId, String journalEntryId, ChatMessageObj entry) {
     final id = entry.id ?? (++idCount).toString();
-    chatHistory.add(entry);
-    return Future.value(id);
+    final entryWithId = entry.copyWith(id: id);
+    chatHistory.add(entryWithId);
+    return Future.value(entryWithId);
   }
 }
