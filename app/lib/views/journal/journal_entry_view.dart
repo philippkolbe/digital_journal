@@ -13,20 +13,21 @@ class JournalEntryView extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncSelectedJournalEntry = ref.watch(selectedJournalEntryProvider);
+    final selectedJournalEntryController = ref.watch(selectedJournalEntryProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
         title: Text(asyncSelectedJournalEntry.valueOrNull?.name ?? ''),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => _closeJournalEntryView(context, selectedJournalEntryController),
         ),
       ),
       body: AsyncWidget(
         asyncValue: asyncSelectedJournalEntry,
         buildWidget: (selectedJournalEntry) => _buildSpecificJournalEntryView(selectedJournalEntry),
         retryText: 'Back',
-        onRetryAfterError: () => Navigator.pop(context),
+        onRetryAfterError: () => _closeJournalEntryView(context, selectedJournalEntryController),
       ),
     );
   }
@@ -47,5 +48,13 @@ class JournalEntryView extends ConsumerWidget {
         error: 'Unknown Journal Entry Type: ${journalEntry.runtimeType}',
       );
     }
+  }
+
+  void _closeJournalEntryView(
+    BuildContext context,
+    StateController<AsyncValue<JournalEntryObj?>> selectedJournalEntryController,  
+  ) {
+    Navigator.pop(context);
+    selectedJournalEntryController.state = const AsyncData(null);
   }
 }
