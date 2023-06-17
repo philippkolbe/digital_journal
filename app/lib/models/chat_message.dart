@@ -21,7 +21,10 @@ abstract class ChatMessageObj with _$ChatMessageObj {
   factory ChatMessageObj.fromJson(Map<String,dynamic> json) => _$ChatMessageObjFromJson(json);
 
   factory ChatMessageObj.fromDocument(DocumentSnapshot doc) {
-    return ChatMessageObj.fromJson(doc.data() as Map<String, dynamic>);
+    final data = doc.data();
+    assert(data != null, "Document has to exist to create a ChatMessageObj");
+    (data as Map<String, dynamic>)['id'] = doc.id;
+    return ChatMessageObj.fromJson(data);
   }
 
   factory ChatMessageObj.fromTextMessage(chat_types.TextMessage message, { isFromBot = false }) {
