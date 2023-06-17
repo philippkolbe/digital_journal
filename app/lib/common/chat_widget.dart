@@ -5,8 +5,9 @@ import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
 import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatWidget extends StatelessWidget {
   late final List<types.Message> messages;
   late final types.User user;
   final botUser = const types.User(
@@ -14,12 +15,12 @@ class ChatPage extends StatelessWidget {
     firstName: 'Bot',
   );
 
-  final Function(ChatMessageObj) onMessageAdded;
+  final Function(String) onMessageAdded;
 
-  ChatPage({
+  ChatWidget({
     required UserObj user,
     required this.onMessageAdded,
-    List<ChatMessageObj> messages = const [],
+    required List<AsyncValue<ChatMessageObj>> messages,
     super.key,
   }) {
     this.user = types.User(
@@ -29,7 +30,7 @@ class ChatPage extends StatelessWidget {
 
     // TODO: Think about this performace... every time we add a new Chat message the entire widget is reloaded and all the messages are reconverted
     this.messages = messages
-      .map((messageObj) => messageObj.toTextMessage(this.user, botUser))
+      .map(_toTextMessage)
       .toList();
   }
 
@@ -44,9 +45,26 @@ class ChatPage extends StatelessWidget {
     );
   }
 
+  types.Message _toTextMessage(AsyncValue<ChatMessageObj> asyncMessageObj) {
+    return asyncMessageObj.when<types.Message>(
+      data: (messageObj) => messageObj.toTextMessage(user, botUser),
+      error: (error, stackTrace) => types.TextMessage(
+        id: generateUuid(),
+        author: botUser,
+        text: 'Something went wrong while loading the response: $error',
+        status: types.Status.error,
+      ),
+      loading: () => types.TextMessage(
+        id: generateUuid(),
+        author: botUser,
+        text: '...',
+        status: types.Status.sending,
+      ),
+    );
+  }
+
   void _addMessage(types.TextMessage message) {
-    final messageObj = ChatMessageObj.fromTextMessage(message, isFromBot: false);
-    onMessageAdded(messageObj);
+    onMessageAdded(message.text);
   }
 
   void _handleSendPressed(types.PartialText message) {

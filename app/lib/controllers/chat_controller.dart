@@ -1,3 +1,4 @@
+import 'package:app/common/utils.dart';
 import 'package:app/controllers/auth_controller.dart';
 import 'package:app/models/chat_message.dart';
 import 'package:app/models/journal_entry.dart';
@@ -5,7 +6,7 @@ import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:app/repositories/chat_history_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final chatControllerProvider = Provider<ChatController>((ref) {
+final chatControllerProvider = StateNotifierProvider<ChatController, AsyncValue<ChatState?>>((ref) {
   final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
   final authState = ref.watch(authControllerProvider);
   final chatHistoryRepository = ref.read(chatHistoryRepositoryProvider);
@@ -94,6 +95,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
 
   Future<void> _writeChatMessage(String content, { bool isFromBot = false, int replaceAt = -1 }) async {
     final chatMessageObj = ChatMessageObj(
+      id: generateUuid(),
       isFromBot: isFromBot,
       date: DateTime.now(),
       content: content,
@@ -102,15 +104,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     state = _addOrReplaceChatMessageInState(AsyncData(chatMessageObj), replaceAt: replaceAt);
 
     try {
-      final newChatMessageObj = await _createChatMessage(chatMessageObj);
-    
-      state = AsyncData(
-        state.value!.map(
-          (asyncMessage) => asyncMessage.valueOrNull == chatMessageObj
-            ? AsyncData(newChatMessageObj)
-            : asyncMessage
-        ).toList()
-      );
+      await _createChatMessage(chatMessageObj);
     } catch (err, st) {
       state = AsyncData(
         state.value!.map(
