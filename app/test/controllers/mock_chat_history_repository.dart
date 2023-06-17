@@ -3,8 +3,8 @@ import 'package:app/repositories/chat_history_repository.dart';
 
 class MockChatHistoryRepository implements BaseChatHistoryRepository {
   final List<ChatMessageObj> chatHistory = [
-    ChatMessageObj(id: '1', isFromBot: true, date: DateTime.now(), content: 'Hello tell me about yourself.'),
-    ChatMessageObj(id: '2', isFromBot: false, date: DateTime.now(), content: 'Hi Im a test.'),
+    ChatMessageObj(id: '2', isFromBot: false, date: DateTime(2023, 6, 16, 10, 51), content: 'Hi Im a test.'),
+    ChatMessageObj(id: '1', isFromBot: true, date: DateTime(2023, 6, 16, 10, 50), content: 'Hello tell me about yourself.'),
   ];
   late int idCount;
 
