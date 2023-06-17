@@ -54,8 +54,10 @@ void main() {
     test('Adding journal entry while loading should throw error', () async {
       final unauthorizedController = JournalController(repository, null);
 
-      await unauthorizedController.addJournalEntry(testChatJournalEntry);
-      expect(unauthorizedController.debugState, isA<AsyncError>());
+      expect(
+        () => unauthorizedController.addJournalEntry(testChatJournalEntry),
+        throwsA(isAssertionError)
+      );
     });
 
     test('Delete journal entry successfully', () async {
