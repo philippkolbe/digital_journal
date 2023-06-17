@@ -14,3 +14,15 @@ A few resources to get you started if this is your first Flutter project:
 For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
+
+Additionally, we use [Riverpod](https://riverpod.dev/de/) as the state management library.
+
+There is a REST backend component which provides the connection to the OpenAI API.
+
+## Setup
+
+Create an `.env` file in the root directory. It should contain:
+| Variable         | Description                                    |
+| ---------------- | ---------------------------------------------- |
+| BACKEND_URL      | URL pointing to the Backend of the application |
+| FIREBASE_API_KEY | API key to your Firebase project               |
