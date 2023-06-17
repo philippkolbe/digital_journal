@@ -91,5 +91,20 @@ void main() {
       expect(state[0] is AsyncData, true);
       expect(state[0].value!.id, isNotNull);
     });
+
+    test('addErrorBotChatMessage should replace the loading bot chat message', () async {
+      // Arrange
+      final error = Error();
+      final st = StackTrace.current;
+      // Act
+      final loading = chatController.addLoadingBotChatMessage();
+      chatController.addErrorBotChatMessage(error, st);
+
+      // Assert
+      final state = chatController.debugState.value!;
+      expect(state.length, 3);
+      expect(state.contains(loading), false);
+      expect(state[0] is AsyncError, true);
+    });
   });
 }

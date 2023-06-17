@@ -35,6 +35,11 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     await _writeChatMessage(content, isFromBot: true, replaceAt: indexOfLoadingMessage);
   }
 
+  void addErrorBotChatMessage(Error error, StackTrace stackTrace) {
+    final indexOfLoadingMessage = _findLoadingMessageIndex();
+    state = _addOrReplaceChatMessageInState(AsyncError<ChatMessageObj>(error, stackTrace), replaceAt: indexOfLoadingMessage);
+  }
+
   AsyncValue<ChatMessageObj>? addLoadingBotChatMessage() {
     if (state is AsyncData) {
       ChatState history = state.value!;
@@ -88,15 +93,13 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   }
 
   Future<void> _writeChatMessage(String content, { bool isFromBot = false, int replaceAt = -1 }) async {
-    assert(state is AsyncData, 'Chat history state must be loaded to write chat messages');
     final chatMessageObj = ChatMessageObj(
       isFromBot: isFromBot,
       date: DateTime.now(),
       content: content,
     );
 
-    final history = state.value!;
-    state = _addOrReplaceChatMessageInState(history, chatMessageObj, replaceAt);
+    state = _addOrReplaceChatMessageInState(AsyncData(chatMessageObj), replaceAt: replaceAt);
 
     try {
       final newChatMessageObj = await _createChatMessage(chatMessageObj);
@@ -119,15 +122,18 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     }
   }
 
-  AsyncValue<ChatState> _addOrReplaceChatMessageInState(ChatState history, ChatMessageObj chatMessageObj, int replaceAt) {
+  AsyncValue<ChatState> _addOrReplaceChatMessageInState(AsyncValue<ChatMessageObj> chatMessage, { int replaceAt = -1}) {
+    assert(state is AsyncData, 'Chat history state must be loaded to write chat messages');
+    ChatState history = state.value!;
+
     if (replaceAt == -1) {
-      return _addChatMessageInState(history, AsyncData(chatMessageObj));
+      return _addChatMessageInState(history, chatMessage);
     } else {
       final messageToReplace = history[replaceAt];
       return AsyncData(
         history.map(
           (asyncMessage) => asyncMessage == messageToReplace
-            ? AsyncData<ChatMessageObj>(chatMessageObj)
+            ? chatMessage
             : asyncMessage
         ).toList(),
       );
@@ -135,9 +141,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   }
 
   AsyncValue<ChatState> _addChatMessageInState(ChatState history, AsyncValue<ChatMessageObj> chatMessage) {
-    return AsyncData(
-      [chatMessage, ...history]
-    );
+    return AsyncData([chatMessage, ...history]);
   }
 
   Future<ChatMessageObj> _createChatMessage(ChatMessageObj chatMessageObj) async {
