@@ -51,4 +51,11 @@ abstract class ChatMessageObj with _$ChatMessageObj {
       author: isFromBot ? botUser : user,
     );
   }
+
+  Map<String, dynamic> toAIMessage() {
+    return {
+      'role': isFromBot ? 'assistant' : 'user',
+      'content': content,
+    };
+  }
 }
