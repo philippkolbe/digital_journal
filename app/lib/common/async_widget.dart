@@ -1,4 +1,5 @@
 import 'package:app/common/error_widget.dart';
+import 'package:app/common/loading_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,7 +23,7 @@ class AsyncWidget<T> extends StatelessWidget {
       child: asyncValue.when(
         data: (T data) => buildWidget(data),
         error: buildErrorWidget(onRetry: onRetryAfterError, retryText: retryText),
-        loading: () => const CircularProgressIndicator(),
+        loading: () => const LoadingWidget(),
       ),
     );
   }
