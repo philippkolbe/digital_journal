@@ -6,7 +6,7 @@ import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:app/repositories/ai_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final chatBotControllerProvider = StateNotifierProvider<ChatBotController, AsyncValue<String?>>((ref) {
+final chatBotControllerProvider = StateNotifierProvider<ChatBotController, AsyncValue<ChatMessageObj?>>((ref) {
   final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
   final authState = ref.watch(authControllerProvider);
   final chatHistory = ref.watch(chatControllerProvider);
@@ -15,29 +15,46 @@ final chatBotControllerProvider = StateNotifierProvider<ChatBotController, Async
 
   return ChatBotController(
     authState.valueOrNull?.currentUser.id,
-    selectedJournalEntry,
+    selectedJournalEntry.valueOrNull,
     chatHistory.valueOrNull,
     chatController,
     aiRepository,
   );
 });
 
-class ChatBotController extends StateNotifier<AsyncValue<String?>> {
+class ChatBotController extends StateNotifier<AsyncValue<ChatMessageObj?>> {
   final String? _userId;
-  final AsyncValue<JournalEntryObj?> _asyncSelectedJournalEntry;
+  final JournalEntryObj? _selectedJournalEntry;
   final List<AsyncValue<ChatMessageObj>>? _chatHistory;
   final ChatController _chatController;
   final BaseAIRepository _aiRepository;
 
   ChatBotController(
     this._userId,
-    this._asyncSelectedJournalEntry,
+    this._selectedJournalEntry,
     this._chatHistory,
     this._chatController,
     this._aiRepository,
   ) : super(const AsyncData(null));
 
   Future<void> writeBotResponse() async {
-    
+    state = const AsyncLoading();
+
+    try {
+      assert(_userId != null, 'User must be authenticated to chat with bot.');
+
+      final chatMessages = (_chatHistory
+        ?.map((value) => value.valueOrNull)
+        .whereType<ChatMessageObj>()
+        .toList() ?? []);
+
+      final botResponse = await _aiRepository.respondToChat(chatMessages);
+
+      state = AsyncData(botResponse);
+
+      await _chatController.writeBotChatMessage(botResponse);
+    } catch (e, st) {
+      state = AsyncError(e, st);
+    }
   }
 }
