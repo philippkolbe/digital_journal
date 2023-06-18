@@ -45,12 +45,13 @@ void main() {
 
     test('writeBotChatMessage should add a bot chat message to the chat history', () async {
       // Arrange
-      const content = 'Hello, this is a bot message';
+      final botChatMessage = testChatBotMessageObj;
+      final content = botChatMessage.content;
 
       final historyLengthBefore = (await mockChatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId)).length;
 
       // Act
-      await chatController.writeBotChatMessage(content);
+      await chatController.writeBotChatMessage(botChatMessage);
 
       // Assert
       final state = chatController.debugState.value!;
@@ -79,10 +80,10 @@ void main() {
 
     test('writeBotChatMessage should replace the loading bot chat message', () async {
       // Arrange
-      const content = 'Hello, this is longer a bot message.';
+      final botChatMessage = testChatBotMessageObj;
       // Act
       final loading = chatController.addLoadingBotChatMessage();
-      await chatController.writeBotChatMessage(content);
+      await chatController.writeBotChatMessage(botChatMessage);
 
       // Assert
       final state = chatController.debugState.value!;

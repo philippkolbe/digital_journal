@@ -29,6 +29,14 @@ final testChatMessageObj = ChatMessageObj(
   content: 'Hello, world!',
 );
 
+const testChatBotMessageId = 'id_bot_test_message';
+final testChatBotMessageObj = ChatMessageObj(
+  isFromBot: true,
+  id: testChatBotMessageId,
+  date: DateTime(2024, 1, 1, 11, 7),
+  content: 'Hi, I am a bot.',
+);
+
 FakeFirebaseFirestore setupFakeFirestore({ bool user = false, bool journal = true, bool chat = true }) {
   final firestore = FakeFirebaseFirestore();
 
