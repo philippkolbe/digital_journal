@@ -45,7 +45,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     await _writeChatMessage(chatMessageObj, replaceAt: indexOfLoadingMessage);
   }
 
-  void addErrorBotChatMessage(Error error, StackTrace stackTrace) {
+  void addErrorBotChatMessage(Object error, StackTrace stackTrace) {
     final indexOfLoadingMessage = _findLoadingMessageIndex();
     state = _addOrReplaceChatMessageInState(AsyncError<ChatMessageObj>(error, stackTrace), replaceAt: indexOfLoadingMessage);
   }

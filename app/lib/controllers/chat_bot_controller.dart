@@ -39,6 +39,7 @@ class ChatBotController extends StateNotifier<AsyncValue<ChatMessageObj?>> {
 
   Future<void> writeBotResponse() async {
     state = const AsyncLoading();
+    _chatController.addLoadingBotChatMessage();
 
     try {
       assert(_userId != null, 'User must be authenticated to chat with bot.');
@@ -55,6 +56,7 @@ class ChatBotController extends StateNotifier<AsyncValue<ChatMessageObj?>> {
       await _chatController.writeBotChatMessage(botResponse);
     } catch (e, st) {
       state = AsyncError(e, st);
+      _chatController.addErrorBotChatMessage(e, st);
     }
   }
 }
