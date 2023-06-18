@@ -1,4 +1,6 @@
 import 'package:app/controllers/chat_controller.dart';
+import 'package:app/models/chat_message.dart';
+import 'package:app/repositories/ai_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app/controllers/chat_bot_controller.dart';
@@ -17,10 +19,10 @@ void main() {
     setUp(() {
       aiRepository = MockAIRepository();
       chatHistoryRepository = MockChatHistoryRepository();
-      final asyncJournalEntry = AsyncData(testChatJournalEntry);
-      chatController = ChatController(testUserId, asyncJournalEntry, chatHistoryRepository);
+      final asyncJournalEntry = testChatJournalEntry;
+      chatController = ChatController(testUserId, AsyncData(asyncJournalEntry), chatHistoryRepository);
       final chatHistory = chatController.debugState.valueOrNull;
-      chatBotController = ChatBotController(testUserId, asyncJournalEntry, chatHistory, chatController, aiRepository);
+      chatBotController = ChatBotController(testUserId, testChatJournalEntry, chatHistory, chatController, aiRepository);
     });
 
     test('initial state is null', () {
@@ -28,27 +30,19 @@ void main() {
       expect(chatBotController.debugState.value, isNull);
     });
 
-    test('writeBotResponse changes state to loading', () async {
-      expect(chatBotController.debugState, isNull);
-
-      chatBotController.writeBotResponse();
-
-      expect(chatBotController.debugState, isA<AsyncLoading<String?>>());
-    });
-
     test('writeBotResponse changes state to AsyncData with bot response', () async {
-      final mockBotResponse = testChatMessageObj;
+      final mockBotResponse = testChatBotMessageObj;
 
       aiRepository.mockBotResponse = mockBotResponse;
 
       await chatBotController.writeBotResponse();
 
-      expect(chatBotController.debugState, isA<AsyncData<String?>>());
+      expect(chatBotController.debugState, isA<AsyncData<ChatMessageObj?>>());
       expect(chatBotController.debugState.value, equals(mockBotResponse));
     });
 
     test('writeBotResponse adds bot message to chat history', () async {
-      final mockBotResponse = testChatMessageObj;
+      final mockBotResponse = testChatBotMessageObj;
 
       aiRepository.mockBotResponse = mockBotResponse;
 
@@ -56,7 +50,17 @@ void main() {
 
       final newHistory = await chatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId);
       expect(newHistory, hasLength(3));
-      expect(newHistory[0], testChatMessageObj);
+      expect(newHistory[0], mockBotResponse);
+    });
+
+    test('writeBotResponse leads to AsyncError if AIRepository fails', () async {
+      final mockBotException = AIException('Gotcha!');;
+
+      aiRepository.mockBotException = mockBotException;
+
+      await chatBotController.writeBotResponse();
+      expect(chatBotController.debugState, isA<AsyncError>());
+      expect(chatBotController.debugState.error, mockBotException);
     });
   });
 }
