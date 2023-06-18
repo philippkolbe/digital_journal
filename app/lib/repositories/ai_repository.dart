@@ -4,7 +4,6 @@ import 'package:app/controllers/auth_controller.dart';
 import 'package:app/models/chat_message.dart';
 import 'package:app/providers/http_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:http/http.dart' as http;
 
 final aiRepositoryProvider = Provider<BaseAIRepository>((ref) {
   final asyncAuthState = ref.read(authControllerProvider);
