@@ -48,9 +48,9 @@ void main() {
 
       await chatBotController.writeBotResponse();
 
-      final newHistory = await chatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId);
+      final newHistory = chatController.debugState.value!;
       expect(newHistory, hasLength(3));
-      expect(newHistory[0], mockBotResponse);
+      expect(newHistory[0].value, mockBotResponse);
     });
 
     test('writeBotResponse leads to AsyncError if AIRepository fails', () async {
@@ -61,6 +61,10 @@ void main() {
       await chatBotController.writeBotResponse();
       expect(chatBotController.debugState, isA<AsyncError>());
       expect(chatBotController.debugState.error, mockBotException);
+
+      final history = chatController.debugState.value!;
+      expect(history[0], isA<AsyncError>());
+      expect(history[0].error, mockBotException);
     });
   });
 }
