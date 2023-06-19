@@ -24,12 +24,12 @@ system_message = create_message('system', 'You are a helpful journaling assistan
 def chat():
   try:
     user_id = request.json['user_id']
-    messages = map(message_from_json, request.json['messages'])
+    messages = [message_from_json(json) for json in request.json['messages']]
     messages.insert(0, system_message)
 
     # Send user message to OpenAI and get response
     response = openai.ChatCompletion.create(
-      engine='gpt-3.5-turbo',
+      model='gpt-3.5-turbo',
       messages=messages,
       temperature=1.1,
       user=user_id
@@ -45,10 +45,10 @@ def chat():
       'finish_reason': finish_reason,
     })
   except Exception as err:
-    logging.exception(e)
+    logging.exception(err)
     return jsonify({
       'success': False,
-      'error': str(err),
+      'error': 'Internal Server Error: ' + str(err),
     })
 
 if __name__ == '__main__':
