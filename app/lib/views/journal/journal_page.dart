@@ -24,10 +24,9 @@ class JournalPage extends ConsumerWidget {
       buildWidget: (journalState) {
         return Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const Text('Your Journal'),
+            AppBar(
+              title: const Text('Your Journal'),
+              actions: [
                 IconButton(
                   onPressed: () => _onAddJournalEntry(
                     context,
