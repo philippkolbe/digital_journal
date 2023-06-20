@@ -51,7 +51,7 @@ void main() {
       final historyLengthBefore = (await mockChatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId)).length;
 
       // Act
-      await chatController.writeBotChatMessage(botChatMessage);
+      await chatController.writeBotChatMessage(AsyncData(botChatMessage));
 
       // Assert
       final state = chatController.debugState.value!;
@@ -83,7 +83,7 @@ void main() {
       final botChatMessage = testChatBotMessageObj;
       // Act
       final loading = chatController.addLoadingBotChatMessage();
-      await chatController.writeBotChatMessage(botChatMessage);
+      await chatController.writeBotChatMessage(AsyncData(botChatMessage));
 
       // Assert
       final state = chatController.debugState.value!;
@@ -99,7 +99,7 @@ void main() {
       final st = StackTrace.current;
       // Act
       final loading = chatController.addLoadingBotChatMessage();
-      chatController.addErrorBotChatMessage(error, st);
+      chatController.writeBotChatMessage(AsyncError(error, st));
 
       // Assert
       final state = chatController.debugState.value!;

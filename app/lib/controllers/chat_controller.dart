@@ -11,7 +11,11 @@ final chatControllerProvider = StateNotifierProvider<ChatController, AsyncValue<
   final authState = ref.watch(authControllerProvider);
   final chatHistoryRepository = ref.read(chatHistoryRepositoryProvider);
 
-  return ChatController(authState.valueOrNull?.currentUser.id, selectedJournalEntry, chatHistoryRepository);
+  return ChatController(
+    authState.valueOrNull?.currentUser.id,
+    selectedJournalEntry,
+    chatHistoryRepository,
+  );
 });
 
 typedef ChatState = List<AsyncValue<ChatMessageObj>>;
@@ -21,33 +25,52 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   final AsyncValue<JournalEntryObj?> _asyncSelectedJournalEntry;
   final BaseChatHistoryRepository _chatHistoryRepository;
 
-  ChatController(this._userId, this._asyncSelectedJournalEntry, this._chatHistoryRepository, ) : super(const AsyncData(null)) {
+  ChatController(
+    this._userId,
+    this._asyncSelectedJournalEntry,
+    this._chatHistoryRepository,
+  ) : super(const AsyncData(null)) {
     if (_userId != null) {
       state = _initState();
     }
   }
 
   Future<void> writeUserChatMessage(String content) async {
-    final chatMessageObj = ChatMessageObj(
+    final chatMessageObj = createUserChatMessage(content);
+
+    await writeChatMessage(chatMessageObj);
+  }
+
+  ChatMessageObj createUserChatMessage(String content) {
+    return createChatMessage(content, false);
+  }
+
+  ChatMessageObj createBotChatMessage(String content) {
+    return createChatMessage(content, true);
+  }
+
+  ChatMessageObj createChatMessage(String content, bool isFromBot) {
+    return ChatMessageObj(
       id: generateUuid(),
-      isFromBot: false,
+      isFromBot: isFromBot,
       date: DateTime.now(),
       content: content,
     );
-
-    await _writeChatMessage(chatMessageObj);
   }
 
-  Future<void> writeBotChatMessage(ChatMessageObj chatMessageObj) async {
-    assert(chatMessageObj.isFromBot, "Can only write Bot Chat Messages that were written from a bot.");
+  Future<void> writeBotChatMessage(AsyncValue<ChatMessageObj> asyncChatMessageObj) async {
     final indexOfLoadingMessage = _findLoadingMessageIndex();
+    if (asyncChatMessageObj is AsyncData) {
+      final chatMessageObj = asyncChatMessageObj.value!.copyWith(
+        id: generateUuid(),
+      );
 
-    await _writeChatMessage(chatMessageObj, replaceAt: indexOfLoadingMessage);
-  }
+      assert(chatMessageObj.isFromBot, "Can only write Bot Chat Messages that were written from a bot.");
 
-  void addErrorBotChatMessage(Object error, StackTrace stackTrace) {
-    final indexOfLoadingMessage = _findLoadingMessageIndex();
-    state = _addOrReplaceChatMessageInState(AsyncError<ChatMessageObj>(error, stackTrace), replaceAt: indexOfLoadingMessage);
+      await writeChatMessage(chatMessageObj, replaceAt: indexOfLoadingMessage);
+    } else {
+      state = _addOrReplaceChatMessageInState(asyncChatMessageObj, replaceAt: indexOfLoadingMessage);
+    }
   }
 
   AsyncValue<ChatMessageObj>? addLoadingBotChatMessage() {
@@ -102,7 +125,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     return state.valueOrNull?.lastIndexWhere((message) => message is AsyncLoading) ?? -1;
   }
 
-  Future<void> _writeChatMessage(ChatMessageObj chatMessageObj, { int replaceAt = -1 }) async {
+  Future<void> writeChatMessage(ChatMessageObj chatMessageObj, { int replaceAt = -1 }) async {
     state = _addOrReplaceChatMessageInState(AsyncData(chatMessageObj), replaceAt: replaceAt);
 
     try {

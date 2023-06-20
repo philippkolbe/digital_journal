@@ -43,7 +43,8 @@ class AIRepository implements BaseAIRepository {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        if (data['successful']) {
+        dynamic successful = data['success'];
+        if (successful) {
           final botResponse = data['response'] as String;
 
           final botMessage = ChatMessageObj(

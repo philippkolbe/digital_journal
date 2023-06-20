@@ -21,8 +21,7 @@ void main() {
       chatHistoryRepository = MockChatHistoryRepository();
       final asyncJournalEntry = testChatJournalEntry;
       chatController = ChatController(testUserId, AsyncData(asyncJournalEntry), chatHistoryRepository);
-      final chatHistory = chatController.debugState.valueOrNull;
-      chatBotController = ChatBotController(testUserId, testChatJournalEntry, chatHistory, chatController, aiRepository);
+      chatBotController = ChatBotController(testUserId, aiRepository);
     });
 
     test('initial state is null', () {
@@ -35,36 +34,32 @@ void main() {
 
       aiRepository.mockBotResponse = mockBotResponse;
 
-      await chatBotController.writeBotResponse();
+      await chatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId);
+      // Chat history is loaded
+      final response = await chatBotController.writeBotResponse(chatController.debugState.valueOrNull);
 
       expect(chatBotController.debugState, isA<AsyncData<ChatMessageObj?>>());
       expect(chatBotController.debugState.value, equals(mockBotResponse));
-    });
 
-    test('writeBotResponse adds bot message to chat history', () async {
-      final mockBotResponse = testChatBotMessageObj;
-
-      aiRepository.mockBotResponse = mockBotResponse;
-
-      await chatBotController.writeBotResponse();
-
-      final newHistory = chatController.debugState.value!;
-      expect(newHistory, hasLength(3));
-      expect(newHistory[0].value, mockBotResponse);
+      expect(response, isA<AsyncData>());
+      expect(response.value!.id, isNotNull);
+      expect(response.value!.content, mockBotResponse.content);
+      expect(response.value!.date, mockBotResponse.date);
     });
 
     test('writeBotResponse leads to AsyncError if AIRepository fails', () async {
-      final mockBotException = AIException('Gotcha!');;
+      final mockBotException = AIException('Gotcha!');
 
       aiRepository.mockBotException = mockBotException;
 
-      await chatBotController.writeBotResponse();
+      await chatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId);
+      // Chat history is loaded
+      final response = await chatBotController.writeBotResponse(chatController.debugState.valueOrNull);
       expect(chatBotController.debugState, isA<AsyncError>());
       expect(chatBotController.debugState.error, mockBotException);
 
-      final history = chatController.debugState.value!;
-      expect(history[0], isA<AsyncError>());
-      expect(history[0].error, mockBotException);
+      expect(response, isA<AsyncError>());
+      expect(response.error, mockBotException);
     });
   });
 }

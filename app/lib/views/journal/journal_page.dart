@@ -1,4 +1,6 @@
 import 'package:app/common/async_widget.dart';
+import 'package:app/controllers/chat_controller.dart';
+import 'package:app/controllers/chat_journal_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/providers/selected_journal_entry_provider.dart';
@@ -13,8 +15,9 @@ class JournalPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncJournalState = ref.watch(journalControllerProvider);
-    final journalController = ref.watch(journalControllerProvider.notifier);
-    final selectedJournalEntryController = ref.watch(selectedJournalEntryProvider.notifier);
+    final journalController = ref.read(journalControllerProvider.notifier);
+    final chatJournalController = ref.watch(chatJournalControllerProvider);
+    final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
 
     return AsyncWidget(
       asyncValue: asyncJournalState,
@@ -26,7 +29,11 @@ class JournalPage extends ConsumerWidget {
               children: [
                 const Text('Your Journal'),
                 IconButton(
-                  onPressed: () => _onAddJournalEntry(context, journalController, selectedJournalEntryController),
+                  onPressed: () => _onAddJournalEntry(
+                    context,
+                    journalController,
+                    selectedJournalEntryController,
+                  ),
                   icon: const Icon(Icons.add_circle_outlined),
                 ),
               ]

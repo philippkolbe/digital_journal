@@ -2,6 +2,7 @@ import 'package:app/common/async_widget.dart';
 import 'package:app/common/chat_widget.dart';
 import 'package:app/common/loading_widget.dart';
 import 'package:app/controllers/auth_controller.dart';
+import 'package:app/controllers/chat_journal_controller.dart';
 import 'package:app/controllers/chat_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:flutter/material.dart';
@@ -19,7 +20,7 @@ class ChatJournalView extends ConsumerWidget {
   
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final chatController = ref.read(chatControllerProvider.notifier);
+    final chatJournalController = ref.watch(chatJournalControllerProvider);
     final asyncChatState = ref.watch(chatControllerProvider);
     final authState = ref.watch(authControllerProvider);
 
@@ -35,8 +36,7 @@ class ChatJournalView extends ConsumerWidget {
         return ChatWidget(
           user: userObj,
           onMessageAdded: (String content) async {
-            await chatController.writeUserChatMessage(content);
-            // await chatBotController.writeBotResponse();
+            await chatJournalController.onChatJournalMessageSent(content);
           },
           messages: chatState,
         );
