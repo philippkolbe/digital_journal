@@ -1,5 +1,4 @@
 import 'package:app/common/async_widget.dart';
-import 'package:app/views/journal/journal_page.dart';
 import 'package:app/views/navigation_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
