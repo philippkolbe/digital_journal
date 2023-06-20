@@ -1,5 +1,6 @@
 import 'package:app/common/async_widget.dart';
 import 'package:app/views/journal/journal_page.dart';
+import 'package:app/views/navigation_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'firebase_setup.dart';
@@ -37,7 +38,7 @@ class HomeWidget extends ConsumerWidget {
         asyncValue: asyncAuthState,
         buildWidget: (authState) {
           if (authState != null) {
-            return const JournalPage();
+            return const NavigationView();
           } else {
             return const Text('Welcome to the Digital Journal!');
           }
