@@ -40,7 +40,8 @@ class ChatJournalController {
 
   onInit() async {
     if (_chatHistory != null && _chatHistory!.isEmpty) {
-      await onChatJournalEntryCreated();
+    // TODO: This does not seem to work... Someone else has to call it to work I think
+      // await onChatJournalEntryCreated();
     }
   }
 
