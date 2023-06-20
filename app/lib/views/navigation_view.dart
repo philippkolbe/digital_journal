@@ -10,7 +10,7 @@ class NavigationView extends StatefulWidget {
 }
 
 class _NavigationViewState extends State<NavigationView> {
-  int _currentIndex = 1;
+  int _currentIndex = 0;
 
   final List<Widget> _pages = [
     const TrackingPage(),
