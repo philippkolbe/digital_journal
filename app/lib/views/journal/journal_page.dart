@@ -21,36 +21,32 @@ class JournalPage extends ConsumerWidget {
     return AsyncWidget(
       asyncValue: asyncJournalState,
       buildWidget: (journalState) {
-        return Column(
-          children: [
-            AppBar(
-              title: const Text('Your Journal'),
-              actions: [
-                IconButton(
-                  onPressed: () => _onAddJournalEntry(
-                    context,
-                    journalController,
-                    selectedJournalEntryController,
-                  ),
-                  icon: const Icon(Icons.add_circle_outlined),
+        return Scaffold(
+          appBar: AppBar(
+            title: const Text('Your Journal'),
+            actions: [
+              IconButton(
+                onPressed: () => _onAddJournalEntry(
+                  context,
+                  journalController,
+                  selectedJournalEntryController,
                 ),
-              ]
-            ),
-            // TODO: Search bar or filter options can be added here
-            Expanded(
-              child: ListView.builder(
-                itemCount: journalState.length,
-                itemBuilder: (context, index) {
-                  final journalEntry = journalState[index];
-                  return JournalListEntryWidget(
-                    journalEntry: journalEntry,
-                    onSelected: (BuildContext context, JournalEntryObj selectedJournalEntry) => 
-                      _onOpenJournalEntry(context, selectedJournalEntry, selectedJournalEntryController),
-                  );
-                },
+                icon: const Icon(Icons.add_circle_outlined),
               ),
-            ),
-          ],
+            ]
+          ),
+          // TODO: Search bar or filter options can be added here
+          body: ListView.builder(
+            itemCount: journalState.length,
+            itemBuilder: (context, index) {
+              final journalEntry = journalState[index];
+              return JournalListEntryWidget(
+                journalEntry: journalEntry,
+                onSelected: (BuildContext context, JournalEntryObj selectedJournalEntry) => 
+                  _onOpenJournalEntry(context, selectedJournalEntry, selectedJournalEntryController),
+              );
+            },
+          ),
         );
       },
       onRetryAfterError: () => journalController.loadJournalEntries(),
