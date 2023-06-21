@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'dart:ui';
 
 import 'package:app/models/progress.dart';
@@ -9,28 +10,35 @@ class UserChallengeProgressCard extends StatelessWidget {
   final _insetAmount = 4.0;
 
   final Function(ProgressObj) onPressed;
+  final Function(ProgressObj, bool?) onSelected;
+  final bool isActive;
   final ProgressObj progressObj;
 
   UserChallengeProgressCard({
     required this.onPressed,
+    required this.onSelected,
     required this.progressObj,
+    this.isActive = true,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: _buildCardDecoration(),
-      child: ClipRRect(
-        borderRadius: _borderRadius,
-        child: AspectRatio(
-          aspectRatio: _aspectRatio - 0.03, // to fix overflow...
-          child: Card(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _buildImageStack(context),
-              ],
+    return GestureDetector(
+      onTap: () => onPressed(progressObj),
+      child: Container(
+        decoration: _buildCardDecoration(),
+        child: ClipRRect(
+          borderRadius: _borderRadius,
+          child: AspectRatio(
+            aspectRatio: _aspectRatio - 0.03, // to fix overflow...
+            child: Card(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildImageStack(context),
+                ],
+              ),
             ),
           ),
         ),
@@ -69,10 +77,16 @@ class UserChallengeProgressCard extends StatelessWidget {
         child: OverflowBox(
           maxHeight: double.infinity,
           alignment: Alignment.center,
-          child: Image.network(
-            progressObj.imageUrl ??
-                'https://kripalu.org/sites/default/files/GettyImages-911876528_journal_hero.jpg',
-            fit: BoxFit.fitHeight,
+          child: ColorFiltered(
+            colorFilter: ColorFilter.mode(                                       
+              isActive ? Colors.transparent : Colors.white,                                                         
+              BlendMode.saturation,
+            ),
+            child: Image.network(
+              progressObj.imageUrl ??
+                  'https://kripalu.org/sites/default/files/GettyImages-911876528_journal_hero.jpg',
+              fit: BoxFit.fitHeight,
+            ),
           ),
         ),
       ),
@@ -82,6 +96,22 @@ class UserChallengeProgressCard extends StatelessWidget {
   BackdropFilter _buildBlurFilter() {
     return BackdropFilter(
       filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
+        ),
+      ),
+    );
+  }
+
+  BackdropFilter _buildGreyFilter() {
+    return BackdropFilter(
+      filter: ImageFilter.matrix(Float64List.fromList([
+        0.2126, 0.7152, 0.0722, 0,
+        0.2126, 0.7152, 0.0722, 0,
+        0.2126, 0.7152, 0.0722, 0,
+        0,      0,      0,      1,
+      ])),
       child: Container(
         decoration: const BoxDecoration(
           color: Colors.transparent,
@@ -146,7 +176,7 @@ class UserChallengeProgressCard extends StatelessWidget {
         child: Checkbox(
           value: true,
           onChanged: (value) {
-            // Replace with your checkbox onChanged logic
+            onSelected(progressObj, value);
           },
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(4),
