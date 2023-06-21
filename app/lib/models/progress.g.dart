@@ -14,6 +14,7 @@ _$_ProgressObj _$$_ProgressObjFromJson(Map<String, dynamic> json) =>
       startsOn: const DateConverter().fromJson(json['startsOn'] as Timestamp),
       durationInDays: json['durationInDays'] as int,
       daysCompleted: json['daysCompleted'] as int? ?? 0,
+      hasBeenCompletedToday: json['hasBeenCompletedToday'] as bool? ?? false,
       streak: json['streak'] as int? ?? 0,
       imageUrl: json['imageUrl'] as String?,
     );
@@ -26,6 +27,7 @@ Map<String, dynamic> _$$_ProgressObjToJson(_$_ProgressObj instance) =>
       'startsOn': const DateConverter().toJson(instance.startsOn),
       'durationInDays': instance.durationInDays,
       'daysCompleted': instance.daysCompleted,
+      'hasBeenCompletedToday': instance.hasBeenCompletedToday,
       'streak': instance.streak,
       'imageUrl': instance.imageUrl,
     };

@@ -17,6 +17,7 @@ abstract class ProgressObj with _$ProgressObj {
     @DateConverter() required DateTime startsOn,
     required int durationInDays,
     @Default(0) int daysCompleted,
+    @Default(false) bool hasBeenCompletedToday,
     @Default(0) int streak,
     String? imageUrl,
   }) = _ProgressObj;
