@@ -12,10 +12,11 @@ abstract class ChallengeObj with _$ChallengeObj {
 
   const factory ChallengeObj({
     String? id,
-    @Default(false) bool? isPublic,
+    @Default(false) bool isPublic,
     required String title,
-    @Default("") String? description,
-    @DurationConverter() required int duration,
+    @Default("") String description,
+    required int durationInDays,
+    String? imageUrl,
   }) = _ChallengeObj;
 
   factory ChallengeObj.fromJson(Map<String,dynamic> json) => _$ChallengeObjFromJson(json);

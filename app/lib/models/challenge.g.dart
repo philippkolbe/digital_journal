@@ -12,7 +12,8 @@ _$_ChallengeObj _$$_ChallengeObjFromJson(Map<String, dynamic> json) =>
       isPublic: json['isPublic'] as bool? ?? false,
       title: json['title'] as String,
       description: json['description'] as String? ?? "",
-      duration: json['duration'] as int,
+      durationInDays: json['durationInDays'] as int,
+      imageUrl: json['imageUrl'] as String?,
     );
 
 Map<String, dynamic> _$$_ChallengeObjToJson(_$_ChallengeObj instance) =>
@@ -21,5 +22,6 @@ Map<String, dynamic> _$$_ChallengeObjToJson(_$_ChallengeObj instance) =>
       'isPublic': instance.isPublic,
       'title': instance.title,
       'description': instance.description,
-      'duration': instance.duration,
+      'durationInDays': instance.durationInDays,
+      'imageUrl': instance.imageUrl,
     };

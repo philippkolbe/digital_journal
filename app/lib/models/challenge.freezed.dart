@@ -21,11 +21,11 @@ ChallengeObj _$ChallengeObjFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$ChallengeObj {
   String? get id => throw _privateConstructorUsedError;
-  bool? get isPublic => throw _privateConstructorUsedError;
+  bool get isPublic => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
-  String? get description => throw _privateConstructorUsedError;
-  @DurationConverter()
-  int get duration => throw _privateConstructorUsedError;
+  String get description => throw _privateConstructorUsedError;
+  int get durationInDays => throw _privateConstructorUsedError;
+  String? get imageUrl => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -41,10 +41,11 @@ abstract class $ChallengeObjCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
-      bool? isPublic,
+      bool isPublic,
       String title,
-      String? description,
-      @DurationConverter() int duration});
+      String description,
+      int durationInDays,
+      String? imageUrl});
 }
 
 /// @nodoc
@@ -61,32 +62,37 @@ class _$ChallengeObjCopyWithImpl<$Res, $Val extends ChallengeObj>
   @override
   $Res call({
     Object? id = freezed,
-    Object? isPublic = freezed,
+    Object? isPublic = null,
     Object? title = null,
-    Object? description = freezed,
-    Object? duration = null,
+    Object? description = null,
+    Object? durationInDays = null,
+    Object? imageUrl = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      isPublic: freezed == isPublic
+      isPublic: null == isPublic
           ? _value.isPublic
           : isPublic // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as bool,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      description: freezed == description
+      description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      duration: null == duration
-          ? _value.duration
-          : duration // ignore: cast_nullable_to_non_nullable
+              as String,
+      durationInDays: null == durationInDays
+          ? _value.durationInDays
+          : durationInDays // ignore: cast_nullable_to_non_nullable
               as int,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -101,10 +107,11 @@ abstract class _$$_ChallengeObjCopyWith<$Res>
   @useResult
   $Res call(
       {String? id,
-      bool? isPublic,
+      bool isPublic,
       String title,
-      String? description,
-      @DurationConverter() int duration});
+      String description,
+      int durationInDays,
+      String? imageUrl});
 }
 
 /// @nodoc
@@ -119,32 +126,37 @@ class __$$_ChallengeObjCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? isPublic = freezed,
+    Object? isPublic = null,
     Object? title = null,
-    Object? description = freezed,
-    Object? duration = null,
+    Object? description = null,
+    Object? durationInDays = null,
+    Object? imageUrl = freezed,
   }) {
     return _then(_$_ChallengeObj(
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      isPublic: freezed == isPublic
+      isPublic: null == isPublic
           ? _value.isPublic
           : isPublic // ignore: cast_nullable_to_non_nullable
-              as bool?,
+              as bool,
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      description: freezed == description
+      description: null == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
-              as String?,
-      duration: null == duration
-          ? _value.duration
-          : duration // ignore: cast_nullable_to_non_nullable
+              as String,
+      durationInDays: null == durationInDays
+          ? _value.durationInDays
+          : durationInDays // ignore: cast_nullable_to_non_nullable
               as int,
+      imageUrl: freezed == imageUrl
+          ? _value.imageUrl
+          : imageUrl // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -157,7 +169,8 @@ class _$_ChallengeObj extends _ChallengeObj {
       this.isPublic = false,
       required this.title,
       this.description = "",
-      @DurationConverter() required this.duration})
+      required this.durationInDays,
+      this.imageUrl})
       : super._();
 
   factory _$_ChallengeObj.fromJson(Map<String, dynamic> json) =>
@@ -167,19 +180,20 @@ class _$_ChallengeObj extends _ChallengeObj {
   final String? id;
   @override
   @JsonKey()
-  final bool? isPublic;
+  final bool isPublic;
   @override
   final String title;
   @override
   @JsonKey()
-  final String? description;
+  final String description;
   @override
-  @DurationConverter()
-  final int duration;
+  final int durationInDays;
+  @override
+  final String? imageUrl;
 
   @override
   String toString() {
-    return 'ChallengeObj(id: $id, isPublic: $isPublic, title: $title, description: $description, duration: $duration)';
+    return 'ChallengeObj(id: $id, isPublic: $isPublic, title: $title, description: $description, durationInDays: $durationInDays, imageUrl: $imageUrl)';
   }
 
   @override
@@ -193,14 +207,16 @@ class _$_ChallengeObj extends _ChallengeObj {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.duration, duration) ||
-                other.duration == duration));
+            (identical(other.durationInDays, durationInDays) ||
+                other.durationInDays == durationInDays) &&
+            (identical(other.imageUrl, imageUrl) ||
+                other.imageUrl == imageUrl));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, isPublic, title, description, duration);
+  int get hashCode => Object.hash(
+      runtimeType, id, isPublic, title, description, durationInDays, imageUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -219,10 +235,11 @@ class _$_ChallengeObj extends _ChallengeObj {
 abstract class _ChallengeObj extends ChallengeObj {
   const factory _ChallengeObj(
       {final String? id,
-      final bool? isPublic,
+      final bool isPublic,
       required final String title,
-      final String? description,
-      @DurationConverter() required final int duration}) = _$_ChallengeObj;
+      final String description,
+      required final int durationInDays,
+      final String? imageUrl}) = _$_ChallengeObj;
   const _ChallengeObj._() : super._();
 
   factory _ChallengeObj.fromJson(Map<String, dynamic> json) =
@@ -231,14 +248,15 @@ abstract class _ChallengeObj extends ChallengeObj {
   @override
   String? get id;
   @override
-  bool? get isPublic;
+  bool get isPublic;
   @override
   String get title;
   @override
-  String? get description;
+  String get description;
   @override
-  @DurationConverter()
-  int get duration;
+  int get durationInDays;
+  @override
+  String? get imageUrl;
   @override
   @JsonKey(ignore: true)
   _$$_ChallengeObjCopyWith<_$_ChallengeObj> get copyWith =>
