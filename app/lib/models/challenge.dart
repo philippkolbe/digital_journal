@@ -23,7 +23,7 @@ abstract class ChallengeObj with _$ChallengeObj {
 
   factory ChallengeObj.fromDocument(DocumentSnapshot doc) {
     final data = doc.data();
-    assert(data != null, "Document has to exist to create a ChatMessageObj");
+    assert(data != null, "Document has to exist to create a ChallengeObj");
     (data as Map<String, dynamic>)['id'] = doc.id;
     return ChallengeObj.fromJson(data);
   }
