@@ -24,7 +24,7 @@ mixin _$ProgressObj {
   String get title => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   @DateConverter()
-  DateTime get startsOn => throw _privateConstructorUsedError;
+  DateTime get startDate => throw _privateConstructorUsedError;
   int get durationInDays => throw _privateConstructorUsedError;
   int get daysCompleted => throw _privateConstructorUsedError;
   bool get hasBeenCompletedToday => throw _privateConstructorUsedError;
@@ -47,7 +47,7 @@ abstract class $ProgressObjCopyWith<$Res> {
       {String? id,
       String title,
       String description,
-      @DateConverter() DateTime startsOn,
+      @DateConverter() DateTime startDate,
       int durationInDays,
       int daysCompleted,
       bool hasBeenCompletedToday,
@@ -71,7 +71,7 @@ class _$ProgressObjCopyWithImpl<$Res, $Val extends ProgressObj>
     Object? id = freezed,
     Object? title = null,
     Object? description = null,
-    Object? startsOn = null,
+    Object? startDate = null,
     Object? durationInDays = null,
     Object? daysCompleted = null,
     Object? hasBeenCompletedToday = null,
@@ -91,9 +91,9 @@ class _$ProgressObjCopyWithImpl<$Res, $Val extends ProgressObj>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      startsOn: null == startsOn
-          ? _value.startsOn
-          : startsOn // ignore: cast_nullable_to_non_nullable
+      startDate: null == startDate
+          ? _value.startDate
+          : startDate // ignore: cast_nullable_to_non_nullable
               as DateTime,
       durationInDays: null == durationInDays
           ? _value.durationInDays
@@ -131,7 +131,7 @@ abstract class _$$_ProgressObjCopyWith<$Res>
       {String? id,
       String title,
       String description,
-      @DateConverter() DateTime startsOn,
+      @DateConverter() DateTime startDate,
       int durationInDays,
       int daysCompleted,
       bool hasBeenCompletedToday,
@@ -153,7 +153,7 @@ class __$$_ProgressObjCopyWithImpl<$Res>
     Object? id = freezed,
     Object? title = null,
     Object? description = null,
-    Object? startsOn = null,
+    Object? startDate = null,
     Object? durationInDays = null,
     Object? daysCompleted = null,
     Object? hasBeenCompletedToday = null,
@@ -173,9 +173,9 @@ class __$$_ProgressObjCopyWithImpl<$Res>
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
               as String,
-      startsOn: null == startsOn
-          ? _value.startsOn
-          : startsOn // ignore: cast_nullable_to_non_nullable
+      startDate: null == startDate
+          ? _value.startDate
+          : startDate // ignore: cast_nullable_to_non_nullable
               as DateTime,
       durationInDays: null == durationInDays
           ? _value.durationInDays
@@ -208,7 +208,7 @@ class _$_ProgressObj extends _ProgressObj {
       {this.id,
       required this.title,
       this.description = "",
-      @DateConverter() required this.startsOn,
+      @DateConverter() required this.startDate,
       required this.durationInDays,
       this.daysCompleted = 0,
       this.hasBeenCompletedToday = false,
@@ -228,7 +228,7 @@ class _$_ProgressObj extends _ProgressObj {
   final String description;
   @override
   @DateConverter()
-  final DateTime startsOn;
+  final DateTime startDate;
   @override
   final int durationInDays;
   @override
@@ -245,7 +245,7 @@ class _$_ProgressObj extends _ProgressObj {
 
   @override
   String toString() {
-    return 'ProgressObj(id: $id, title: $title, description: $description, startsOn: $startsOn, durationInDays: $durationInDays, daysCompleted: $daysCompleted, hasBeenCompletedToday: $hasBeenCompletedToday, streak: $streak, imageUrl: $imageUrl)';
+    return 'ProgressObj(id: $id, title: $title, description: $description, startDate: $startDate, durationInDays: $durationInDays, daysCompleted: $daysCompleted, hasBeenCompletedToday: $hasBeenCompletedToday, streak: $streak, imageUrl: $imageUrl)';
   }
 
   @override
@@ -257,8 +257,8 @@ class _$_ProgressObj extends _ProgressObj {
             (identical(other.title, title) || other.title == title) &&
             (identical(other.description, description) ||
                 other.description == description) &&
-            (identical(other.startsOn, startsOn) ||
-                other.startsOn == startsOn) &&
+            (identical(other.startDate, startDate) ||
+                other.startDate == startDate) &&
             (identical(other.durationInDays, durationInDays) ||
                 other.durationInDays == durationInDays) &&
             (identical(other.daysCompleted, daysCompleted) ||
@@ -272,8 +272,17 @@ class _$_ProgressObj extends _ProgressObj {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, description, startsOn,
-      durationInDays, daysCompleted, hasBeenCompletedToday, streak, imageUrl);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      title,
+      description,
+      startDate,
+      durationInDays,
+      daysCompleted,
+      hasBeenCompletedToday,
+      streak,
+      imageUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -294,7 +303,7 @@ abstract class _ProgressObj extends ProgressObj {
       {final String? id,
       required final String title,
       final String description,
-      @DateConverter() required final DateTime startsOn,
+      @DateConverter() required final DateTime startDate,
       required final int durationInDays,
       final int daysCompleted,
       final bool hasBeenCompletedToday,
@@ -313,7 +322,7 @@ abstract class _ProgressObj extends ProgressObj {
   String get description;
   @override
   @DateConverter()
-  DateTime get startsOn;
+  DateTime get startDate;
   @override
   int get durationInDays;
   @override

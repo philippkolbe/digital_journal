@@ -14,7 +14,7 @@ abstract class ProgressObj with _$ProgressObj {
     String? id,
     required String title,
     @Default("") String description,
-    @DateConverter() required DateTime startsOn,
+    @DateConverter() required DateTime startDate,
     required int durationInDays,
     @Default(0) int daysCompleted,
     @Default(false) bool hasBeenCompletedToday,
