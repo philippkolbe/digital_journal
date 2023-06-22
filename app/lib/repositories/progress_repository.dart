@@ -12,7 +12,8 @@ final progressRepositoryProvider = Provider<BaseProgressRepository>((Ref ref) {
 abstract class BaseProgressRepository {
   Future<String> createProgress(String userId, ProgressObj progress);
   Future<List<ProgressObj>> readAllProgressions(String userId);
-  Future<void> updateProgress(String userId, ProgressObj progress);
+  Future<ProgressObj> readProgression(String userId, String progressId);
+  Future<ProgressObj> updateProgress(String userId, ProgressObj progress);
   Future<void> deleteProgress(String userId, String progressId);
 }
 
@@ -47,12 +48,28 @@ class ProgressRepository implements BaseProgressRepository {
   }
 
   @override
-  Future<void> updateProgress(String userId, ProgressObj progress) async {
+  Future<ProgressObj> readProgression(String userId, String progressionId) async {
+    try {
+      final doc = await _getProgressCollection(userId)
+        .doc(progressionId)
+        .get();
+      return ProgressObj.fromDocument(doc);
+    } catch (e) {
+      throw ProgressException(
+          'An error occurred while reading all progressions',
+          userId: userId);
+    }
+  }
+
+  @override
+  Future<ProgressObj> updateProgress(String userId, ProgressObj progress) async {
     try {
       assert(progress.id != null, 'Define a progress id for updating it.');
       await _getProgressCollection(userId)
           .doc(progress.id)
           .update(progress.toDocument());
+    
+      return readProgression(userId, progress.id!);
     } catch (e) {
       throw ProgressException('An error occurred while updating the progress',
           userId: userId, progressId: progress.id);
