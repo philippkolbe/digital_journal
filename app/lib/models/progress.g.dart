@@ -16,6 +16,7 @@ _$_ProgressObj _$$_ProgressObjFromJson(Map<String, dynamic> json) =>
       daysCompleted: json['daysCompleted'] as int? ?? 0,
       hasBeenCompletedToday: json['hasBeenCompletedToday'] as bool? ?? false,
       streak: json['streak'] as int? ?? 0,
+      hasBeenAborted: json['hasBeenAborted'] as bool? ?? false,
       imageUrl: json['imageUrl'] as String?,
     );
 
@@ -29,5 +30,6 @@ Map<String, dynamic> _$$_ProgressObjToJson(_$_ProgressObj instance) =>
       'daysCompleted': instance.daysCompleted,
       'hasBeenCompletedToday': instance.hasBeenCompletedToday,
       'streak': instance.streak,
+      'hasBeenAborted': instance.hasBeenAborted,
       'imageUrl': instance.imageUrl,
     };

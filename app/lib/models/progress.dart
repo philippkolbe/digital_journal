@@ -19,6 +19,7 @@ abstract class ProgressObj with _$ProgressObj {
     @Default(0) int daysCompleted,
     @Default(false) bool hasBeenCompletedToday,
     @Default(0) int streak,
+    @Default(false) bool hasBeenAborted,
     String? imageUrl,
   }) = _ProgressObj;
 
