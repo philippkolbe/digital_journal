@@ -86,8 +86,7 @@ class ProgressRepository implements BaseProgressRepository {
     }
   }
 
-  Future<String> _addOrSetDocument(CollectionReference collection,
-      Map<String, dynamic> doc, String? id) async {
+  Future<String> _addOrSetDocument(CollectionReference collection, Map<String, dynamic> doc, String? id) async {
     if (id != null) {
       await collection.doc(id).set(doc);
       return id;
