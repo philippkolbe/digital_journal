@@ -45,8 +45,10 @@ class ChallengeListState extends State<ChallengeList> {
 
   void _handleScroll() {
     setState(() {
-      _showScrollIndicator = _scrollController.position.maxScrollExtent >
-          _scrollController.position.pixels;
+      if (_scrollController.hasClients) {
+        _showScrollIndicator = _scrollController.position.maxScrollExtent >
+            _scrollController.position.pixels;
+      }
     });
   }
 
