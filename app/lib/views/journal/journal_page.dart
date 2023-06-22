@@ -18,25 +18,25 @@ class JournalPage extends ConsumerWidget {
     final chatJournalController = ref.watch(chatJournalControllerProvider);
     final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
 
-    return AsyncWidget(
-      asyncValue: asyncJournalState,
-      buildWidget: (journalState) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Your Journal'),
-            actions: [
-              IconButton(
-                onPressed: () => _onAddJournalEntry(
-                  context,
-                  journalController,
-                  selectedJournalEntryController,
-                ),
-                icon: const Icon(Icons.add_circle_outlined),
-              ),
-            ]
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Your Journal'),
+        actions: [
+          if (asyncJournalState.value != null) IconButton(
+            onPressed: () => _onAddJournalEntry(
+              context,
+              journalController,
+              selectedJournalEntryController,
+            ),
+            icon: const Icon(Icons.add_circle_outlined),
           ),
-          // TODO: Search bar or filter options can be added here
-          body: ListView.builder(
+        ]
+      ),
+      // TODO: Search bar or filter options can be added here
+      body: AsyncWidget(
+        asyncValue: asyncJournalState,
+        buildWidget: (journalState) {
+          return ListView.builder(
             itemCount: journalState.length,
             itemBuilder: (context, index) {
               final journalEntry = journalState[index];
@@ -46,10 +46,10 @@ class JournalPage extends ConsumerWidget {
                   _onOpenJournalEntry(context, selectedJournalEntry, selectedJournalEntryController),
               );
             },
-          ),
-        );
-      },
-      onRetryAfterError: () => journalController.loadJournalEntries(),
+          );
+        },
+        onRetryAfterError: () => journalController.loadJournalEntries(),
+      ),
     );
   }
 
