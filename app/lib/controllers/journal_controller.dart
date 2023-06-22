@@ -120,14 +120,14 @@ class JournalController extends StateNotifier<AsyncValue<List<JournalEntryObj>>>
     }
   }
 
-  Future<void> updateJournalEntry(JournalEntryObj updatedJournalEntryObj) async {
+  Future<void> updateJournalEntry(JournalEntryObj journalEntryObjUpdate) async {
     try {
       assert(state is AsyncData, "Journal entries must be loaded to update journal entries.");
 
-      await _journalRepository.updateJournalEntry(_userId!, updatedJournalEntryObj);
+      final newJournalEntryObj = await _journalRepository.updateJournalEntry(_userId!, journalEntryObjUpdate);
 
-      state = AsyncData(state.value!.map((entry) => entry.id == updatedJournalEntryObj.id
-        ? updatedJournalEntryObj
+      state = AsyncData(state.value!.map((entry) => entry.id == journalEntryObjUpdate.id
+        ? newJournalEntryObj
         : entry).toList());
     } catch (error, stackTrace) {
       // TODO: Handle error by showing it in popup instead of this state
