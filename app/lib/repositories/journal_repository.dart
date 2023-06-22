@@ -14,7 +14,7 @@ abstract class BaseJournalRepository {
   Future<String> createChatJournalEntry(String userId, ChatJournalEntryObj entry);
   Future<List<JournalEntryObj>> readAllJournalEntries(String userId);
   Future<JournalEntryObj> readJournalEntry(String userId, String entryId);
-  Future<void> updateJournalEntry(String userId, JournalEntryObj entry);
+  Future<JournalEntryObj> updateJournalEntry(String userId, JournalEntryObj entry);
   Future<void> deleteJournalEntry(String userId, String entryId);
 }
 
@@ -75,12 +75,14 @@ class JournalRepository implements BaseJournalRepository {
   }
 
   @override
-  Future<void> updateJournalEntry(String userId, JournalEntryObj entry) async {
+  Future<JournalEntryObj> updateJournalEntry(String userId, JournalEntryObj entry) async {
     try {
       assert(entry.id != null, 'Define an entry id for updating it.');
       await _getJournalEntriesCollection(userId)
         .doc(entry.id)
         .update(entry.toDocument());
+
+      return readJournalEntry(userId, entry.id!);
     } catch (e) {
       throw JournalException('An error occured while updating the journal entry', userId: userId, entryId: entry.id);
     }
