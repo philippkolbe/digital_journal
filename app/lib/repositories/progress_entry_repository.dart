@@ -12,6 +12,7 @@ final progressEntryRepositoryProvider = Provider<BaseProgressEntryRepository>((R
 abstract class BaseProgressEntryRepository {
   Future<String> createProgressEntry(String userId, String progressId, ProgressEntryObj progressEntry);
   Future<List<ProgressEntryObj>> readAllProgressEntries(String userId, String progressId);
+  Future<List<ProgressEntryObj>> readProgressEntriesOfDate(String userId, String progressId, DateTime date);
   Future<ProgressEntryObj> readProgressEntry(String userId, String progressId, String progressEntryId);
   Future<ProgressEntryObj> updateProgressEntry(String userId, String progressId, ProgressEntryObj progressEntry);
   Future<void> deleteProgressEntry(String userId, String progressId, String progressEntryId);
@@ -30,7 +31,7 @@ class ProgressEntryRepository implements BaseProgressEntryRepository {
 
       return _addOrSetDocument(collection, doc, progressEntry.id);
     } catch (e) {
-      throw ProgressEntryException('An error occurred while creating a progress',
+      throw ProgressEntryException('An error occurred while creating a progress entry',
           userId: userId, progressId: progressId, progressEntryId: progressEntry.id);
     }
   }
@@ -39,12 +40,32 @@ class ProgressEntryRepository implements BaseProgressEntryRepository {
   Future<List<ProgressEntryObj>> readAllProgressEntries(String userId, String progressId) async {
     try {
       final snapshot =
-          await _getProgressEntryCollection(userId, progressId).get();
+        await _getProgressEntryCollection(userId, progressId).get();
       return snapshot.docs
-          .map((doc) => ProgressEntryObj.fromDocument(doc))
-          .toList();
+        .map((doc) => ProgressEntryObj.fromDocument(doc))
+        .toList();
     } catch (e) {
-      throw ProgressEntryException('An error occurred while reading all progressions',
+      throw ProgressEntryException('An error occurred while reading all progress entries',
+          userId: userId, progressId: progressId);
+    }
+  }
+
+  @override
+  Future<List<ProgressEntryObj>> readProgressEntriesOfDate(String userId, String progressId, DateTime date) async {
+    try {
+      final startOfDay = DateTime(date.year, date.month, date.day);
+      final startOfNextDay = startOfDay.add(const Duration(days: 1));
+
+      final snapshot = await _getProgressEntryCollection(userId, progressId)
+        .where('date', isGreaterThanOrEqualTo: startOfDay)
+        .where('date', isLessThan: startOfNextDay)
+        .get();
+
+      return snapshot.docs
+        .map((doc) => ProgressEntryObj.fromDocument(doc))
+        .toList();
+    } catch (e) {
+      throw ProgressEntryException('An error occurred while reading progress entries for date $date',
           userId: userId, progressId: progressId);
     }
   }
@@ -53,11 +74,11 @@ class ProgressEntryRepository implements BaseProgressEntryRepository {
   Future<ProgressEntryObj> readProgressEntry(String userId, String progressId, String progressEntryId) async {
     try {
       final doc = await _getProgressEntryCollection(userId, progressId)
-          .doc(progressEntryId)
-          .get();
+        .doc(progressEntryId)
+        .get();
       return ProgressEntryObj.fromDocument(doc);
     } catch (e) {
-      throw ProgressEntryException('An error occurred while reading all progressions',
+      throw ProgressEntryException('An error occurred while reading a progress entry',
           userId: userId, progressId: progressId, progressEntryId: progressEntryId);
     }
   }
@@ -67,13 +88,13 @@ class ProgressEntryRepository implements BaseProgressEntryRepository {
     try {
       assert(progressEntry.id != null, 'Define a progress entry id for updating it.');
       await _getProgressEntryCollection(userId, progressId)
-          .doc(progressEntry.id)
-          .update(progressEntry.toDocument());
+        .doc(progressEntry.id)
+        .update(progressEntry.toDocument());
 
       return readProgressEntry(userId, progressId, progressEntry.id!);
     } catch (e) {
-      throw ProgressEntryException('An error occurred while updating the progress',
-          userId: userId, progressId: progressId, progressEntryId: progressEntry.id);
+      throw ProgressEntryException('An error occurred while updating the progress entry',
+        userId: userId, progressId: progressId, progressEntryId: progressEntry.id);
     }
   }
 
@@ -81,11 +102,11 @@ class ProgressEntryRepository implements BaseProgressEntryRepository {
   Future<void> deleteProgressEntry(String userId, String progressId, String progressEntryId) async {
     try {
       await _getProgressEntryCollection(userId, progressId)
-          .doc(progressEntryId)
-          .delete();
+        .doc(progressEntryId)
+        .delete();
     } catch (e) {
-      throw ProgressEntryException('An error occurred while deleting the progress',
-          userId: userId, progressId: progressId);
+      throw ProgressEntryException('An error occurred while deleting the progress entry',
+        userId: userId, progressId: progressId);
     }
   }
 
@@ -101,11 +122,11 @@ class ProgressEntryRepository implements BaseProgressEntryRepository {
 
   CollectionReference _getProgressEntryCollection(String userId, String progressId) {
     return _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('progressions')
-        .doc(progressId)
-        .collection('entries');
+      .collection('users')
+      .doc(userId)
+      .collection('progressions')
+      .doc(progressId)
+      .collection('entries');
   }
 }
 
@@ -114,8 +135,7 @@ class ProgressEntryException implements Exception {
   String userId;
   String progressId;
   String? progressEntryId;
-  ProgressEntryException(
-      String message, {required this.userId, required this.progressId, this.progressEntryId})
-      : message =
-            '$message. UserId: $userId. ProgressId: $progressId. ${progressEntryId != null ? 'ProgressEntryId: $progressId' : ''}';
+  ProgressEntryException(String message, {required this.userId, required this.progressId, this.progressEntryId})
+    : message =
+      '$message. UserId: $userId. ProgressId: $progressId. ${progressEntryId != null ? 'ProgressEntryId: $progressId' : ''}';
 }
