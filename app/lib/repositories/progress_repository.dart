@@ -56,7 +56,7 @@ class ProgressRepository implements BaseProgressRepository {
       return ProgressObj.fromDocument(doc);
     } catch (e) {
       throw ProgressException(
-          'An error occurred while reading all progressions',
+          'An error occurred while reading the progression.',
           userId: userId);
     }
   }
