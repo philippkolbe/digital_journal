@@ -89,6 +89,33 @@ class ProgressController extends StateNotifier<AsyncValue<List<ProgressObj>>> {
     }
   }
 
+  Future<void> setProgressCompletedToday(ProgressObj progress, bool isCompleted) async {
+    try {
+      if (progress.hasBeenCompletedToday == isCompleted) {
+        return;
+      }
+
+      assert(state is AsyncData,
+          "Progressions must be loaded to abort a challenge.");
+
+      final daysCompletedUpdate = isCompleted 
+        ? 1
+        : -1;
+
+      final updatedProgress = progress.copyWith(
+        hasBeenCompletedToday: isCompleted,
+        daysCompleted: progress.daysCompleted + daysCompletedUpdate
+      );
+      await _progressRepository.updateProgress(_userId!, updatedProgress);
+
+      state = AsyncData(state.value!
+          .map((entry) => entry.id == progress.id ? updatedProgress : entry)
+          .toList());
+    } catch (error, stackTrace) {
+      state = AsyncError(error, stackTrace);
+    }
+  }
+
   Future<void> abortChallenge(ProgressObj progress) async {
     try {
       assert(state is AsyncData,
