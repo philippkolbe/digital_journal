@@ -57,8 +57,8 @@ class ProgressEntryRepository implements BaseProgressEntryRepository {
       final startOfNextDay = startOfDay.add(const Duration(days: 1));
 
       final snapshot = await _getProgressEntryCollection(userId, progressId)
-        .where('date', isGreaterThanOrEqualTo: startOfDay)
-        .where('date', isLessThan: startOfNextDay)
+        .where('trackingDate', isGreaterThanOrEqualTo: startOfDay)
+        .where('trackingDate', isLessThan: startOfNextDay)
         .get();
 
       return snapshot.docs
