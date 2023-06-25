@@ -1,8 +1,10 @@
 import 'dart:typed_data';
 import 'dart:ui';
 
+import 'package:app/common/async_widget.dart';
 import 'package:app/models/progress.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class UserChallengeProgressCard extends StatelessWidget {
   final _aspectRatio = 4 / 3;
@@ -12,6 +14,7 @@ class UserChallengeProgressCard extends StatelessWidget {
   final Function(ProgressObj) onPressed;
   final Function(ProgressObj, bool?) onSelected;
   final bool isActive;
+  final AsyncValue<bool> asyncIsSelected;
   final ProgressObj progressObj;
 
   UserChallengeProgressCard({
@@ -19,6 +22,7 @@ class UserChallengeProgressCard extends StatelessWidget {
     required this.onSelected,
     required this.progressObj,
     this.isActive = true,
+    this.asyncIsSelected = const AsyncData(false),
     super.key,
   });
 
@@ -173,14 +177,18 @@ class UserChallengeProgressCard extends StatelessWidget {
       right: 0,
       child: Transform.scale(
         scale: 1.5,
-        child: Checkbox(
-          value: true,
-          onChanged: (value) {
-            onSelected(progressObj, value);
-          },
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(4),
+        child: AsyncWidget(
+          asyncValue: asyncIsSelected,
+          buildWidget: (isSelected) => Checkbox(
+            value: isSelected,
+            onChanged: (value) {
+              onSelected(progressObj, value);
+            },
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(4),
+            ),
           ),
+          buildErrorWidget: (err, st) => const Icon(Icons.error, color: Colors.red,),
         ),
       ),
     );

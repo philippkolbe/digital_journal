@@ -2,24 +2,30 @@
 import 'package:app/common/challenge_progress_widget.dart';
 import 'package:app/models/progress.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChallengeList extends StatefulWidget {
   final List<ProgressObj> progressObjs;
   final Widget Function()? emptyWidgetBuilder;
   final String title;
   final bool isActive;
+  final Map<ProgressObj, AsyncValue<bool>> areSelected;
   final Function(ProgressObj) onPressed;
   final Function(ProgressObj, bool?) onSelected;
 
-  const ChallengeList({
+  ChallengeList({
     required this.progressObjs,
     required this.title,
     required this.isActive,
+    required this.areSelected,
     required this.onPressed,
     required this.onSelected,
     this.emptyWidgetBuilder,
     super.key,
-  });
+  }) : assert(
+    progressObjs.every((progressObj) => areSelected.containsKey(progressObj)),
+    'did not specifiy for every progressObj if it is selected'
+  );
 
   @override
   ChallengeListState createState() => ChallengeListState();
@@ -32,7 +38,6 @@ class ChallengeListState extends State<ChallengeList> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => _handleScroll());
     _scrollController.addListener(_handleScroll);
   }
 
@@ -54,6 +59,8 @@ class ChallengeListState extends State<ChallengeList> {
 
   @override
   Widget build(BuildContext context) {
+    WidgetsBinding.instance.addPostFrameCallback((_) => _handleScroll());
+    
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -75,6 +82,7 @@ class ChallengeListState extends State<ChallengeList> {
                       child: UserChallengeProgressCard(
                         progressObj: progressObj,
                         isActive: widget.isActive,
+                        asyncIsSelected: widget.areSelected[progressObj]!,
                         onPressed: widget.onPressed,
                         onSelected: widget.onSelected,
                       ),
