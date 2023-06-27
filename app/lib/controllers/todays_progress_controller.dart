@@ -3,7 +3,7 @@ import 'package:app/controllers/progress_controller.dart';
 import 'package:app/models/progress.dart';
 import 'package:app/models/progress_entry.dart';
 import 'package:app/providers/active_progress_provider.dart';
-import 'package:app/providers/date_provider.dart';
+import 'package:app/providers/current_day_provider.dart';
 import 'package:app/repositories/progress_entry_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
