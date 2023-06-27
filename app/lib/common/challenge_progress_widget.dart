@@ -137,6 +137,8 @@ class UserChallengeProgressCard extends StatelessWidget {
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
+            overflow: TextOverflow.ellipsis,
+            maxLines: 2,
           ),
           // const SizedBox(height: 2),
           // Text('Card Subtitle'),
