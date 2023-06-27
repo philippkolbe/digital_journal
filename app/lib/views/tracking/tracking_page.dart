@@ -7,6 +7,7 @@ import 'package:app/models/progress_entry.dart';
 import 'package:app/providers/active_progress_provider.dart';
 import 'package:app/providers/current_day_provider.dart';
 import 'package:app/views/tracking/challenge_list.dart';
+import 'package:app/views/tracking/create_challenge_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -28,7 +29,7 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
       appBar: AppBar(
         title: const Text('Your Journey'),
         actions: [
-          if (asyncProgressObjs.valueOrNull != null) _buildCreateButton(),
+          if (asyncProgressObjs.valueOrNull != null) _buildCreateButton(context),
         ],
       ),
       body: AsyncWidget2(
@@ -115,17 +116,26 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
     );
   }
 
-  Widget _buildCreateButton() {
+  Widget _buildCreateButton(BuildContext context) {
     return IconButton(
-      onPressed: _onAddChallenge,
+      onPressed: () => _showCreateChallengeDialog(context),
       icon: const Icon(Icons.add_circle_outlined),
     );
   }
 
-  Future<void> _onAddChallenge() async {
+  Future<void> _showCreateChallengeDialog(BuildContext context) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return CreateChallengeDialog(
+          onChallengeCreate: _onAddChallenge,
+        );
+      },
+    );
+  }
+
+  Future<void> _onAddChallenge(String challengeName, int durationInDays) async {
     final progressController = ref.read(progressControllerProvider.notifier);
-    final challengeName = 'Journaling';
-    final durationInDays = 7;
 
     await progressController.createProgress(ProgressObj(
       title: challengeName,
