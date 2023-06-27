@@ -27,18 +27,20 @@ class ErrorWidget extends StatelessWidget {
  
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        const Text('Something went wrong. Please try again.', textScaleFactor: 1.2),
-        Text(error.toString()),
-        Text(stackTrace.toString()),
-        if (onRetry != null) ElevatedButton(
-          onPressed: onRetry!,
-          child: Text(retryText),
-        )
-      ]
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text('Something went wrong. Please try again.', textScaleFactor: 1.2),
+          if (onRetry != null) ElevatedButton(
+            onPressed: onRetry!,
+            child: Text(retryText),
+          ),
+          Text(error.toString()),
+          Text(stackTrace.toString()),
+        ],
+      )
     );
   }
 }
