@@ -1,13 +1,14 @@
 
 import 'package:app/models/chat_message.dart';
+import 'package:app/providers/encrypter_provider.dart';
 import 'package:app/providers/firebase_providers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final chatHistoryRepositoryProvider = Provider<BaseChatHistoryRepository>((Ref ref) {
   final firestore = ref.read(firebaseFirestoreProvider);
-
-  return ChatHistoryRepository(firestore);
+  final encrypter = ref.read(encrypterProvider);
+  return ChatHistoryRepository(firestore, encrypter);
 });
 
 abstract class BaseChatHistoryRepository {
@@ -17,14 +18,19 @@ abstract class BaseChatHistoryRepository {
 
 class ChatHistoryRepository implements BaseChatHistoryRepository {
   final FirebaseFirestore _firestore;
+  final Encrypter _encrypter;
 
-  ChatHistoryRepository(this._firestore);
+  ChatHistoryRepository(this._firestore, this._encrypter);
 
   @override
   Future<ChatMessageObj> createChatMessage(String userId, String journalEntryId, ChatMessageObj chatMessageObj) async {
     try {
       final collection = _getChatHistoryCollection(userId, journalEntryId);
-      final doc = chatMessageObj.toDocument();
+      final doc = chatMessageObj
+        .copyWith(
+          content: _encrypter.encrypt(chatMessageObj.content),
+        )
+        .toDocument();
 
       if (chatMessageObj.id != null) {
         collection.doc(chatMessageObj.id).set(doc);
@@ -45,7 +51,12 @@ class ChatHistoryRepository implements BaseChatHistoryRepository {
         .orderBy('date', descending: true)
         .get();
 
-      return snapshot.docs.map((doc) => ChatMessageObj.fromDocument(doc)).toList();
+      return snapshot.docs.map((doc) {
+        final encryptedObj = ChatMessageObj.fromDocument(doc);
+        return encryptedObj.copyWith(
+          content: _encrypter.decrypt(encryptedObj.content),
+        );
+      }).toList();
     } catch (e) {
       throw ChatHistoryException("Error while reading chat history for user $userId and journal entry $journalEntryId");
     }
