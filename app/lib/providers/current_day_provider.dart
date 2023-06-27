@@ -2,7 +2,11 @@ import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final currentDayProvider = StreamProvider<DateTime>((ref) {
+final currentDayStream = _createCurrentDayStream();
+
+final currentDayProvider = StreamProvider<DateTime>((ref) => _createCurrentDayStream());
+
+Stream<DateTime> _createCurrentDayStream() {
   final controller = StreamController<DateTime>();
   
   // Emit current day
@@ -21,9 +25,8 @@ final currentDayProvider = StreamProvider<DateTime>((ref) {
     Timer.periodic(const Duration(days: 1), (_) => _addNewDay(controller));
   });
 
-  ref.onDispose(() => controller.close());
   return controller.stream;
-});
+}
 
 void _addNewDay(StreamController controller) {
   final now = DateTime.now();
