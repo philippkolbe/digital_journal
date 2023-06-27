@@ -1,4 +1,5 @@
 import 'package:app/common/async_widget.dart';
+import 'package:app/observers/initialize_observers.dart';
 import 'package:app/views/navigation_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,8 +14,20 @@ void main() async {
   runApp(const ProviderScope(child: App()));
 }
 
-class App extends StatelessWidget {
+class App extends ConsumerStatefulWidget {
   const App({super.key});
+
+  @override
+  ConsumerState<App> createState() => _AppState();
+}
+
+class _AppState extends ConsumerState<App> {
+  @override
+  void initState() {
+    initializeObservers(ref);
+    
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
