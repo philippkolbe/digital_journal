@@ -3,11 +3,13 @@
 __pycache__/
 
 # Virtual Environment
+.venv/
 venv/
 env/
 
 # .env file (contains sensitive information)
 .env
+.env.yaml
 
 # Dependency directories
 dist/
