@@ -11,6 +11,7 @@ final testSimpleJournalEntry = JournalEntryObj.simple(
   id: testSimpleJournalEntryId,
   name: 'Simple Journal',
   date: DateTime(2023, 1, 1, 10),
+  content: 'Lets do some simple stuff ok?'
 ) as SimpleJournalEntryObj;
 
 const testChatJournalEntryId = 'id_test_chat_journal_entry';
