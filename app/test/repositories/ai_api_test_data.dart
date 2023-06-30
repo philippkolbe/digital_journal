@@ -1,6 +1,6 @@
 const mockChatResponse = "Hi I'm a test.";
 const mockChatResponseBody = {
-  'successful': true,
+  'success': true,
   'finish_reason': 'stop',
   'response': mockChatResponse,
 };

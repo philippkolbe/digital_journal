@@ -43,8 +43,10 @@ class AIRepository implements BaseAIRepository {
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
-        dynamic successful = data['success'];
+        assert(data['success'] is bool, 'Success field should be a boolean but is ${data['success']?.runtimeType}');
+        bool successful = data['success'] as bool;
         if (successful) {
+          assert(data['response'] is String, 'Response field should be a string but is ${data['response']?.runtimeType}');
           final botResponse = data['response'] as String;
 
           final botMessage = ChatMessageObj(

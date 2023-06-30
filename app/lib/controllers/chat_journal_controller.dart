@@ -1,30 +1,23 @@
 import 'package:app/controllers/chat_bot_controller.dart';
 import 'package:app/controllers/chat_controller.dart';
 import 'package:app/models/chat_message.dart';
-import 'package:app/models/journal_entry.dart';
-import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final chatJournalControllerProvider = Provider<ChatJournalController>((ref) {
-  final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
   final chatHistory = ref.watch(chatControllerProvider);
   final chatController = ref.read(chatControllerProvider.notifier);
   final chatBotController = ref.read(chatBotControllerProvider.notifier);
 
   final controller = ChatJournalController(
-    selectedJournalEntry.valueOrNull,
     chatHistory.valueOrNull,
     chatController,
     chatBotController,
   );
 
-  // controller.onInit();
-
   return controller;
 });
 
 class ChatJournalController {
-  final JournalEntryObj? _selectedJournalEntry;
   final List<AsyncValue<ChatMessageObj>>? _chatHistory;
   
   final ChatController _chatController;
@@ -32,26 +25,14 @@ class ChatJournalController {
 
 
   ChatJournalController(
-    this._selectedJournalEntry,
     this._chatHistory,
     this._chatController,
     this._chatBotController,
   );
 
-  onInit() async {
-    if (_chatHistory != null && _chatHistory!.isEmpty) {
-    // TODO: This does not seem to work... Someone else has to call it to work I think
-      // await onChatJournalEntryCreated();
-    }
-  }
-
   Future<void> onChatJournalEntryCreated() async {
-    if (_chatHistory != null && _chatHistory!.isEmpty) {
-      final prompt = AsyncData(_chatController.createBotChatMessage('Can you ask me journaling questions. Please ask them one at a time. You may ask follow-up questions.'));
-      await _writeBotChatMessage([
-        prompt,
-      ]);
-    }
+    // This will generate a response based on the system message
+    await _writeBotChatMessage([]);
   }
 
   Future<void> onChatJournalMessageSent(String content) async {
