@@ -42,7 +42,7 @@ class JournalListEntryWidget extends ConsumerWidget {
           journalEntry is SimpleJournalEntryObj ? Icons.article : Icons.chat,
         ),
         title: Text(journalEntry.name),
-        subtitle: Text(journalEntry.date.toString()),
+        subtitle: Text('${journalEntry.date.day}.${journalEntry.date.month}.${journalEntry.date.year} ${journalEntry.date.hour}:${journalEntry.date.minute}'),
         selected: selectedJournalEntry.valueOrNull?.id == journalEntry.id,
       ),
     );
