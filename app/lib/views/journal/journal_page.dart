@@ -3,6 +3,7 @@ import 'package:app/controllers/chat_journal_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/providers/selected_journal_entry_provider.dart';
+import 'package:app/views/journal/chat_journal_wizard.dart';
 import 'package:app/views/journal/journal_list_entry_widget.dart';
 import 'package:app/views/journal/journal_entry_view.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +27,7 @@ class JournalPage extends ConsumerWidget {
             onPressed: () => _onAddJournalEntry(
               context,
               journalController,
+              chatJournalController,
               selectedJournalEntryController,
             ),
             icon: const Icon(Icons.add_circle_outlined),
@@ -36,17 +38,21 @@ class JournalPage extends ConsumerWidget {
       body: AsyncWidget(
         asyncValue: asyncJournalState,
         buildWidget: (journalState) {
-          return ListView.builder(
-            itemCount: journalState.length,
-            itemBuilder: (context, index) {
-              final journalEntry = journalState[index];
-              return JournalListEntryWidget(
-                journalEntry: journalEntry,
-                onSelected: (BuildContext context, JournalEntryObj selectedJournalEntry) => 
-                  _onOpenJournalEntry(context, selectedJournalEntry, selectedJournalEntryController),
-              );
-            },
-          );
+          if (journalState.isNotEmpty) {
+            return ListView.builder(
+              itemCount: journalState.length,
+              itemBuilder: (context, index) {
+                final journalEntry = journalState[index];
+                return JournalListEntryWidget(
+                  journalEntry: journalEntry,
+                  onSelected: (BuildContext context, JournalEntryObj selectedJournalEntry) => 
+                    _onOpenJournalEntry(context, selectedJournalEntry, selectedJournalEntryController),
+                );
+              },
+            );
+          } else {
+            return const Text("Start journaling!");
+          }
         },
         onRetryAfterError: () => journalController.loadJournalEntries(),
       ),
@@ -56,12 +62,12 @@ class JournalPage extends ConsumerWidget {
   void _onAddJournalEntry(
     BuildContext context,
     JournalController journalController,
+    ChatJournalController chatJournalController,
     StateController<AsyncValue<JournalEntryObj?>> selectedJournalEntryController,
   ) async {
     selectedJournalEntryController.state = const AsyncLoading();
 
-    _pushJournalEntryRoute(context);
-
+    _pushChatJournalWizardRoute(context);
 
     try {
       final newJournalEntryObj = await journalController.addJournalEntry(JournalEntryObj.chat(
@@ -89,6 +95,15 @@ class JournalPage extends ConsumerWidget {
       context,
       MaterialPageRoute(
         builder: (context) => const JournalEntryView(),
+      ),
+    );
+  }
+
+  void _pushChatJournalWizardRoute(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const ChatJournalWizard(),
       ),
     );
   }
