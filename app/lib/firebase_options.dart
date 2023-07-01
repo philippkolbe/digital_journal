@@ -25,7 +25,10 @@ class DefaultFirebaseOptions {
       case TargetPlatform.iOS:
         return ios;
       case TargetPlatform.macOS:
-        return macos;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for macos - '
+          'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
@@ -44,40 +47,30 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyDuPglaIhRFIxThtha4p7Iy0g9WbKwCOiE',
-    appId: '1:635829394211:web:f00f9d6576a275b7d18a96',
-    messagingSenderId: '635829394211',
-    projectId: 'digitaljournal-14768',
-    authDomain: 'digitaljournal-14768.firebaseapp.com',
-    storageBucket: 'digitaljournal-14768.appspot.com',
-    measurementId: 'G-WBHBNJHLZS',
+    apiKey: 'AIzaSyDrgh7hAm6i63DYkJrz7fM12kl8ykrJk1g',
+    appId: '1:835174935408:web:a87e863592078c4d77fdb5',
+    messagingSenderId: '835174935408',
+    projectId: 'digital-journal-389119',
+    authDomain: 'digital-journal-389119.firebaseapp.com',
+    storageBucket: 'digital-journal-389119.appspot.com',
+    measurementId: 'G-48MX3MYRFE',
   );
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyD7Y5Yztc9tr-chHfJ4K2syMJYQRLZcG5M',
-    appId: '1:635829394211:android:02ee12993aa3d317d18a96',
-    messagingSenderId: '635829394211',
-    projectId: 'digitaljournal-14768',
-    storageBucket: 'digitaljournal-14768.appspot.com',
+    apiKey: 'AIzaSyDWQ7XjUpNihcTaz-yobGHPCzZSAeaOCmc',
+    appId: '1:835174935408:android:4ea1592284fbe4f877fdb5',
+    messagingSenderId: '835174935408',
+    projectId: 'digital-journal-389119',
+    storageBucket: 'digital-journal-389119.appspot.com',
   );
 
   static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAy35r21fjsOB39m01SZH7hQhjpswwsw-I',
-    appId: '1:635829394211:ios:ee265d35409d01e1d18a96',
-    messagingSenderId: '635829394211',
-    projectId: 'digitaljournal-14768',
-    storageBucket: 'digitaljournal-14768.appspot.com',
-    iosClientId: '635829394211-f4rg6bl2n2tj7di5bhfcs03djahd3jur.apps.googleusercontent.com',
+    apiKey: 'AIzaSyBT0NLjEgNLWSmaj1-Wpf1DvDd43WDXmAI',
+    appId: '1:835174935408:ios:9b73aa884b54231077fdb5',
+    messagingSenderId: '835174935408',
+    projectId: 'digital-journal-389119',
+    storageBucket: 'digital-journal-389119.appspot.com',
+    iosClientId: '835174935408-aiu0kautpkrrv37v73ko73rktd3jhsg5.apps.googleusercontent.com',
     iosBundleId: 'com.example.app',
-  );
-
-  static const FirebaseOptions macos = FirebaseOptions(
-    apiKey: 'AIzaSyAy35r21fjsOB39m01SZH7hQhjpswwsw-I',
-    appId: '1:635829394211:ios:e952d915b61e0cefd18a96',
-    messagingSenderId: '635829394211',
-    projectId: 'digitaljournal-14768',
-    storageBucket: 'digitaljournal-14768.appspot.com',
-    iosClientId: '635829394211-kakc835j0qnv6gdkci4enmoi4cul12l1.apps.googleusercontent.com',
-    iosBundleId: 'com.example.app.RunnerTests',
   );
 }
