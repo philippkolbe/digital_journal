@@ -5,7 +5,7 @@ import main
 app = flask.Flask(__name__)
 
 
-@app.get("/")
+@app.post("/chat")
 def index():
     return main.chat(flask.request)
 
