@@ -14,6 +14,7 @@ final chatHistoryRepositoryProvider = Provider<BaseChatHistoryRepository>((Ref r
 abstract class BaseChatHistoryRepository {
   Future<ChatMessageObj> createChatMessage(String userId, String jornalEntryId, ChatMessageObj chatMessageObj);
   Future<List<ChatMessageObj>> readChatHistory(String userId, String journalEntryId);
+  Future<void> deleteChatHistory(String userId, String journalEntryId);
 }
 
 class ChatHistoryRepository implements BaseChatHistoryRepository {
@@ -59,6 +60,23 @@ class ChatHistoryRepository implements BaseChatHistoryRepository {
       }).toList();
     } catch (e) {
       throw ChatHistoryException("Error while reading chat history for user $userId and journal entry $journalEntryId");
+    }
+  }
+
+  @override
+  Future<void> deleteChatHistory(String userId, String journalEntryId) async {
+    try {
+      final snapshot = await _getChatHistoryCollection(userId, journalEntryId).get();
+
+      final batch = _firestore.batch();
+
+      for (final doc in snapshot.docs) {
+        batch.delete(doc.reference);
+      }
+
+      await batch.commit();
+    } catch (e) {
+      throw ChatHistoryException("Error while deleting chat history for user $userId and journal entry $journalEntryId");
     }
   }
 
