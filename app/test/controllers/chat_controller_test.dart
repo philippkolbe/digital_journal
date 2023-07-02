@@ -1,3 +1,4 @@
+import 'package:app/models/chat_message.dart';
 import 'package:app/repositories/chat_history_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -34,12 +35,12 @@ void main() {
       // Assert
       final state = chatController.debugState.value!;
       expect(state.length - historyLengthBefore, 1);
-      expect(state[0].valueOrNull!.isFromBot, false);
+      expect(state[0].valueOrNull, isA<UserChatMessageObj>());
       expect(state[0].valueOrNull!.content, content);
 
       final history = await mockChatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId);
       expect(history.length - historyLengthBefore, 1);
-      expect(history[0].isFromBot, false);
+      expect(history[0], isA<UserChatMessageObj>());
       expect(history[0].content, content);
     });
 
@@ -51,17 +52,17 @@ void main() {
       final historyLengthBefore = (await mockChatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId)).length;
 
       // Act
-      await chatController.writeBotChatMessage(AsyncData(botChatMessage));
+      await chatController.writeAssistantChatMessage(AsyncData(botChatMessage));
 
       // Assert
       final state = chatController.debugState.value!;
       expect(state.length - historyLengthBefore, 1);
-      expect(state[0].valueOrNull!.isFromBot, true);
+      expect(state[0].valueOrNull, isA<AssistantChatMessageObj>());
       expect(state[0].valueOrNull!.content, content);
 
       final history = await mockChatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId);
       expect(history.length - historyLengthBefore, 1);
-      expect(history[0].isFromBot, true);
+      expect(history[0], isA<AssistantChatMessageObj>());
       expect(history[0].content, content);
       expect(state[0].value!.id, isNotNull);
     });
@@ -70,7 +71,7 @@ void main() {
       final historyLengthBefore = (await mockChatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId)).length;
 
       // Act
-      chatController.addLoadingBotChatMessage();
+      chatController.addLoadingAssistantChatMessage();
 
       // Assert
       final state = chatController.debugState.value!;
@@ -82,8 +83,8 @@ void main() {
       // Arrange
       final botChatMessage = testChatBotMessageObj;
       // Act
-      final loading = chatController.addLoadingBotChatMessage();
-      await chatController.writeBotChatMessage(AsyncData(botChatMessage));
+      final loading = chatController.addLoadingAssistantChatMessage();
+      await chatController.writeAssistantChatMessage(AsyncData(botChatMessage));
 
       // Assert
       final state = chatController.debugState.value!;
@@ -98,8 +99,8 @@ void main() {
       final error = Error();
       final st = StackTrace.current;
       // Act
-      final loading = chatController.addLoadingBotChatMessage();
-      chatController.writeBotChatMessage(AsyncError(error, st));
+      final loading = chatController.addLoadingAssistantChatMessage();
+      chatController.writeAssistantChatMessage(AsyncError(error, st));
 
       // Assert
       final state = chatController.debugState.value!;

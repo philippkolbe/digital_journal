@@ -11,51 +11,93 @@ part 'chat_message.g.dart';
 abstract class ChatMessageObj with _$ChatMessageObj {
   const ChatMessageObj._();
 
-  const factory ChatMessageObj({
+  const factory ChatMessageObj.assistant({
     String? id,
-    required bool isFromBot,
     @DateConverter() required DateTime date,
     required String content,
-  }) = _ChatMessage;
+  }) = AssistantChatMessageObj;
 
-  factory ChatMessageObj.fromJson(Map<String,dynamic> json) => _$ChatMessageObjFromJson(json);
+  const factory ChatMessageObj.user({
+    String? id,
+    @DateConverter() required DateTime date,
+    required String content,
+  }) = UserChatMessageObj;
+
+  const factory ChatMessageObj.system({
+    String? id,
+    @DateConverter() required DateTime date,
+    required String content,
+  }) = SystemChatMessageObj;
+
+  factory ChatMessageObj.fromJson(Map<String, dynamic> json) => _$ChatMessageObjFromJson(json);
 
   factory ChatMessageObj.fromDocument(DocumentSnapshot doc) {
     final data = doc.data();
     assert(data != null, "Document has to exist to create a ChatMessageObj");
     (data as Map<String, dynamic>)['id'] = doc.id;
-    return ChatMessageObj.fromJson(data);
+
+    final role = data['role'];
+    if (role == 'assistant') {
+      return AssistantChatMessageObj.fromJson(data);
+    } else if (role == 'user') {
+      return UserChatMessageObj.fromJson(data);
+    } else {
+      return SystemChatMessageObj.fromJson(data);
+    }
   }
 
-  factory ChatMessageObj.fromTextMessage(chat_types.TextMessage message, { isFromBot = false }) {
-    return ChatMessageObj(
+  factory ChatMessageObj.fromTextMessage(chat_types.TextMessage message) {
+    return UserChatMessageObj(
       id: message.id,
       content: message.text,
       date: DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
-      isFromBot: false,
     );
   }
 
   Map<String, dynamic> toDocument() {
     final json = toJson();
-    return json..remove('id');
+    return json
+      ..addAll({
+        'role': _getRole(),
+      })
+      ..remove('runtimeType')
+      ..remove('id');
   }
 
-  chat_types.TextMessage toTextMessage(chat_types.User user, chat_types.User botUser) {
+  chat_types.TextMessage? toTextMessage(chat_types.User user, chat_types.User assistantUser) {
     assert(id != null, "Needs id to convert toTextMessage");
 
-    return chat_types.TextMessage(
-      id: id!,
-      text: content,
-      createdAt: date.millisecondsSinceEpoch,
-      author: isFromBot ? botUser : user,
-    );
+    if (this is UserChatMessageObj) {
+      return chat_types.TextMessage(
+        id: id!,
+        text: content,
+        createdAt: date.millisecondsSinceEpoch,
+        author: user,
+      );
+    } else if (this is AssistantChatMessageObj) {
+      return chat_types.TextMessage(
+        id: id!,
+        text: content,
+        createdAt: date.millisecondsSinceEpoch,
+        author: assistantUser,
+      );
+    }
+
+    return null;
   }
 
   Map<String, dynamic> toAIMessage() {
     return {
-      'role': isFromBot ? 'assistant' : 'user',
+      'role': _getRole(),
       'content': content,
     };
+  }
+
+  String _getRole() {
+    return when(
+      assistant: (_, __, ___) => 'assistant',
+      user: (_, __, ___) => 'user',
+      system: (_, __, ___) => 'system',
+    );
   }
 }

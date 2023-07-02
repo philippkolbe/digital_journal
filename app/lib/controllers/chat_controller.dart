@@ -42,30 +42,29 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   }
 
   ChatMessageObj createUserChatMessage(String content) {
-    return createChatMessage(content, false);
-  }
-
-  ChatMessageObj createBotChatMessage(String content) {
-    return createChatMessage(content, true);
-  }
-
-  ChatMessageObj createChatMessage(String content, bool isFromBot) {
-    return ChatMessageObj(
+    return ChatMessageObj.user(
       id: generateUuid(),
-      isFromBot: isFromBot,
       date: DateTime.now(),
       content: content,
     );
   }
 
-  Future<void> writeBotChatMessage(AsyncValue<ChatMessageObj> asyncChatMessageObj) async {
+  ChatMessageObj createAssistantChatMessage(String content) {
+    return ChatMessageObj.assistant(
+      id: generateUuid(),
+      date: DateTime.now(),
+      content: content,
+    );
+  }
+
+  Future<void> writeAssistantChatMessage(AsyncValue<ChatMessageObj> asyncChatMessageObj) async {
     final indexOfLoadingMessage = _findLoadingMessageIndex();
     if (asyncChatMessageObj is AsyncData) {
       final chatMessageObj = asyncChatMessageObj.value!.copyWith(
         id: generateUuid(),
       );
 
-      assert(chatMessageObj.isFromBot, "Can only write Bot Chat Messages that were written from a bot.");
+      assert(chatMessageObj is AssistantChatMessageObj, "Can only write Assitant Chat Messages that were written from assitant.");
 
       await writeChatMessage(chatMessageObj, replaceAt: indexOfLoadingMessage);
     } else {
@@ -73,8 +72,8 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     }
   }
 
-  AsyncValue<ChatMessageObj>? addLoadingBotChatMessage() {
-    if (state is AsyncData) {
+  AsyncValue<ChatMessageObj>? addLoadingAssistantChatMessage() {
+    if (state is AsyncData && state.value != null) {
       ChatState history = state.value!;
       const loading = AsyncValue<ChatMessageObj>.loading();
       state = _addChatMessageInState(history, loading);
@@ -142,7 +141,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   }
 
   AsyncValue<ChatState> _addOrReplaceChatMessageInState(AsyncValue<ChatMessageObj> chatMessage, { int replaceAt = -1}) {
-    assert(state is AsyncData, 'Chat history state must be loaded to write chat messages');
+    assert(state is AsyncData && state.value != null, 'Chat history state must be loaded to write chat messages');
     ChatState history = state.value!;
 
     if (replaceAt == -1) {

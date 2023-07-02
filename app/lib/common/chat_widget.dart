@@ -10,9 +10,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ChatWidget extends StatelessWidget {
   late final List<types.Message> messages;
   late final types.User user;
-  final botUser = const types.User(
+  final assistantUser = const types.User(
     id: 'chat_bot_user_id',
-    firstName: 'Bot',
+    firstName: 'Journal',
   );
 
   final Function(String) onMessageAdded;
@@ -31,6 +31,7 @@ class ChatWidget extends StatelessWidget {
     // TODO: Think about this performace... every time we add a new Chat message the entire widget is reloaded and all the messages are reconverted
     this.messages = messages
       .map(_toTextMessage)
+      .whereType<types.Message>()
       .toList();
   }
 
@@ -45,18 +46,18 @@ class ChatWidget extends StatelessWidget {
     );
   }
 
-  types.Message _toTextMessage(AsyncValue<ChatMessageObj> asyncMessageObj) {
-    return asyncMessageObj.when<types.Message>(
-      data: (messageObj) => messageObj.toTextMessage(user, botUser),
+  types.Message? _toTextMessage(AsyncValue<ChatMessageObj> asyncMessageObj) {
+    return asyncMessageObj.when(
+      data: (messageObj) => messageObj.toTextMessage(user, assistantUser),
       error: (error, stackTrace) => types.TextMessage(
         id: generateUuid(),
-        author: botUser,
+        author: assistantUser,
         text: 'Something went wrong while loading the response: $error',
         status: types.Status.error,
       ),
       loading: () => types.TextMessage(
         id: generateUuid(),
-        author: botUser,
+        author: assistantUser,
         text: '...',
         status: types.Status.sending,
       ),

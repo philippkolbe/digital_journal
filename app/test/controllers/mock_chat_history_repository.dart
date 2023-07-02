@@ -2,9 +2,9 @@ import 'package:app/models/chat_message.dart';
 import 'package:app/repositories/chat_history_repository.dart';
 
 class MockChatHistoryRepository implements BaseChatHistoryRepository {
-  final List<ChatMessageObj> chatHistory = [
-    ChatMessageObj(id: '2', isFromBot: false, date: DateTime(2023, 6, 16, 10, 51), content: 'Hi Im a test.'),
-    ChatMessageObj(id: '1', isFromBot: true, date: DateTime(2023, 6, 16, 10, 50), content: 'Hello tell me about yourself.'),
+  List<ChatMessageObj> chatHistory = [
+    ChatMessageObj.user(id: '2', date: DateTime(2023, 6, 16, 10, 51), content: 'Hi Im a test.'),
+    ChatMessageObj.assistant(id: '1', date: DateTime(2023, 6, 16, 10, 50), content: 'Hello tell me about yourself.'),
   ];
   late int idCount;
 
@@ -24,5 +24,11 @@ class MockChatHistoryRepository implements BaseChatHistoryRepository {
     final entryWithId = entry.copyWith(id: id);
     chatHistory.add(entryWithId);
     return Future.value(entryWithId);
+  }
+
+  @override
+  Future<void> deleteChatHistory(String userId, String journalEntryId) {
+    chatHistory = [];
+    return Future.value();
   }
 }

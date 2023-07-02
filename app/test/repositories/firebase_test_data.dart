@@ -23,16 +23,14 @@ final testChatJournalEntry = JournalEntryObj.chat(
 ) as ChatJournalEntryObj;
 
 const testChatMessageId = 'id_test_message';
-final testChatMessageObj = ChatMessageObj(
-  isFromBot: false,
+final testChatMessageObj = ChatMessageObj.user(
   id: testChatMessageId,
   date: DateTime(2023, 1, 1, 11, 5),
   content: 'Hello, world!',
 );
 
 const testChatBotMessageId = 'id_bot_test_message';
-final testChatBotMessageObj = ChatMessageObj(
-  isFromBot: true,
+final testChatBotMessageObj = ChatMessageObj.assistant(
   id: testChatBotMessageId,
   date: DateTime(2024, 1, 1, 11, 7),
   content: 'Hi, I am a bot.',

@@ -49,8 +49,7 @@ class AIRepository implements BaseAIRepository {
           assert(data['response'] is String, 'Response field should be a string but is ${data['response']?.runtimeType}');
           final botResponse = data['response'] as String;
 
-          final botMessage = ChatMessageObj(
-            isFromBot: true,
+          final botMessage = AssistantChatMessageObj(
             date: DateTime.now(),
             content: botResponse,
           );
