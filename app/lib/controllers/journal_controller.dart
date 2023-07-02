@@ -1,19 +1,26 @@
 import 'package:app/controllers/auth_controller.dart';
 import 'package:app/models/journal_entry.dart';
+import 'package:app/repositories/chat_history_repository.dart';
 import 'package:app/repositories/journal_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final journalControllerProvider = StateNotifierProvider<JournalController, AsyncValue<List<JournalEntryObj>>>((ref) {
-  final journalRepository = ref.watch(journalRepositoryProvider);
+  final journalRepository = ref.read(journalRepositoryProvider);
+  final chatHistoryRepository = ref.read(chatHistoryRepositoryProvider);
   final userState = ref.watch(authControllerProvider);
-  return JournalController(journalRepository, userState.valueOrNull?.currentUser.id)..init();
+  return JournalController(journalRepository, chatHistoryRepository, userState.valueOrNull?.currentUser.id)..init();
 });
 
 class JournalController extends StateNotifier<AsyncValue<List<JournalEntryObj>>> {
   final BaseJournalRepository _journalRepository;
+  final BaseChatHistoryRepository _chatHistoryRepository;
   final String? _userId;
 
-  JournalController(this._journalRepository, this._userId) : super(const AsyncLoading());
+  JournalController(
+    this._journalRepository,
+    this._chatHistoryRepository,
+    this._userId,
+  ) : super(const AsyncLoading());
 
   Future<void> init() async {
     if (_userId != null) {
@@ -36,7 +43,7 @@ class JournalController extends StateNotifier<AsyncValue<List<JournalEntryObj>>>
     }
   }
 
-  Future<JournalEntryObj?> addJournalEntry(JournalEntryObj entryObj) async {
+  Future<JournalEntryObj> addJournalEntry(JournalEntryObj entryObj) async {
     // TODO: Error handling... we do want to throw an error because when creating new journal entries fails the selected journal entry should contain an error.
     // TODO: Probably move the selectedJournalEntry into this state or at least modify it via this controller so that it can handle errors.
     assert(state is AsyncData, "Journal entries must be loaded to add new journal entries.");
@@ -62,6 +69,7 @@ class JournalController extends StateNotifier<AsyncValue<List<JournalEntryObj>>>
       assert(state is AsyncData, "Journal entries must be loaded to add new journal entries.");
 
       await _journalRepository.deleteJournalEntry(_userId!, entryId);
+      await _chatHistoryRepository.deleteChatHistory(_userId!, entryId);
 
       state = AsyncData(state.value!..removeWhere((entry) => entry.id == entryId));
     } catch (error, stackTrace) {

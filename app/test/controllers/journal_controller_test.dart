@@ -4,20 +4,23 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../repositories/firebase_test_data.dart';
+import 'mock_chat_history_repository.dart';
 import 'mock_journal_repository.dart';
 
 void main() {
   group('JournalControllerTest', () {
     late JournalController controller;
     late MockJournalRepository repository;
+    late MockChatHistoryRepository chatHistoryRepository;
     setUp(() async {
       repository = MockJournalRepository();
-      controller = JournalController(repository, testUserId);
+      chatHistoryRepository = MockChatHistoryRepository();
+      controller = JournalController(repository, chatHistoryRepository, testUserId);
       await controller.init();
     });
 
     test('Initial state is loading', () {
-      final loadingController = JournalController(repository, testUserId);
+      final loadingController = JournalController(repository, chatHistoryRepository, testUserId);
       expect(loadingController.debugState, const AsyncValue<List<JournalEntryObj>>.loading());
     });
 
@@ -29,7 +32,7 @@ void main() {
     });
 
     test('Loading journal entries while user unauthorized should throw', () async {
-      final unauthorizedController = JournalController(repository, null);
+      final unauthorizedController = JournalController(repository, chatHistoryRepository, null);
 
       await unauthorizedController.loadJournalEntries();
       expect(unauthorizedController.debugState, isA<AsyncError>());
@@ -52,7 +55,7 @@ void main() {
     });
   
     test('Adding journal entry while loading should throw error', () async {
-      final unauthorizedController = JournalController(repository, null);
+      final unauthorizedController = JournalController(repository, chatHistoryRepository, null);
 
       expect(
         () => unauthorizedController.addJournalEntry(testChatJournalEntry),
