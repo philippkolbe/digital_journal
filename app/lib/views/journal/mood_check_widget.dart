@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MoodCheckWidget extends ConsumerWidget {
-  final Function _onContinue;
-  const MoodCheckWidget({required Function onContinue, super.key}) : 
+  final Function? _onContinue;
+  const MoodCheckWidget({Function? onContinue, super.key}) : 
     _onContinue = onContinue;
 
   @override
@@ -42,6 +42,8 @@ class MoodCheckWidget extends ConsumerWidget {
   _onSelect(StateController<Mood?> moodStateController, Mood mood) {
     moodStateController.state = Mood.good;
 
-    _onContinue();
+    if (_onContinue != null) {
+      _onContinue!();
+    }
   }
 }
