@@ -5,9 +5,9 @@ import 'package:app/controllers/todays_progress_controller.dart';
 import 'package:app/models/progress.dart';
 import 'package:app/models/progress_entry.dart';
 import 'package:app/providers/active_progress_provider.dart';
-import 'package:app/providers/current_day_provider.dart';
 import 'package:app/views/tracking/challenge_list.dart';
 import 'package:app/views/tracking/create_challenge_dialog.dart';
+import 'package:app/views/tracking/reflection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -60,7 +60,11 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
                           openChallenges,
                           todaysProgress,
                           todaysProgressController,
-                          emptyWidgetText: "Congratulations! You have completed all your challenges for today."
+                          emptyWidgetText: "Congratulations! You have completed all your challenges for today.",
+                          onSelected: (progressObj, pressed) {
+                            todaysProgressController.toggleChallengeCompletion(progressObj);
+                            _showReflectionDialog(context, progressObj.title);
+                          }
                         ),
                       const SizedBox(height: 15),
                       if (completedChallenges.isNotEmpty)
@@ -70,6 +74,9 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
                           todaysProgress,
                           todaysProgressController,
                           isActive: false,
+                          onSelected: (progressObj, pressed) {
+                            todaysProgressController.toggleChallengeCompletion(progressObj);
+                          }
                         ),
                     ],
                   ),
@@ -88,6 +95,7 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
     Map<ProgressObj, AsyncValue<ProgressEntryObj?>> todaysProgress,
     TodaysProgressController todaysProgressController,
     {
+      required Function(ProgressObj, bool?) onSelected,
       bool isActive = true,
       String emptyWidgetText = "",  
     }
@@ -107,11 +115,10 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
       )),
       title: title,
       isActive: isActive, 
-      onPressed: (progressObj) {},
-      onSelected: (progressObj, pressed) {
-        // TODO: pressed, dont toggle
-        todaysProgressController.toggleChallengeCompletion(progressObj);
+      onPressed: (progressObj) {
+        // TODO: Show ChallengeView
       },
+      onSelected: onSelected,
       emptyWidgetBuilder: () => Text(emptyWidgetText),
     );
   }
@@ -130,6 +137,15 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
         return CreateChallengeDialog(
           onChallengeCreate: _onAddChallenge,
         );
+      },
+    );
+  }
+
+  Future<void> _showReflectionDialog(BuildContext context, String name) async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return ReflectionDialog(challengeName: name);
       },
     );
   }
