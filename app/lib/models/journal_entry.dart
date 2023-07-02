@@ -63,6 +63,7 @@ class JournalEntryObj with _$JournalEntryObj {
 
   Map<String, dynamic> toDocument() {
     final json = toJson()
+      ..remove('runtimeType')
       ..remove('id');
 
     if (this is SimpleJournalEntryObj) {
