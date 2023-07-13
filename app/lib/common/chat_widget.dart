@@ -43,6 +43,7 @@ class ChatWidget extends StatelessWidget {
       showUserAvatars: true,
       showUserNames: true,
       user: user,
+      theme: MyChatTheme(Theme.of(context)),
     );
   }
 
@@ -78,4 +79,57 @@ class ChatWidget extends StatelessWidget {
 
     _addMessage(textMessage);
   }
+}
+
+const _default = DefaultChatTheme();
+class MyChatTheme extends ChatTheme {
+  MyChatTheme(ThemeData theme) : super(
+    errorColor: theme.colorScheme.error,
+    backgroundColor: theme.colorScheme.background,
+    inputBackgroundColor: theme.colorScheme.surface,
+    inputTextColor: theme.colorScheme.onSurface,
+    primaryColor: theme.colorScheme.primary,
+    receivedMessageDocumentIconColor: theme.colorScheme.onPrimary,
+    secondaryColor: theme.colorScheme.secondary,
+    sentMessageDocumentIconColor: theme.colorScheme.onPrimary,
+    userAvatarImageBackgroundColor: theme.colorScheme.primary,
+    userAvatarNameColors: [theme.colorScheme.onBackground],
+
+    attachmentButtonIcon: _default.attachmentButtonIcon,
+    attachmentButtonMargin: _default.attachmentButtonMargin,
+    dateDividerMargin: _default.dateDividerMargin,
+    dateDividerTextStyle: _default.dateDividerTextStyle,
+    deliveredIcon: _default.deliveredIcon,
+    documentIcon: _default.documentIcon,
+    emptyChatPlaceholderTextStyle: _default.emptyChatPlaceholderTextStyle,
+    errorIcon: _default.errorIcon,
+    inputBorderRadius: _default.inputBorderRadius,
+    inputMargin: _default.inputMargin,
+    inputPadding: _default.inputPadding,
+    inputTextDecoration: _default.inputTextDecoration,
+    inputTextStyle: _default.inputTextStyle,
+    messageBorderRadius: _default.messageBorderRadius,
+    messageInsetsHorizontal: _default.messageInsetsHorizontal,
+    messageInsetsVertical: _default.messageInsetsVertical,
+    receivedEmojiMessageTextStyle: _default.receivedEmojiMessageTextStyle,
+    receivedMessageBodyTextStyle: _default.receivedMessageBodyTextStyle,
+    receivedMessageCaptionTextStyle: _default.receivedMessageCaptionTextStyle,
+    receivedMessageLinkDescriptionTextStyle: _default.receivedMessageLinkDescriptionTextStyle,
+    receivedMessageLinkTitleTextStyle: _default.receivedMessageLinkTitleTextStyle,
+    seenIcon: _default.seenIcon,
+    sendButtonIcon: _default.sendButtonIcon,
+    sendButtonMargin: _default.sendButtonMargin,
+    sendingIcon: _default.sendingIcon,
+    sentEmojiMessageTextStyle: _default.sentEmojiMessageTextStyle,
+    sentMessageBodyTextStyle: _default.sentMessageBodyTextStyle,
+    sentMessageCaptionTextStyle: _default.sentMessageCaptionTextStyle,
+    sentMessageLinkDescriptionTextStyle: _default.sentMessageLinkDescriptionTextStyle,
+    sentMessageLinkTitleTextStyle: _default.sentMessageLinkTitleTextStyle,
+    statusIconPadding: _default.statusIconPadding,
+    systemMessageTheme: _default.systemMessageTheme,
+    typingIndicatorTheme: _default.typingIndicatorTheme,
+    unreadHeaderTheme: _default.unreadHeaderTheme,
+    userAvatarTextStyle: _default.userAvatarTextStyle,
+    userNameTextStyle: _default.userNameTextStyle,
+  );
 }
