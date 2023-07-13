@@ -31,9 +31,12 @@ class _AppState extends ConsumerState<App> {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Digital Journal',
-      home: HomeWidget(),
+      home: const HomeWidget(),
+      theme: ThemeData.from(colorScheme: ColorScheme.fromSeed(
+        seedColor: const Color.fromARGB(255, 184, 219, 217))
+      ),
     );
   }
 }
