@@ -16,23 +16,11 @@ class JournalPage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final asyncJournalState = ref.watch(journalControllerProvider);
     final journalController = ref.read(journalControllerProvider.notifier);
-    final chatJournalController = ref.watch(chatJournalControllerProvider);
     final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Journal'),
-        actions: [
-          if (asyncJournalState.value != null) IconButton(
-            onPressed: () => _onAddJournalEntry(
-              context,
-              journalController,
-              chatJournalController,
-              selectedJournalEntryController,
-            ),
-            icon: const Icon(Icons.add_circle_outlined),
-          ),
-        ]
       ),
       // TODO: Search bar or filter options can be added here
       body: AsyncWidget(
@@ -59,28 +47,6 @@ class JournalPage extends ConsumerWidget {
     );
   }
 
-  void _onAddJournalEntry(
-    BuildContext context,
-    JournalController journalController,
-    ChatJournalController chatJournalController,
-    StateController<AsyncValue<JournalEntryObj?>> selectedJournalEntryController,
-  ) async {
-    selectedJournalEntryController.state = const AsyncLoading();
-
-    _pushChatJournalWizardRoute(context);
-
-    try {
-      final newJournalEntryObj = await journalController.addJournalEntry(JournalEntryObj.chat(
-        name: 'New Journal Entry',
-        date: DateTime.now(),
-      ));
-
-      _selectJournalEntry(selectedJournalEntryController, newJournalEntryObj!);
-    } catch (err, st) {
-      selectedJournalEntryController.state = AsyncError(err, st);
-    }
-  }
-
   void _onOpenJournalEntry(
     BuildContext context,
     JournalEntryObj journalEntry,
@@ -95,15 +61,6 @@ class JournalPage extends ConsumerWidget {
       context,
       MaterialPageRoute(
         builder: (context) => const JournalEntryView(),
-      ),
-    );
-  }
-
-  void _pushChatJournalWizardRoute(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ChatJournalWizard(),
       ),
     );
   }

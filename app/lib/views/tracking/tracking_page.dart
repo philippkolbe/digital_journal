@@ -28,9 +28,6 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Your Journey'),
-        actions: [
-          if (asyncProgressObjs.valueOrNull != null) _buildCreateButton(context),
-        ],
       ),
       body: AsyncWidget2(
         asyncValue1: asyncProgressObjs,
@@ -123,24 +120,6 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
     );
   }
 
-  Widget _buildCreateButton(BuildContext context) {
-    return IconButton(
-      onPressed: () => _showCreateChallengeDialog(context),
-      icon: const Icon(Icons.add_circle_outlined),
-    );
-  }
-
-  Future<void> _showCreateChallengeDialog(BuildContext context) async {
-    return showDialog<void>(
-      context: context,
-      builder: (BuildContext context) {
-        return CreateChallengeDialog(
-          onChallengeCreate: _onAddChallenge,
-        );
-      },
-    );
-  }
-
   Future<void> _showReflectionDialog(BuildContext context, String name) async {
     return showDialog<void>(
       context: context,
@@ -148,15 +127,5 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
         return ReflectionDialog(challengeName: name);
       },
     );
-  }
-
-  Future<void> _onAddChallenge(String challengeName, int durationInDays) async {
-    final progressController = ref.read(progressControllerProvider.notifier);
-
-    await progressController.createProgress(ProgressObj(
-      title: challengeName,
-      startDate: floorDateToDay(DateTime.now()),
-      durationInDays: durationInDays,
-    ));
   }
 }

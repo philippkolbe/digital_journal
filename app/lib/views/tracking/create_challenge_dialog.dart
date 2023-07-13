@@ -1,10 +1,11 @@
+import 'package:app/common/utils.dart';
+import 'package:app/controllers/progress_controller.dart';
+import 'package:app/models/progress.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class CreateChallengeDialog extends StatefulWidget {
-  final void Function(String challengeName, int durationInDays) onChallengeCreate;
-
+class CreateChallengeDialog extends ConsumerStatefulWidget {
   const CreateChallengeDialog({
-    required this.onChallengeCreate,
     super.key,
   });
 
@@ -12,7 +13,7 @@ class CreateChallengeDialog extends StatefulWidget {
   CreateChallengeDialogState createState() => CreateChallengeDialogState();
 }
 
-class CreateChallengeDialogState extends State<CreateChallengeDialog> {
+class CreateChallengeDialogState extends ConsumerState<CreateChallengeDialog> {
   String challengeName = '';
   int durationInDays = 0;
 
@@ -70,7 +71,7 @@ class CreateChallengeDialogState extends State<CreateChallengeDialog> {
             });
 
             if (challengeName.isNotEmpty && durationInDays > 0) {
-              widget.onChallengeCreate(challengeName, durationInDays);
+              _onAddChallenge(challengeName, durationInDays);
               Navigator.of(context).pop();
             }
           },
@@ -78,5 +79,15 @@ class CreateChallengeDialogState extends State<CreateChallengeDialog> {
         ),
       ],
     );
+  }
+
+  Future<void> _onAddChallenge(String challengeName, int durationInDays) async {
+    final progressController = ref.read(progressControllerProvider.notifier);
+
+    await progressController.createProgress(ProgressObj(
+      title: challengeName,
+      startDate: floorDateToDay(DateTime.now()),
+      durationInDays: durationInDays,
+    ));
   }
 }
