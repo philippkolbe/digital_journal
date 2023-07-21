@@ -39,6 +39,7 @@ dependencies:
   json_annotation: ^4.8.1
   firebase_core: ^2.13.1
   firebase_auth: ^4.6.2
+  firebase_messaging: ^14.6.5
   cloud_firestore: ^4.8.0
   flutter_riverpod: ^2.3.6
   flutter_chat_ui: ^1.6.8
