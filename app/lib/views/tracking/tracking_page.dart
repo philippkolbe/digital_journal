@@ -1,12 +1,11 @@
 import 'package:app/common/async_widget.dart';
-import 'package:app/common/utils.dart';
-import 'package:app/controllers/progress_controller.dart';
 import 'package:app/controllers/todays_progress_controller.dart';
 import 'package:app/models/progress.dart';
 import 'package:app/models/progress_entry.dart';
 import 'package:app/providers/active_progress_provider.dart';
+import 'package:app/providers/mood_state_provider.dart';
+import 'package:app/providers/reflecting_on_challenge_provider.dart';
 import 'package:app/views/tracking/challenge_list.dart';
-import 'package:app/views/tracking/create_challenge_dialog.dart';
 import 'package:app/views/tracking/reflection_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -22,6 +21,8 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
   @override
   Widget build(BuildContext context) {
     final todaysProgressController = ref.read(todaysProgressControllerProvider.notifier);
+    final moodStateController = ref.read(moodStateProvider.notifier);
+    final reflectingOnChallengeController = ref.read(reflectingOnChallengeProvider.notifier);
     final asyncTodaysProgress = ref.watch(todaysProgressControllerProvider);
     final asyncProgressObjs = ref.watch(activeProgressProvider);
 
@@ -60,7 +61,10 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
                           emptyWidgetText: "Congratulations! You have completed all your challenges for today.",
                           onSelected: (progressObj, pressed) {
                             todaysProgressController.toggleChallengeCompletion(progressObj);
-                            _showReflectionDialog(context, progressObj.title);
+                            reflectingOnChallengeController.state = progressObj.title;
+                            _showReflectionDialog(context, progressObj.title).then((_) => 
+                              moodStateController.state = null,
+                            );
                           }
                         ),
                       const SizedBox(height: 15),

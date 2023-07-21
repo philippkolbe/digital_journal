@@ -35,6 +35,20 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     }
   }
 
+  Future<void> writeSystemChatMessage(String content) async {
+    final chatMessageObj = createSystemChatMessage(content);
+
+    await writeChatMessage(chatMessageObj);
+  }
+
+  ChatMessageObj createSystemChatMessage(String content) {
+    return SystemChatMessageObj(
+      id: generateUuid(),
+      date: DateTime.now(),
+      content: content,
+    );
+  }
+
   Future<void> writeUserChatMessage(String content) async {
     final chatMessageObj = createUserChatMessage(content);
 
@@ -42,7 +56,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   }
 
   ChatMessageObj createUserChatMessage(String content) {
-    return ChatMessageObj.user(
+    return UserChatMessageObj(
       id: generateUuid(),
       date: DateTime.now(),
       content: content,
@@ -124,11 +138,13 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     return state.valueOrNull?.lastIndexWhere((message) => message is AsyncLoading) ?? -1;
   }
 
-  Future<void> writeChatMessage(ChatMessageObj chatMessageObj, { int replaceAt = -1 }) async {
-    state = _addOrReplaceChatMessageInState(AsyncData(chatMessageObj), replaceAt: replaceAt);
-
+  Future<ChatMessageObj?> writeChatMessage(ChatMessageObj chatMessageObj, { int replaceAt = -1 }) async {
     try {
-      await _createChatMessage(chatMessageObj);
+      final updatedChatMessageObj = await _createChatMessage(chatMessageObj);
+
+      state = _addOrReplaceChatMessageInState(AsyncData(updatedChatMessageObj), replaceAt: replaceAt);
+
+      return updatedChatMessageObj;
     } catch (err, st) {
       state = AsyncData(
         state.value!.map(
@@ -137,6 +153,8 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
             : asyncMessage
         ).toList()
       );
+      
+      return null;
     }
   }
 
@@ -167,8 +185,6 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     final journalEntryId = _asyncSelectedJournalEntry.valueOrNull?.id;
     assert(journalEntryId != null, 'Journal Entries must be loaded and have an id to write chat messages.');
 
-
     return _chatHistoryRepository.createChatMessage(_userId!, journalEntryId!, chatMessageObj);
   }
-
 }

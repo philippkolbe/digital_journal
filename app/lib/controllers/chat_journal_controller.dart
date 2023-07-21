@@ -8,7 +8,7 @@ final chatJournalControllerProvider = Provider<ChatJournalController>((ref) {
   final chatHistory = ref.watch(chatControllerProvider);
   final chatController = ref.read(chatControllerProvider.notifier);
   final chatBotController = ref.read(chatBotControllerProvider.notifier);
-  final goalPrompts = ref.read(goalPromptsProvider);
+  final goalPrompts = ref.watch(goalPromptsProvider);
   final controller = ChatJournalController(
     chatHistory.valueOrNull,
     goalPrompts,
@@ -28,25 +28,29 @@ class ChatJournalController {
 
 
   ChatJournalController(
-    this._chatHistory,
+    List<AsyncValue<ChatMessageObj>>? chatHistory,
     this._goalPrompts,
     this._chatController,
     this._chatBotController,
-  );
+  ) : _chatHistory = chatHistory != null ? List.from(chatHistory) : null;
 
   Future<void> onChatJournalEntryCreated({ ChatJournalType type = ChatJournalType.standard }) async {    
-    await _writeAssistantChatMessage([
-      if (_goalPrompts[type] != null)
-        AsyncData(AssistantChatMessageObj(
-          date: DateTime.now(),
-          content: _goalPrompts[type]!,
-        )),
-    ]);
+    if (_goalPrompts[type] != null) {
+      final prompt = _goalPrompts[type]!;
+      final systemMessage = _chatController.createSystemChatMessage(prompt);
+      _chatController.writeChatMessage(systemMessage);
+
+      await _writeAssistantChatMessage([
+        AsyncData(systemMessage),
+      ]);
+    } else {
+      await _writeAssistantChatMessage([]);
+    }
   }
 
   Future<void> onChatJournalMessageSent(String content) async {
     final newMessageObj = _chatController.createUserChatMessage(content);
-    _chatController.writeChatMessage(newMessageObj);
+    await _chatController.writeChatMessage(newMessageObj);
 
     final chatHistoryWithNewMessage = _chatHistory?..insert(0, AsyncData(newMessageObj));    
     _writeAssistantChatMessage(chatHistoryWithNewMessage);

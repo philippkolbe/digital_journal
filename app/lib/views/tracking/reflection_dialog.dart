@@ -1,11 +1,10 @@
 import 'package:app/controllers/chat_journal_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/models/journal_entry.dart';
-import 'package:app/providers/mood_state_provider.dart';
 import 'package:app/providers/prompts_providers.dart';
 import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:app/views/journal/journal_entry_view.dart';
-import 'package:app/views/journal/mood_check_widget.dart';
+import 'package:app/views/common/mood_check_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -21,7 +20,6 @@ class ReflectionDialog extends ConsumerWidget {
     final chatJournalController = ref.read(chatJournalControllerProvider);
     final journalController = ref.read(journalControllerProvider.notifier);
     final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
-    final moodStateController = ref.read(moodStateProvider.notifier);
 
     return AlertDialog(
       title: Text("Reflect on $challengeName"),
@@ -40,10 +38,7 @@ class ReflectionDialog extends ConsumerWidget {
       ),
       actions: [
         ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-            moodStateController.state = null;
-          },
+          onPressed: () => Navigator.pop(context),
           child: const Text('Close'),
         ),
         ElevatedButton(

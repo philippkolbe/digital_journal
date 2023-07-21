@@ -1,9 +1,7 @@
 import 'package:app/common/async_widget.dart';
-import 'package:app/controllers/chat_journal_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/providers/selected_journal_entry_provider.dart';
-import 'package:app/views/journal/chat_journal_wizard.dart';
 import 'package:app/views/journal/journal_list_entry_widget.dart';
 import 'package:app/views/journal/journal_entry_view.dart';
 import 'package:flutter/material.dart';

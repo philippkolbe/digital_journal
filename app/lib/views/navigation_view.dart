@@ -1,9 +1,5 @@
-import 'package:app/controllers/journal_controller.dart';
-import 'package:app/models/journal_entry.dart';
-import 'package:app/providers/selected_journal_entry_provider.dart';
-import 'package:app/views/journal/chat_journal_wizard.dart';
+import 'package:app/views/create/creation_list.dart';
 import 'package:app/views/journal/journal_page.dart';
-import 'package:app/views/tracking/create_challenge_dialog.dart';
 import 'package:app/views/tracking/tracking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -15,14 +11,34 @@ class NavigationView extends ConsumerStatefulWidget {
   ConsumerState<NavigationView> createState() => _NavigationViewState();
 }
 
-class _NavigationViewState extends ConsumerState<NavigationView> {
+class _NavigationViewState extends ConsumerState<NavigationView> with SingleTickerProviderStateMixin {
   int _currentPageIndex = 0;
+  int _currentButtonIndex = 0;
   bool _isOptionsVisible = false;
 
   final List<Widget> _pages = [
     const TrackingPage(),
     const JournalPage(),
   ];
+
+  late AnimationController _animationController;
+  late Animation<Offset> _animationOffset;
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 300),
+    );
+    _animationOffset = Tween<Offset>(
+      begin: const Offset(0, 1),
+      end: const Offset(0, 0),
+    ).animate(CurvedAnimation(
+      parent: _animationController,
+      curve: Curves.easeOut,
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +50,29 @@ class _NavigationViewState extends ConsumerState<NavigationView> {
             children: _pages,
           ),
 
-          if (_isOptionsVisible)
-            _buildCreateOptions(),
+          AnimatedBuilder(
+            animation: _animationOffset,
+            builder: (context, child) => Visibility(
+              visible: _animationOffset.value.dy != 1,
+              child: GestureDetector(
+                onTap: () => _hideOptions(),
+                child: Container(
+                  color: const Color.fromARGB(255, 0, 0, 0).withOpacity(0.5),
+                  alignment: Alignment.bottomCenter,
+                  child: child,
+                ),
+              ),
+            ),
+            child: SlideTransition(
+              position: _animationOffset,
+              child: CreationList(_hideOptions, _setCurrentIndex),
+            ),
+          ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentPageIndex,
-        onTap: (index) => _setCurrentPageIndex(index),
+        currentIndex: _currentButtonIndex,
+        onTap: (index) => _onNavigationButtonPress(index),
         items: [
           const BottomNavigationBarItem(
             icon: Icon(Icons.trending_up_rounded),
@@ -48,7 +80,10 @@ class _NavigationViewState extends ConsumerState<NavigationView> {
           ),
           BottomNavigationBarItem(
             icon: GestureDetector(
-              onTap: _toggleOptionVisibility,
+              onTap: () {
+                _setCurrentIndex(1);
+                _toggleOptionVisibility();
+              },
               child: Container(
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
@@ -69,102 +104,56 @@ class _NavigationViewState extends ConsumerState<NavigationView> {
     );
   }
 
-  Widget _buildCreateOptions() {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _isOptionsVisible = false;
-        });
-      },
-      child: Container(
-        color: Colors.black.withOpacity(0.5),
-        alignment: Alignment.bottomCenter,
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: _onCreateChallenge,
-                child: Text('Challenge'),
-              ),
-              ElevatedButton(
-                onPressed: () => _onCreateChatJournalEntry(context),
-                child: Text('Chat Journal Entry'),
-              ),
-              // Add more options as needed
-            ],
-          ),
-        ),
-      ),
-    );
-  }
+  void _onNavigationButtonPress(int index) {
+    _setCurrentIndex(index);
 
-  void _onCreateChallenge() {
-    _hideOptions();
-    _setCurrentPageIndex(0);
-
-    showDialog(
-      context: context,
-      builder: (BuildContext context) => const CreateChallengeDialog(),
-    );
-  }
-  
-  void _onCreateChatJournalEntry(BuildContext context) {
-    _hideOptions();
-    _setCurrentPageIndex(1);
-
-    _onAddJournalEntry(context);
-  }
-
-  void _onAddJournalEntry(
-    BuildContext context,
-  ) async {
-    final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
-    selectedJournalEntryController.state = const AsyncLoading();
-
-    _pushChatJournalWizardRoute(context);
-
-    try {
-      final journalController = ref.read(journalControllerProvider.notifier);
-
-      final newJournalEntryObj = await journalController.addJournalEntry(
-        JournalEntryObj.chat(
-          name: 'New Journal Entry',
-          date: DateTime.now(),
-        ),
-      );
-
-      selectedJournalEntryController.state = AsyncData(newJournalEntryObj);
-    } catch (err, st) {
-      selectedJournalEntryController.state = AsyncError(err, st);
+    if (index == 1) {
+      _toggleOptionVisibility();
+    } else {
+      _hideOptions();
     }
   }
 
-  void _pushChatJournalWizardRoute(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const ChatJournalWizard(),
-      ),
-    );
-  }
-
-  void _setCurrentPageIndex(int index) {
-    setState(() {
-      _currentPageIndex = index;
-    });
+  void _setCurrentIndex(int buttonIndex) {
+    const createButtonIndex = 1;
+    if (buttonIndex != createButtonIndex) {
+      final index = buttonIndex < createButtonIndex ? buttonIndex : buttonIndex - 1;
+      setState(() {
+        _currentPageIndex = index;
+        _currentButtonIndex = buttonIndex;
+      });
+    } else {
+      setState(() {
+        _currentButtonIndex = buttonIndex;
+      });
+    }
   }
 
   void _toggleOptionVisibility() {
     setState(() {
       _isOptionsVisible = !_isOptionsVisible;
     });
+    _animateOptions();
   }
 
   void _hideOptions() {
     setState(() {
       _isOptionsVisible = false;
     });
+    _animateOptions();
+  }
+
+  void _animateOptions() {
+    if (_isOptionsVisible) {
+      _animationController.forward();
+    } else {
+      _animationController.reverse();
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
   }
 }
