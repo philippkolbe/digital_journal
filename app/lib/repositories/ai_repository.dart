@@ -7,7 +7,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final aiRepositoryProvider = Provider<BaseAIRepository>((ref) {
   final asyncAuthState = ref.read(authControllerProvider);
-  final httpClient = ref.read(httpClientProvider);
+  final httpClient = ref.watch(httpClientProvider);
   return AIRepository(
     httpClient: httpClient,
     userId: asyncAuthState.valueOrNull?.currentUser.id

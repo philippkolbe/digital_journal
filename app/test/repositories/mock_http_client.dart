@@ -9,6 +9,8 @@ import 'ai_api_test_data.dart';
 class MockHttpClient implements AIHttpClient {
   @override
   final baseUrl = 'mock';
+  @override
+  final idToken = 'mock';
 
   @override
   Future<Response> get(String endpoint) {
