@@ -64,8 +64,7 @@ class UserChallengeProgressCard extends StatelessWidget {
     return Stack(
       alignment: Alignment.topRight,
       children: [
-        _buildImage(),
-        _buildBlurFilter(),
+        _buildImage(context),
         _buildCardContent(),
         _buildProgressIndicator(context),
         _buildCheckbox(),
@@ -73,7 +72,7 @@ class UserChallengeProgressCard extends StatelessWidget {
     );
   }
 
-  AspectRatio _buildImage() {
+  AspectRatio _buildImage(BuildContext context) {
     return AspectRatio(
       aspectRatio: _aspectRatio,
       child: ClipRRect(
@@ -81,44 +80,9 @@ class UserChallengeProgressCard extends StatelessWidget {
         child: OverflowBox(
           maxHeight: double.infinity,
           alignment: Alignment.center,
-          child: ColorFiltered(
-            colorFilter: ColorFilter.mode(                                       
-              isActive ? Colors.transparent : Colors.white,                                                         
-              BlendMode.saturation,
-            ),
-            child: Image.network(
-              progressObj.imageUrl ??
-                  'https://kripalu.org/sites/default/files/GettyImages-911876528_journal_hero.jpg',
-              fit: BoxFit.fitHeight,
-            ),
+          child: Container(
+            color: isActive ? Theme.of(context).colorScheme.secondary : Colors.white, // Replace with your desired color
           ),
-        ),
-      ),
-    );
-  }
-
-  BackdropFilter _buildBlurFilter() {
-    return BackdropFilter(
-      filter: ImageFilter.blur(sigmaX: 1, sigmaY: 1),
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.transparent,
-        ),
-      ),
-    );
-  }
-
-  BackdropFilter _buildGreyFilter() {
-    return BackdropFilter(
-      filter: ImageFilter.matrix(Float64List.fromList([
-        0.2126, 0.7152, 0.0722, 0,
-        0.2126, 0.7152, 0.0722, 0,
-        0.2126, 0.7152, 0.0722, 0,
-        0,      0,      0,      1,
-      ])),
-      child: Container(
-        decoration: const BoxDecoration(
-          color: Colors.transparent,
         ),
       ),
     );
