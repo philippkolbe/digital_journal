@@ -25,4 +25,3 @@ Create an `.env` file in the root directory. It should contain:
 | Variable         | Description                                    |
 | ---------------- | ---------------------------------------------- |
 | BACKEND_URL      | URL pointing to the Backend of the application |
-| FIREBASE_API_KEY | API key to your Firebase project               |
