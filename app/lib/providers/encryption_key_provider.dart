@@ -2,7 +2,6 @@ import 'dart:math';
 
 import 'package:app/providers/shared_preferences_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'dart:convert';
 
 final encryptionKeyFutureProvider = Provider((ref) async {
   final prefs = await ref.watch(sharedPreferencesFutureProvider);
@@ -24,9 +23,12 @@ final encryptionKeyProvider = FutureProvider(
   (ref) => ref.watch(encryptionKeyFutureProvider),
 );
 
+const _chars = 'AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz1234567890';
+Random _random = Random();
+const _keyLength = 32;
+
 String generateRandomKey() {
-  const keyLength = "please-change-this-soon-to-local".length;
-  final random = Random.secure();
-  final bytes = List<int>.generate(keyLength, (_) => random.nextInt(256));
-  return base64Url.encode(bytes);
+  return String.fromCharCodes(
+    Iterable.generate(_keyLength, (_) => _chars.codeUnitAt(_random.nextInt(_chars.length)))
+  );
 }
