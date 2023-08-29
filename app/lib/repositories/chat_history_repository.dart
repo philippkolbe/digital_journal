@@ -7,8 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final chatHistoryRepositoryProvider = Provider<BaseChatHistoryRepository>((Ref ref) {
   final firestore = ref.read(firebaseFirestoreProvider);
-  final encrypter = ref.read(encrypterProvider);
-  return ChatHistoryRepository(firestore, encrypter);
+  final encrypterFuture = ref.watch(encrypterFutureProvider);
+  return ChatHistoryRepository(firestore, encrypterFuture);
 });
 
 abstract class BaseChatHistoryRepository {
@@ -19,7 +19,7 @@ abstract class BaseChatHistoryRepository {
 
 class ChatHistoryRepository implements BaseChatHistoryRepository {
   final FirebaseFirestore _firestore;
-  final Encrypter _encrypter;
+  final Future<Encrypter> _encrypter;
 
   ChatHistoryRepository(this._firestore, this._encrypter);
 
@@ -29,7 +29,7 @@ class ChatHistoryRepository implements BaseChatHistoryRepository {
       final collection = _getChatHistoryCollection(userId, journalEntryId);
       final doc = chatMessageObj
         .copyWith(
-          content: _encrypter.encrypt(chatMessageObj.content),
+          content: (await _encrypter).encrypt(chatMessageObj.content),
         )
         .toDocument();
 
@@ -48,14 +48,17 @@ class ChatHistoryRepository implements BaseChatHistoryRepository {
   @override
   Future<List<ChatMessageObj>> readChatHistory(String userId, String journalEntryId) async {
     try {
+
       final snapshot = await _getChatHistoryCollection(userId, journalEntryId)
         .orderBy('date', descending: true)
         .get();
 
+      final encrypter = await _encrypter;
+
       return snapshot.docs.map((doc) {
         final encryptedObj = ChatMessageObj.fromDocument(doc);
         return encryptedObj.copyWith(
-          content: _encrypter.decrypt(encryptedObj.content),
+          content: encrypter.decrypt(encryptedObj.content),
         );
       }).toList();
     } catch (e) {

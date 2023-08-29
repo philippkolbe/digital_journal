@@ -70,7 +70,7 @@ class ChallengeDiscoveryWizardState extends ConsumerState<ChallengeDiscoveryWiza
                     const Padding(
                       padding: EdgeInsets.all(20.0),
                       child: Text(
-                        "Challenge Discovery is a process that helps you identify challenges, set goals, and track your progress. It's a great way to improve your habits and achieve your targets!",
+                        "Challenge Discovery is a process that helps you identify challenges, set goals, and track your progress. It's a great way to improve your habits and achieve your targets! We will help you create a SMART goal that is Specific Measurable Achievable Relevant and Time-constrained.",
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 18),
                       ),
@@ -97,7 +97,7 @@ class ChallengeDiscoveryWizardState extends ConsumerState<ChallengeDiscoveryWiza
                           children: [
                             Icon(Icons.arrow_forward),
                             SizedBox(width: 8.0),
-                            Text("Start Challenge Discovery"),
+                            Text("Start Discovering Challenges"),
                           ],
                         ),
                       ),

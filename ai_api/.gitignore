@@ -10,6 +10,7 @@ env/
 # .env file (contains sensitive information)
 .env
 .env.yaml
+firebase.json
 
 # Dependency directories
 dist/

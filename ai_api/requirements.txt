@@ -2,3 +2,4 @@ Flask==2.0.1
 openai==0.27.0
 python-dotenv==1.0.0
 functions-framework==3.4.0
+firebase_admin==6.2.0

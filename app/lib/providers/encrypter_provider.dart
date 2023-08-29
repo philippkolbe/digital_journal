@@ -3,9 +3,15 @@ import 'package:app/providers/encryption_key_provider.dart';
 import 'package:encrypt/encrypt.dart' as encr;
 
 final encrypterProvider = Provider((ref) {
-  final encryptionKey = ref.watch(encryptionKeyProvider);
+  final asyncEncryptionKey = ref.watch(encryptionKeyProvider);
+  return asyncEncryptionKey.whenData((encryptionKey) => Encrypter(encryptionKey));
+});
+
+final encrypterFutureProvider = Provider((ref) async {
+  final encryptionKey = await ref.watch(encryptionKeyFutureProvider);
   return Encrypter(encryptionKey);
 });
+
 
 class Encrypter {
   final _iv = encr.IV.fromLength(16);

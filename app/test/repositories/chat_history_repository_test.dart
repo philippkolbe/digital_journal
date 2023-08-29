@@ -9,11 +9,11 @@ void main() {
   group('ChatHistoryRepository', () {
     late FakeFirebaseFirestore firestore;
     late BaseChatHistoryRepository repository;
-    late Encrypter encrypter;
+    late Future<Encrypter> encrypter;
     
     setUp(() {
       firestore = setupFakeFirestore(user: true, journal: true, chat: true);
-      encrypter = Encrypter('my-test-key-1234');
+      encrypter = Future.value(Encrypter('my-test-key-1234'));
       repository = ChatHistoryRepository(firestore, encrypter);
     });
     
@@ -38,7 +38,7 @@ void main() {
         
       final snapshot = await chatHistoryCollection.doc(message.id).get();
       expect(snapshot.exists, isTrue);
-      expect(encrypter.decrypt(snapshot.data()!['content']), chatMessageObj.content);
+      expect((await encrypter).decrypt(snapshot.data()!['content']), chatMessageObj.content);
     });
     
     test('readChatHistory should retrieve the chat history for a user and journal entry', () async {

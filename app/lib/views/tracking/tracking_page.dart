@@ -51,7 +51,7 @@ class _TrackingPageState extends ConsumerState<TrackingPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       if (progressObjs.isEmpty)
-                        const Text("Start with some challenges!"),
+                        const Text("Start with some challenges! No idea where to start? Try our challenge discovery."),
                       if (progressObjs.isNotEmpty)
                         _buildChallengeList(
                           'Open Challenges',
