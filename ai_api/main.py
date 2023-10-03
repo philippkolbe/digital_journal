@@ -3,7 +3,7 @@ from dotenv import load_dotenv
 import openai
 import os
 import logging
-from firebase_admin import auth
+from firebase_admin import auth, initialize_app
 
 def message_from_json(json):
   return create_message(json['role'], json['content'])
@@ -18,6 +18,8 @@ load_dotenv()
 openai.api_key = os.getenv('OPENAI_API_KEY')
 
 default_system_message = create_message('system', 'You are a friendly and motivating journaling companion within an app. The chat users now you already - you don’t have to introduce yourself. As users chat with you, you provide guidance for journaling and self-reflection. Your goal is to help users explore their emotions and personal development. By asking simple, non-intrusive questions, you empower users to delve deeper into their thoughts. Always ask one question at a time and await the users answer before asking more questions. Your first answer should be one simple question. Remember to maintain a quiet and supportive presence, akin to a trusted journal. Be very concise in answers.')
+
+_FIREBASE_APP = initialize_app()
 
 def chat(request: flask.Request) -> flask.Response:
   try:

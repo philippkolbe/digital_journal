@@ -8,8 +8,9 @@ venv/
 env/
 
 # .env file (contains sensitive information)
-.env
-.env.yaml
+*.env
+*.env.yaml
+service-account-file.json
 
 # Dependency directories
 dist/

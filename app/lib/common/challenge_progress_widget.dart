@@ -1,6 +1,3 @@
-import 'dart:typed_data';
-import 'dart:ui';
-
 import 'package:app/common/async_widget.dart';
 import 'package:app/models/progress.dart';
 import 'package:flutter/material.dart';
