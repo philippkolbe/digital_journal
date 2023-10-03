@@ -37,8 +37,8 @@ class ErrorWidget extends StatelessWidget {
             onPressed: onRetry!,
             child: Text(retryText),
           ),
-          Text(error.toString()),
-          Text(stackTrace.toString()),
+          Text(error.toString(), softWrap: true),
+          Text(stackTrace.toString(), softWrap: true),
         ],
       )
     );

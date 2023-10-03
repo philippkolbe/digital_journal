@@ -15,6 +15,7 @@ final aiRepositoryProvider = Provider<BaseAIRepository>((ref) {
 });
 
 abstract class BaseAIRepository {
+  Future<ChatMessageObj> respondToMessage(ChatMessageObj chatMessageObj);
   Future<ChatMessageObj> respondToChat(List<ChatMessageObj> chatMessages);
 }
 
@@ -27,42 +28,49 @@ class AIRepository implements BaseAIRepository {
   AIRepository({required this.httpClient, required this.userId });
 
   @override
+  Future<ChatMessageObj> respondToMessage(ChatMessageObj chatMessageObj) {
+    return respondToChat([chatMessageObj]);
+  }
+
+  @override
   Future<ChatMessageObj> respondToChat(List<ChatMessageObj> chatMessages) async {
     try {
-      assert(userId != null, "User must be authenticated to use the AI Repository.");
+      final botResponse = await _post(chatRoute, {
+        'user_id': userId,
+        'messages': chatMessages
+          .map((chatMessageObj) => chatMessageObj.toAIMessage())
+          .toList(),
+      });
 
-      final response = await httpClient.post(
-        AIRepository.chatRoute,
-        body: {
-          'user_id': userId,
-          'messages': chatMessages
-            .map((chatMessageObj) => chatMessageObj.toAIMessage())
-            .toList(),
-        },
+      return AssistantChatMessageObj(
+        date: DateTime.now(),
+        content: botResponse,
       );
-
-      if (response.statusCode == 200) {
-        final data = json.decode(response.body);
-        assert(data['success'] is bool, 'Success field should be a boolean but is ${data['success']?.runtimeType}');
-        bool successful = data['success'] as bool;
-        if (successful) {
-          assert(data['response'] is String, 'Response field should be a string but is ${data['response']?.runtimeType}');
-          final botResponse = data['response'] as String;
-
-          final botMessage = AssistantChatMessageObj(
-            date: DateTime.now(),
-            content: botResponse,
-          );
-
-          return botMessage;
-        } else {
-          throw Exception('Error: ${data['error']}');
-        }
-      } else {
-        throw Exception('Status code: ${response.statusCode}');
-      }
     } catch (e) {
-      throw AIException('AI request failed: $e');
+      throw AIException('AI chat request failed: $e');
+    }
+  }
+
+  Future<String> _post(String path, Map<String, dynamic> body) async {
+    assert(userId != null, "User must be authenticated to use the AI Repository.");
+
+    final response = await httpClient.post(
+      AIRepository.chatRoute,
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      assert(data['success'] is bool, 'Success field should be a boolean but is ${data['success']?.runtimeType}');
+      bool successful = data['success'] as bool;
+      if (successful) {
+        assert(data['response'] is String, 'Response field should be a string but is ${data['response']?.runtimeType}');
+        return data['response'];
+      } else {
+        throw Exception('Error: ${data['error']}');
+      }
+    } else {
+      throw Exception('Status code ${response.statusCode}: ${response.reasonPhrase}.');
     }
   }
 }

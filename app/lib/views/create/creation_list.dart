@@ -1,9 +1,11 @@
 import 'package:app/controllers/journal_controller.dart';
+import 'package:app/controllers/journal_prompt_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:app/views/create/challenge_discovery_wizard.dart';
 import 'package:app/views/create/chat_journal_wizard.dart';
 import 'package:app/views/create/create_challenge_dialog.dart';
+import 'package:app/views/create/journal_prompt_wizard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -35,7 +37,11 @@ class CreationListState extends ConsumerState<CreationList> {
           ),
           ElevatedButton(
             onPressed: _onCreateChatJournalEntry,
-            child: const Text('Chat Journal Entry'),
+            child: const Text('Journal Conversation'),
+          ),
+          ElevatedButton(
+            onPressed: _onCreateJournalPrompt,
+            child: const Text('Journal Prompt'),
           ),
         ],
       ),
@@ -63,7 +69,17 @@ class CreationListState extends ConsumerState<CreationList> {
     widget.hideSelf();
     widget.setSelectedPage(2);
 
-    _onAddJournalEntry((context) => const ChatJournalWizard(), 'New Jounal Entry');
+    _onAddJournalEntry((context) => const ChatJournalWizard(), 'New Journal Conversation');
+  }
+
+  void _onCreateJournalPrompt() {
+    widget.hideSelf();
+    widget.setSelectedPage(2);
+    
+    final journalPromptController = ref.read(journalPromptControllerProvider.notifier);
+    journalPromptController.reload();
+
+    _onAddJournalEntry((context) => const JournalPromptWizard(), 'New Journal Entry');
   }
 
   void _onAddJournalEntry(Widget Function(BuildContext) buildWidget, String name) async {

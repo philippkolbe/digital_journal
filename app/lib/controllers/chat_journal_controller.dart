@@ -40,11 +40,11 @@ class ChatJournalController {
       final systemMessage = _chatController.createSystemChatMessage(prompt);
       _chatController.writeChatMessage(systemMessage);
 
-      await _writeAssistantChatMessage([
+      await _addAssistantResponse([
         AsyncData(systemMessage),
       ]);
     } else {
-      await _writeAssistantChatMessage([]);
+      await _addAssistantResponse([]);
     }
   }
 
@@ -53,10 +53,14 @@ class ChatJournalController {
     await _chatController.writeChatMessage(newMessageObj);
 
     final chatHistoryWithNewMessage = _chatHistory?..insert(0, AsyncData(newMessageObj));    
-    _writeAssistantChatMessage(chatHistoryWithNewMessage);
+    _addAssistantResponse(chatHistoryWithNewMessage);
   }
 
-  Future<void> _writeAssistantChatMessage(List<AsyncValue<ChatMessageObj>>? chatHistory) async {
+  Future<void> writeAssistantChatMessage(AsyncValue<ChatMessageObj> message) async {
+    await _chatController.writeAssistantChatMessage(message);
+  }
+
+  Future<void> _addAssistantResponse(List<AsyncValue<ChatMessageObj>>? chatHistory) async {
     _chatController.addLoadingAssistantChatMessage();
     final response = await _chatBotController.writeBotResponse(chatHistory);
     _chatController.writeAssistantChatMessage(response);
