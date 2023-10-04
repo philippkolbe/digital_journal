@@ -1,19 +1,24 @@
 import 'package:app/models/chat_message.dart';
+import 'package:app/providers/prompts_providers.dart';
 import 'package:app/repositories/ai_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final journalPromptControllerProvider = StateNotifierProvider<JournalPromptController, AsyncValue<ChatMessageObj?>>((ref) {
   final aiRepository = ref.watch(aiRepositoryProvider);
+  final prompts = ref.watch(generalPromptsProvider);
 
   return JournalPromptController(
-    aiRepository
+    aiRepository,
+    prompts
   );
 });
 
 // Create a StateNotifier that manages the state
 class JournalPromptController extends StateNotifier<AsyncValue<ChatMessageObj?>> {
   BaseAIRepository repository;
-  JournalPromptController(this.repository) : super(const AsyncValue.data(null));
+  Map<GeneralPrompts, String> prompts;
+
+  JournalPromptController(this.repository, this.prompts) : super(const AsyncValue.data(null));
 
   void reset() {
     state = const AsyncValue.data(null);
@@ -26,7 +31,7 @@ class JournalPromptController extends StateNotifier<AsyncValue<ChatMessageObj?>>
 
   Future<void> _loadJournalingPrompt() async {
     try {
-      final result = await repository.respondToMessage(_createAIPromptMessage());
+      final result = await repository.respondToMessage(_createAIPrompt());
       final processed = _postProcessPrompt(result);
       state = AsyncValue.data(processed);
     } catch (error, st) {
@@ -34,15 +39,11 @@ class JournalPromptController extends StateNotifier<AsyncValue<ChatMessageObj?>>
     }
   }
 
-  ChatMessageObj _createAIPromptMessage() {
+  ChatMessageObj _createAIPrompt() {
     return ChatMessageObj.user(
       date: DateTime.now(),
-      content: _createAIPrompt(),
+      content: prompts[GeneralPrompts.journalingPrompt]!,
     );
-  }
-
-  String _createAIPrompt() {
-    return 'Write a journaling prompt.';
   }
 
   ChatMessageObj _postProcessPrompt(ChatMessageObj msg) {
