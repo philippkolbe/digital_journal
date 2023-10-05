@@ -1,6 +1,7 @@
 import 'package:app/models/chat_message.dart';
 import 'package:app/models/information.dart';
 import 'package:app/models/journal_entry.dart';
+import 'package:app/models/summary.dart';
 import 'package:app/models/user.dart';
 import 'package:app/models/attribute.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
@@ -21,7 +22,12 @@ final testChatJournalEntry = JournalEntryObj.chat(
   id: testChatJournalEntryId,
   name: 'Chat Journal',
   date: DateTime(2023, 1, 1, 11),
-  goal: 'Test me'
+  goal: 'Test me',
+  summary: SummaryObj(
+    date: DateTime(2023, 1, 1, 11, 2),
+    content: "This is the shortest summary for this chat journal ever!",
+    validUpToId: testChatMessageId,
+  ),
 ) as ChatJournalEntryObj;
 
 const testChatMessageId = 'id_test_message';
