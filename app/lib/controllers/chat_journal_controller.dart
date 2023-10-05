@@ -50,7 +50,7 @@ class ChatJournalController {
 
   Future<void> onChatJournalMessageSent(String content) async {
     final newMessageObj = _chatController.createUserChatMessage(content);
-    await _chatController.writeChatMessage(newMessageObj);
+    await _chatController.writeChatMessage(newMessageObj, byUser: true);
 
     final chatHistoryWithNewMessage = _chatHistory?..insert(0, AsyncData(newMessageObj));    
     _addAssistantResponse(chatHistoryWithNewMessage);
