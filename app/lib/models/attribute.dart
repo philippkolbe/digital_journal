@@ -64,6 +64,7 @@ class AttributeObj with _$AttributeObj {
     return AttributeObj.fromJson(data);
   }
 
+  // TODO: If we just named this runtimeType these conversions would be easier...
   Map<String, dynamic> toDocument() {
     final json = toJson();
     json['type'] = json['runtimeType'];
