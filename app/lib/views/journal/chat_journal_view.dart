@@ -38,7 +38,7 @@ class ChatJournalView extends ConsumerWidget {
           onMessageAdded: (String content) async {
             await chatJournalController.onChatJournalMessageSent(content);
           },
-          messages: chatState,
+          messages: chatState.chat,
         );
       },
       onRetryAfterError: () => onClose(),

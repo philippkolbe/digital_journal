@@ -29,11 +29,14 @@ void main() {
 
       final historyLengthBefore = (await mockChatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId)).length;
 
+      expect(chatController.debugState.value!.modifiedByUser, isFalse);
       // Act
       await chatController.writeUserChatMessage(content);
 
       // Assert
-      final state = chatController.debugState.value!;
+      expect(chatController.debugState.value!.modifiedByUser, isTrue);
+
+      final state = chatController.debugState.value!.chat;
       expect(state.length - historyLengthBefore, 1);
       expect(state[0].valueOrNull, isA<UserChatMessageObj>());
       expect(state[0].valueOrNull!.content, content);
@@ -54,8 +57,11 @@ void main() {
       // Act
       await chatController.writeAssistantChatMessage(AsyncData(botChatMessage));
 
+
       // Assert
-      final state = chatController.debugState.value!;
+      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+
+      final state = chatController.debugState.value!.chat;
       expect(state.length - historyLengthBefore, 1);
       expect(state[0].valueOrNull, isA<AssistantChatMessageObj>());
       expect(state[0].valueOrNull!.content, content);
@@ -74,7 +80,9 @@ void main() {
       chatController.addLoadingAssistantChatMessage();
 
       // Assert
-      final state = chatController.debugState.value!;
+      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+
+      final state = chatController.debugState.value!.chat;
       expect(state.length - historyLengthBefore, 1);
       expect(state[0] is AsyncLoading, true);
     });
@@ -86,8 +94,11 @@ void main() {
       final loading = chatController.addLoadingAssistantChatMessage();
       await chatController.writeAssistantChatMessage(AsyncData(botChatMessage));
 
+
       // Assert
-      final state = chatController.debugState.value!;
+      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+      
+      final state = chatController.debugState.value!.chat;
       expect(state.length, 3);
       expect(state.contains(loading), false);
       expect(state[0] is AsyncData, true);
@@ -103,7 +114,9 @@ void main() {
       chatController.writeAssistantChatMessage(AsyncError(error, st));
 
       // Assert
-      final state = chatController.debugState.value!;
+      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+
+      final state = chatController.debugState.value!.chat;
       expect(state.length, 3);
       expect(state.contains(loading), false);
       expect(state[0] is AsyncError, true);

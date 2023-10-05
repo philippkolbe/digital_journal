@@ -18,7 +18,15 @@ final chatControllerProvider = StateNotifierProvider<ChatController, AsyncValue<
   );
 });
 
-typedef ChatState = List<AsyncValue<ChatMessageObj>>;
+// sorted descendingly by date i.e. newest chat messages are at the front!
+typedef ChatHistory = List<AsyncValue<ChatMessageObj>>;
+
+class ChatState {
+  final String? journalEntryId;
+  final ChatHistory chat;
+  final bool modifiedByUser;
+  ChatState({this.journalEntryId, this.chat=const [], this.modifiedByUser=false});
+}
 
 class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   final String? _userId;
@@ -52,7 +60,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   Future<void> writeUserChatMessage(String content) async {
     final chatMessageObj = createUserChatMessage(content);
 
-    await writeChatMessage(chatMessageObj);
+    await writeChatMessage(chatMessageObj, byUser: true);
   }
 
   ChatMessageObj createUserChatMessage(String content) {
@@ -78,7 +86,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
         id: generateUuid(),
       );
 
-      assert(chatMessageObj is AssistantChatMessageObj, "Can only write Assitant Chat Messages that were written from assitant.");
+      assert(chatMessageObj is AssistantChatMessageObj, "Can only write Assistant Chat Messages that were written from assistant.");
 
       await writeChatMessage(chatMessageObj, replaceAt: indexOfLoadingMessage);
     } else {
@@ -90,7 +98,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     if (state is AsyncData && state.value != null) {
       ChatState history = state.value!;
       const loading = AsyncValue<ChatMessageObj>.loading();
-      state = _addChatMessageInState(history, loading);
+      state = _addChatMessageInState(history, loading, false);
 
       return loading;
     } else {
@@ -102,7 +110,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     return _asyncSelectedJournalEntry.when<AsyncValue<ChatState?>>(
       data: (selectedJournalEntry) {
         if (selectedJournalEntry is ChatJournalEntryObj) {
-          return _loadChatHistory(selectedJournalEntry);
+          return _tryLoadingChatHistory(selectedJournalEntry);
         } else {
           return const AsyncData(null);
         }
@@ -112,12 +120,12 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     );
   }
 
-  AsyncValue<ChatState> _loadChatHistory(JournalEntryObj journalEntry) {
+  AsyncValue<ChatState> _tryLoadingChatHistory(JournalEntryObj journalEntry) {
     try {
       assert(_userId != null, 'User must be authenticated to load their chat history');
       assert(journalEntry.id != null, 'Journal Entries must have an id to load their chat history');
 
-      _readAndSetChatHistoryState(_userId!, journalEntry.id!);
+      _loadChatHistory(_userId!, journalEntry.id!);
 
       return const AsyncLoading();
     } catch (err, st) {
@@ -125,59 +133,88 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     }
   }
 
-  Future<ChatState> _readAndSetChatHistoryState(String userId, String journalEntryId) async {
+  Future<ChatHistory> _loadChatHistory(String userId, String journalEntryId) async {
     final chatHistory = await _chatHistoryRepository.readChatHistory(userId, journalEntryId);
 
-    final chatState = chatHistory.map((message) => AsyncData(message)).toList();
-    state = AsyncData(chatState);
+    final chatHistoryState = chatHistory.map((message) => AsyncData(message)).toList();
+    state = _createLoadedChatState(chatHistoryState);
 
-    return chatState;
+    return chatHistoryState;
   }
 
   int _findLoadingMessageIndex() {
-    return state.valueOrNull?.lastIndexWhere((message) => message is AsyncLoading) ?? -1;
+    return state.valueOrNull?.chat.lastIndexWhere((message) => message is AsyncLoading) ?? -1;
   }
 
-  Future<ChatMessageObj?> writeChatMessage(ChatMessageObj chatMessageObj, { int replaceAt = -1 }) async {
+  Future<ChatMessageObj?> writeChatMessage(
+    ChatMessageObj chatMessageObj,
+    { int replaceAt = -1, bool byUser = false }
+  ) async {
     try {
       final updatedChatMessageObj = await _createChatMessage(chatMessageObj);
 
-      state = _addOrReplaceChatMessageInState(AsyncData(updatedChatMessageObj), replaceAt: replaceAt);
+      state = _addOrReplaceChatMessageInState(
+        AsyncData(updatedChatMessageObj),
+        replaceAt: replaceAt,
+        byUser: byUser,
+      );
 
       return updatedChatMessageObj;
     } catch (err, st) {
-      state = AsyncData(
-        state.value!.map(
+      state = _createLoadedChatState(
+        state.value!.chat.map(
           (asyncMessage) => asyncMessage.valueOrNull == chatMessageObj
             ? AsyncError<ChatMessageObj>(err, st)
             : asyncMessage
-        ).toList()
+        ).toList(),
       );
       
       return null;
     }
   }
 
-  AsyncValue<ChatState> _addOrReplaceChatMessageInState(AsyncValue<ChatMessageObj> chatMessage, { int replaceAt = -1}) {
+  AsyncValue<ChatState> _addOrReplaceChatMessageInState(
+    AsyncValue<ChatMessageObj> chatMessage,
+    { int replaceAt = -1, bool byUser = false }
+  ) {
     assert(state is AsyncData && state.value != null, 'Chat history state must be loaded to write chat messages');
     ChatState history = state.value!;
 
     if (replaceAt == -1) {
-      return _addChatMessageInState(history, chatMessage);
+      return _addChatMessageInState(history, chatMessage, byUser);
     } else {
-      final messageToReplace = history[replaceAt];
-      return AsyncData(
-        history.map(
+      final messageToReplace = history.chat[replaceAt];
+      return _createLoadedChatState(
+        history.chat.map(
           (asyncMessage) => asyncMessage == messageToReplace
             ? chatMessage
             : asyncMessage
         ).toList(),
+        modifiedByUser: byUser
       );
     }
   }
 
-  AsyncValue<ChatState> _addChatMessageInState(ChatState history, AsyncValue<ChatMessageObj> chatMessage) {
-    return AsyncData([chatMessage, ...history]);
+  AsyncValue<ChatState> _addChatMessageInState(
+    ChatState history,
+    AsyncValue<ChatMessageObj> chatMessage,
+    bool byUser
+  ) {
+    return _createLoadedChatState(
+      [chatMessage, ...history.chat],
+      modifiedByUser: byUser,
+    );
+  }
+
+  AsyncValue<ChatState> _createLoadedChatState(
+    ChatHistory chat,
+    { bool modifiedByUser = false }
+  ) {
+    return AsyncData(ChatState(
+      journalEntryId: _asyncSelectedJournalEntry.valueOrNull?.id,
+      chat: chat,
+      modifiedByUser: modifiedByUser,
+    ));
   }
 
   Future<ChatMessageObj> _createChatMessage(ChatMessageObj chatMessageObj) async {

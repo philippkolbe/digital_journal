@@ -10,7 +10,7 @@ final chatJournalControllerProvider = Provider<ChatJournalController>((ref) {
   final chatBotController = ref.read(chatBotControllerProvider.notifier);
   final goalPrompts = ref.watch(goalPromptsProvider);
   final controller = ChatJournalController(
-    chatHistory.valueOrNull,
+    chatHistory.valueOrNull?.chat,
     goalPrompts,
     chatController,
     chatBotController,
