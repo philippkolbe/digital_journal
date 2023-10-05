@@ -4,7 +4,7 @@ import 'package:app/providers/http_client_provider.dart';
 import 'package:app/services/ai_service.dart';
 import 'package:http/src/response.dart';
 
-import 'ai_api_test_data.dart';
+import '../repositories/ai_api_test_data.dart';
 
 class MockHttpClient implements AIHttpClient {
   @override

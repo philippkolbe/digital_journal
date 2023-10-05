@@ -6,7 +6,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:app/controllers/chat_controller.dart';
 
 import '../repositories/firebase_test_data.dart';
-import 'mock_chat_history_repository.dart';
+import '../mocks/mock_chat_history_repository.dart';
 
 void main() {
   late ChatController chatController;

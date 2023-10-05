@@ -4,8 +4,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import '../repositories/firebase_test_data.dart';
-import 'mock_chat_history_repository.dart';
-import 'mock_journal_repository.dart';
+import '../mocks/mock_chat_history_repository.dart';
+import '../mocks/mock_journal_repository.dart';
 
 void main() {
   group('JournalControllerTest', () {
