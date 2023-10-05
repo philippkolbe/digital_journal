@@ -27,7 +27,7 @@ def chat(request: flask.Request) -> flask.Response:
       id_token = auth_header.split('Bearer ')[1]
       
       if id_token == None or id_token == '':
-        raise AuthError('Please provider a Bearer Authorization token')
+        raise AuthError('Please provide a Bearer Authorization token')
 
       decoded_token = auth.verify_id_token(id_token)
     except Exception as err:
