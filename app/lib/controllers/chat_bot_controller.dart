@@ -1,11 +1,11 @@
 import 'package:app/controllers/auth_controller.dart';
 import 'package:app/models/chat_message.dart';
-import 'package:app/repositories/ai_repository.dart';
+import 'package:app/services/ai_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final chatBotControllerProvider = StateNotifierProvider<ChatBotController, AsyncValue<ChatMessageObj?>>((ref) {
   final authState = ref.watch(authControllerProvider);
-  final aiRepository = ref.read(aiRepositoryProvider);
+  final aiRepository = ref.read(aiServiceProvider);
 
   return ChatBotController(
     authState.valueOrNull?.currentUser.id,
@@ -21,7 +21,7 @@ final chatBotControllerProvider = StateNotifierProvider<ChatBotController, Async
 /// TODO: This should be handled correctly by waiting until one response has been finished before starting the next and including all the bots messages inbetween.
 class ChatBotController extends StateNotifier<AsyncValue<ChatMessageObj?>> {
   final String? _userId;
-  final BaseAIRepository _aiRepository;
+  final BaseAIService _aiRepository;
 
   ChatBotController(
     this._userId,
