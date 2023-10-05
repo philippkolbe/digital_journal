@@ -1,12 +1,14 @@
 import 'package:app/models/journal_entry.dart';
+import 'package:app/providers/encrypter_provider.dart';
 import 'package:app/providers/firebase_providers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final journalRepositoryProvider = Provider<BaseJournalRepository>((Ref ref) {
   final firestore = ref.read(firebaseFirestoreProvider);
+  final encrypterFuture = ref.watch(encrypterFutureProvider);
 
-  return JournalRepository(firestore);
+  return JournalRepository(firestore, encrypterFuture);
 });
 
 abstract class BaseJournalRepository {
@@ -20,14 +22,15 @@ abstract class BaseJournalRepository {
 
 class JournalRepository implements BaseJournalRepository {
   final FirebaseFirestore _firestore;
+  final Future<Encrypter> _encrypter;
 
-  JournalRepository(this._firestore);
+  JournalRepository(this._firestore, this._encrypter);
 
   @override
   Future<String> createSimpleJournalEntry(String userId, SimpleJournalEntryObj entry) async {
     try {
       final collection = _getJournalEntriesCollection(userId);
-      final doc = entry.toDocument();
+      final doc = await _createDocData(entry);
 
       return _addOrSetDocument(collection, doc, entry.id);
     } catch (e) {
@@ -39,7 +42,7 @@ class JournalRepository implements BaseJournalRepository {
   Future<String> createChatJournalEntry(String userId, ChatJournalEntryObj entry) async {
     try {
       final collection = _getJournalEntriesCollection(userId);
-      final doc = entry.toDocument();
+      final doc = await _createDocData(entry);
 
       return _addOrSetDocument(collection, doc, entry.id);
     } catch (e) {
@@ -53,9 +56,9 @@ class JournalRepository implements BaseJournalRepository {
       final snapshot = await _getJournalEntriesCollection(userId)
         .orderBy('date', descending: true)
         .get();
-      return snapshot.docs.map((doc) => JournalEntryObj.fromDocument(doc)).toList();
+      return Future.wait(snapshot.docs.map(_createJournalEntryObj).toList());
     } catch (e) {
-      throw JournalException('An error occured while reading all journal entry', userId: userId);
+      throw JournalException('An error occured while reading all journal entries', userId: userId);
     }
   }
 
@@ -64,7 +67,7 @@ class JournalRepository implements BaseJournalRepository {
     try {
       final docSnapshot = await _getJournalEntriesCollection(userId).doc(entryId).get();
       if (docSnapshot.exists) {
-        return JournalEntryObj.fromDocument(docSnapshot);
+        return _createJournalEntryObj(docSnapshot);
       } else {
         // Entry does not exist
         throw Exception('Journal entry not found.');
@@ -78,9 +81,10 @@ class JournalRepository implements BaseJournalRepository {
   Future<JournalEntryObj> updateJournalEntry(String userId, JournalEntryObj entry) async {
     try {
       assert(entry.id != null, 'Define an entry id for updating it.');
+
       await _getJournalEntriesCollection(userId)
         .doc(entry.id)
-        .update(entry.toDocument());
+        .update(await _createDocData(entry));
 
       return readJournalEntry(userId, entry.id!);
     } catch (e) {
@@ -97,6 +101,24 @@ class JournalRepository implements BaseJournalRepository {
     }
   }
 
+  Future<Map<String, dynamic>> _createDocData(JournalEntryObj entry) async {
+    final encrypter = await _encrypter;
+    final data = entry.toDocument();
+    if (data['name'] != null) {
+      data['name'] = encrypter.encrypt(data['name']);
+    }
+
+    if (data['summaryContent'] != null) {
+      data['summaryContent'] = encrypter.encrypt(data['summaryContent']);
+    }
+    
+    if (data['content'] != null) {
+      data['content'] = encrypter.encrypt(data['content']);
+    }
+
+    return data;
+  }
+
   Future<String> _addOrSetDocument(CollectionReference collection, Map<String, dynamic> doc, String? id) async {
     if (id != null) {
       await collection.doc(id).set(doc);
@@ -105,6 +127,29 @@ class JournalRepository implements BaseJournalRepository {
       final newDoc = await collection.add(doc);
       return newDoc.id;
     }
+  }
+
+  Future<JournalEntryObj> _createJournalEntryObj(DocumentSnapshot doc) async {
+    final encrypter = await _encrypter;
+
+    var obj = JournalEntryObj.fromDocument(doc);
+    if (obj.summary != null) {
+      obj = obj.copyWith(
+        summary: obj.summary!.copyWith(
+          content: encrypter.decrypt(obj.summary!.content),
+        ),
+      );
+    }
+
+    if (obj is SimpleJournalEntryObj && obj.content != null) {
+      obj = obj.copyWith(
+        content: encrypter.decrypt(obj.content!),
+      );
+    }
+
+    return obj.copyWith(
+      name: encrypter.decrypt(obj.name),
+    );
   }
 
   CollectionReference _getJournalEntriesCollection(String userId) {
