@@ -27,7 +27,14 @@ final summaryProvider = FutureProvider<SummaryObj?>((ref) async {
   if (chatState != null && chatState.wasModifiedByUser) {
     final summaryDate = DateTime.now();
     final summary = await _computeSummary(aiService, prompts, previousSummary, chatState.chat);
-    final validUpToId = chatState.chat.firstOrNull?.valueOrNull?.id;
+    String? validUpToId;
+    for (final asyncChatMessage in chatState.chat) {
+      if (asyncChatMessage is AsyncData<ChatMessageObj> && asyncChatMessage.value is UserChatMessageObj) {
+        validUpToId = asyncChatMessage.value.id;
+        break;
+      }
+    }
+
     final summaryObj = SummaryObj(
       date: summaryDate,
       content: summary,
