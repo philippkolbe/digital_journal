@@ -24,8 +24,8 @@ typedef ChatHistory = List<AsyncValue<ChatMessageObj>>;
 class ChatState {
   final String? journalEntryId;
   final ChatHistory chat;
-  final bool modifiedByUser;
-  ChatState({this.journalEntryId, this.chat=const [], this.modifiedByUser=false});
+  final bool wasModifiedByUser;
+  ChatState({this.journalEntryId, this.chat=const [], this.wasModifiedByUser=false});
 }
 
 class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
@@ -98,11 +98,22 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     if (state is AsyncData && state.value != null) {
       ChatState history = state.value!;
       const loading = AsyncValue<ChatMessageObj>.loading();
-      state = _addChatMessageInState(history, loading, state.valueOrNull?.modifiedByUser ?? false);
+      state = _addChatMessageInState(history, loading, state.valueOrNull?.wasModifiedByUser ?? false);
 
       return loading;
     } else {
       return null;
+    }
+  }
+
+  void setModifiedByUser(JournalEntryObj entry, bool wasModifiedByUser) {
+    final chatState = state.valueOrNull;
+    if (state is AsyncData && chatState!.journalEntryId == entry.id) {
+      state = AsyncData(ChatState(
+        chat: chatState.chat,
+        journalEntryId: chatState.journalEntryId,
+        wasModifiedByUser: wasModifiedByUser
+      ));
     }
   }
 
@@ -213,7 +224,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     return AsyncData(ChatState(
       journalEntryId: _asyncSelectedJournalEntry.valueOrNull?.id,
       chat: chat,
-      modifiedByUser: modifiedByUser,
+      wasModifiedByUser: modifiedByUser,
     ));
   }
 

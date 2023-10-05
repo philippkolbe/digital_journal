@@ -29,12 +29,12 @@ void main() {
 
       final historyLengthBefore = (await mockChatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId)).length;
 
-      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+      expect(chatController.debugState.value!.wasModifiedByUser, isFalse);
       // Act
       await chatController.writeUserChatMessage(content);
 
       // Assert
-      expect(chatController.debugState.value!.modifiedByUser, isTrue);
+      expect(chatController.debugState.value!.wasModifiedByUser, isTrue);
 
       final state = chatController.debugState.value!.chat;
       expect(state.length - historyLengthBefore, 1);
@@ -59,7 +59,7 @@ void main() {
 
 
       // Assert
-      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+      expect(chatController.debugState.value!.wasModifiedByUser, isFalse);
 
       final state = chatController.debugState.value!.chat;
       expect(state.length - historyLengthBefore, 1);
@@ -80,7 +80,7 @@ void main() {
       chatController.addLoadingAssistantChatMessage();
 
       // Assert
-      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+      expect(chatController.debugState.value!.wasModifiedByUser, isFalse);
 
       final state = chatController.debugState.value!.chat;
       expect(state.length - historyLengthBefore, 1);
@@ -96,7 +96,7 @@ void main() {
 
 
       // Assert
-      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+      expect(chatController.debugState.value!.wasModifiedByUser, isFalse);
       
       final state = chatController.debugState.value!.chat;
       expect(state.length, 3);
@@ -114,7 +114,7 @@ void main() {
       chatController.writeAssistantChatMessage(AsyncError(error, st));
 
       // Assert
-      expect(chatController.debugState.value!.modifiedByUser, isFalse);
+      expect(chatController.debugState.value!.wasModifiedByUser, isFalse);
 
       final state = chatController.debugState.value!.chat;
       expect(state.length, 3);

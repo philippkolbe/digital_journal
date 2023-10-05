@@ -24,7 +24,7 @@ final summaryProvider = FutureProvider<SummaryObj?>((ref) async {
   final prompts = ref.watch(generalPromptsProvider);
   final previousSummary = journalEntry!.summary;
 
-  if (chatState != null && chatState.modifiedByUser) {
+  if (chatState != null && chatState.wasModifiedByUser) {
     final summaryDate = DateTime.now();
     final summary = await _computeSummary(aiService, prompts, previousSummary, chatState.chat);
     final validUpToId = chatState.chat.firstOrNull?.valueOrNull?.id;
