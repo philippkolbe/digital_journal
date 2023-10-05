@@ -74,7 +74,16 @@ class HomeWidget extends ConsumerWidget {
           if (authState != null) {
             return const NavigationView();
           } else {
-            return const Text('Welcome to the Digital Journal!');
+            return const Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Welcome to 7Journal!', textScaleFactor: 2),
+                SizedBox(height: 45),
+                CircularProgressIndicator(),
+                SizedBox(height: 10),
+                Text('Signing in...', textScaleFactor: 0.75),
+              ]
+              );
           }
         }
       ),
