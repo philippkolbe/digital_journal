@@ -1,6 +1,8 @@
 import 'package:app/models/chat_message.dart';
+import 'package:app/models/information.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/models/user.dart';
+import 'package:app/models/attribute.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 
 const testUserId = 'id_test_user';
@@ -36,7 +38,23 @@ final testChatBotMessageObj = ChatMessageObj.assistant(
   content: 'Hi, I am a bot.',
 );
 
-FakeFirebaseFirestore setupFakeFirestore({ bool user = false, bool journal = true, bool chat = true }) {
+const testAttributeId = 'id_test_attribute';
+const testAttributeObj = AttributeObj.like(
+  id: testAttributeId,
+  description: 'This is a test attribute description',
+  level: 5,
+);
+
+const testInformationId = 'id_test_information';
+final testInformationObj = InformationObj(
+  id: testInformationId,
+  description: 'Some random info',
+  date: DateTime(2024, 1, 1, 11, 7),
+  expirationDate: DateTime(2024, 1, 1, 19, 7),
+  importance: 3,
+);
+
+FakeFirebaseFirestore setupFakeFirestore({ user = false, journal = true, chat = true, attribute = true, information = true }) {
   final firestore = FakeFirebaseFirestore();
 
   if (user) {
@@ -53,6 +71,18 @@ FakeFirebaseFirestore setupFakeFirestore({ bool user = false, bool journal = tru
       if (chat) {
         chatDoc.collection('chatHistory').doc(testChatMessageId).set(testChatMessageObj.toDocument());
       }
+    }
+
+    if (attribute) {
+      final attributeCollection = userDoc.collection('attributes');
+      final attributeDoc = attributeCollection.doc(testAttributeId);
+      attributeDoc.set(testAttributeObj.toDocument());
+    }
+
+    if (information) {
+      final informationCollection = userDoc.collection('information');
+      final informationDoc = informationCollection.doc(testInformationId);
+      informationDoc.set(testInformationObj.toDocument());
     }
   }
 
