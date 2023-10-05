@@ -5,27 +5,27 @@ import 'package:app/models/chat_message.dart';
 import 'package:app/providers/http_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final aiRepositoryProvider = Provider<BaseAIRepository>((ref) {
+final aiServiceProvider = Provider<BaseAIService>((ref) {
   final asyncAuthState = ref.read(authControllerProvider);
   final httpClient = ref.watch(httpClientProvider);
-  return AIRepository(
+  return AIService(
     httpClient: httpClient,
     userId: asyncAuthState.valueOrNull?.currentUser.id
   );
 });
 
-abstract class BaseAIRepository {
+abstract class BaseAIService {
   Future<ChatMessageObj> respondToMessage(ChatMessageObj chatMessageObj);
   Future<ChatMessageObj> respondToChat(List<ChatMessageObj> chatMessages);
 }
 
-class AIRepository implements BaseAIRepository {
+class AIService implements BaseAIService {
   static const String chatRoute = '/chat';
   
   final AIHttpClient httpClient;
   final String? userId;
 
-  AIRepository({required this.httpClient, required this.userId });
+  AIService({required this.httpClient, required this.userId });
 
   @override
   Future<ChatMessageObj> respondToMessage(ChatMessageObj chatMessageObj) {
@@ -55,7 +55,7 @@ class AIRepository implements BaseAIRepository {
     assert(userId != null, "User must be authenticated to use the AI Repository.");
 
     final response = await httpClient.post(
-      AIRepository.chatRoute,
+      AIService.chatRoute,
       body: body,
     );
 

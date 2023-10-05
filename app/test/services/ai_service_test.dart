@@ -1,18 +1,18 @@
-import 'package:app/repositories/ai_repository.dart';
+import 'package:app/services/ai_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'ai_api_test_data.dart';
-import 'firebase_test_data.dart';
-import 'mock_http_client.dart';
+import '../repositories/ai_api_test_data.dart';
+import '../repositories/firebase_test_data.dart';
+import '../repositories/mock_http_client.dart';
 
 void main() {
   group('ChatHistoryRepository', () {
     late MockHttpClient httpClient;
-    late BaseAIRepository repository;
+    late BaseAIService repository;
     
     setUp(() {
       httpClient = MockHttpClient();
-      repository = AIRepository(httpClient: httpClient, userId: testUserId);
+      repository = AIService(httpClient: httpClient, userId: testUserId);
     });
     
     test('createChatMessage should add a new chat message to the collection', () async {

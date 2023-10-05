@@ -1,10 +1,10 @@
 import 'package:app/models/chat_message.dart';
 import 'package:app/providers/prompts_providers.dart';
-import 'package:app/repositories/ai_repository.dart';
+import 'package:app/services/ai_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final journalPromptControllerProvider = StateNotifierProvider<JournalPromptController, AsyncValue<ChatMessageObj?>>((ref) {
-  final aiRepository = ref.watch(aiRepositoryProvider);
+  final aiRepository = ref.watch(aiServiceProvider);
   final prompts = ref.watch(generalPromptsProvider);
 
   return JournalPromptController(
@@ -15,7 +15,7 @@ final journalPromptControllerProvider = StateNotifierProvider<JournalPromptContr
 
 // Create a StateNotifier that manages the state
 class JournalPromptController extends StateNotifier<AsyncValue<ChatMessageObj?>> {
-  BaseAIRepository repository;
+  BaseAIService repository;
   Map<GeneralPrompts, String> prompts;
 
   JournalPromptController(this.repository, this.prompts) : super(const AsyncValue.data(null));

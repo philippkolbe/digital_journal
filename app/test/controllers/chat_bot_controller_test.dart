@@ -1,12 +1,12 @@
 import 'package:app/controllers/chat_controller.dart';
 import 'package:app/models/chat_message.dart';
-import 'package:app/repositories/ai_repository.dart';
+import 'package:app/services/ai_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app/controllers/chat_bot_controller.dart';
 
 import '../repositories/firebase_test_data.dart';
-import 'mock_ai_repository.dart';
+import 'mock_ai_service.dart';
 import 'mock_chat_history_repository.dart';
 
 void main() {
@@ -14,10 +14,10 @@ void main() {
     late ChatBotController chatBotController;
     late ChatController chatController;
     late MockChatHistoryRepository chatHistoryRepository;
-    late MockAIRepository aiRepository;
+    late MockAIService aiRepository;
 
     setUp(() {
-      aiRepository = MockAIRepository();
+      aiRepository = MockAIService();
       chatHistoryRepository = MockChatHistoryRepository();
       final asyncJournalEntry = testChatJournalEntry;
       chatController = ChatController(testUserId, AsyncData(asyncJournalEntry), chatHistoryRepository);
@@ -36,7 +36,7 @@ void main() {
 
       await chatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId);
       // Chat history is loaded
-      final response = await chatBotController.writeBotResponse(chatController.debugState.valueOrNull);
+      final response = await chatBotController.writeBotResponse(chatController.debugState.valueOrNull?.chat);
 
       expect(chatBotController.debugState, isA<AsyncData<ChatMessageObj?>>());
       expect(chatBotController.debugState.value, equals(mockBotResponse));
@@ -54,7 +54,7 @@ void main() {
 
       await chatHistoryRepository.readChatHistory(testUserId, testChatJournalEntryId);
       // Chat history is loaded
-      final response = await chatBotController.writeBotResponse(chatController.debugState.valueOrNull);
+      final response = await chatBotController.writeBotResponse(chatController.debugState.valueOrNull?.chat);
       expect(chatBotController.debugState, isA<AsyncError>());
       expect(chatBotController.debugState.error, mockBotException);
 

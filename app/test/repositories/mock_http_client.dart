@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/providers/http_client_provider.dart';
-import 'package:app/repositories/ai_repository.dart';
+import 'package:app/services/ai_service.dart';
 import 'package:http/src/response.dart';
 
 import 'ai_api_test_data.dart';
@@ -19,7 +19,7 @@ class MockHttpClient implements AIHttpClient {
 
   @override
   Future<Response> post(String endpoint, {Map<String, dynamic> body = const {}}) {
-    if (endpoint == AIRepository.chatRoute) {
+    if (endpoint == AIService.chatRoute) {
       return Future.value(Response(
         jsonEncode(mockChatResponseBody),
         200,

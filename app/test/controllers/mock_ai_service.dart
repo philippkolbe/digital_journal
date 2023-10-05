@@ -1,9 +1,9 @@
 import 'package:app/models/chat_message.dart';
-import 'package:app/repositories/ai_repository.dart';
+import 'package:app/services/ai_service.dart';
 
 import '../repositories/firebase_test_data.dart';
 
-class MockAIRepository implements BaseAIRepository {
+class MockAIService implements BaseAIService {
   ChatMessageObj mockBotResponse = testChatMessageObj;
   Exception? mockBotException;
   
