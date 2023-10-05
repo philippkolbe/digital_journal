@@ -121,11 +121,12 @@ class __$$_SummaryObjCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$_SummaryObj implements _SummaryObj {
+class _$_SummaryObj extends _SummaryObj {
   const _$_SummaryObj(
       {@DateConverter() required this.date,
       this.validUpToId,
-      this.content = ""});
+      this.content = ""})
+      : super._();
 
   factory _$_SummaryObj.fromJson(Map<String, dynamic> json) =>
       _$$_SummaryObjFromJson(json);
@@ -173,11 +174,12 @@ class _$_SummaryObj implements _SummaryObj {
   }
 }
 
-abstract class _SummaryObj implements SummaryObj {
+abstract class _SummaryObj extends SummaryObj {
   const factory _SummaryObj(
       {@DateConverter() required final DateTime date,
       final String? validUpToId,
       final String content}) = _$_SummaryObj;
+  const _SummaryObj._() : super._();
 
   factory _SummaryObj.fromJson(Map<String, dynamic> json) =
       _$_SummaryObj.fromJson;

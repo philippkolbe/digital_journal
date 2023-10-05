@@ -34,12 +34,12 @@ final summaryProvider = FutureProvider<SummaryObj?>((ref) async {
       validUpToId: validUpToId,
     );
 
-    final lastDate = ref.state.valueOrNull?.date;
-    if (lastDate == null || summaryDate.isAfter(lastDate)) {
-      journalRepository.updateJournalEntry(journalEntry.copyWith(
-        summary: summaryObj,
-      ));
-    }
+    // final lastDate = ref.state.valueOrNull?.date;
+    // if (lastDate == null || summaryDate.isAfter(lastDate)) {
+    //   journalRepository.updateJournalEntry(journalEntry.copyWith(
+    //     summary: summaryObj,
+    //   ));
+    // }
 
     // lets hope that provider can deal with asynchronous requests properly.
     // I am scared that summaries that need longer to compute might overwrite newer summaries.
