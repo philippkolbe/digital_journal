@@ -1,6 +1,7 @@
 import 'package:app/models/converters/date_converter.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:app/models/summary.dart';
 
 part 'journal_entry.freezed.dart';
 part 'journal_entry.g.dart';
@@ -19,6 +20,7 @@ class JournalEntryObj with _$JournalEntryObj {
     required String name,
     @DateConverter() required DateTime date,
     @Default("") String? content,
+    SummaryObj? summary,
   }) = SimpleJournalEntryObj;
 
   const factory JournalEntryObj.chat({
@@ -26,54 +28,27 @@ class JournalEntryObj with _$JournalEntryObj {
     required String name,
     @DateConverter() required DateTime date,
     String? goal, 
+    SummaryObj? summary,
   }) = ChatJournalEntryObj;
 
   factory JournalEntryObj.fromJson(Map<String,dynamic> json) => _$JournalEntryObjFromJson(json);
 
   factory JournalEntryObj.fromDocument(DocumentSnapshot doc) {
-    final data = doc.data() as Map<String, dynamic>;
+    final data = doc.data();
 
-    final typeString = data['type'];
-    final type = JournalEntryType.values.firstWhere(
-      (entryType) => entryType.name == typeString,
-      orElse: () => throw Exception('Invalid journal entry type $typeString.'),
-    );
-
-    const dateConverter = DateConverter();
-
-    switch (type) {
-      case JournalEntryType.simple:
-        return JournalEntryObj.simple(
-          id: doc.id,
-          name: data['name'] as String,
-          date: dateConverter.fromJson(data['date'] as Timestamp),
-          content: data['content'],
-        );
-      case JournalEntryType.chat:
-        return JournalEntryObj.chat(
-          id: doc.id,
-          name: data['name'] as String,
-          date: dateConverter.fromJson(data['date'] as Timestamp),
-          goal: data['goal'],
-        );
-      default:
-        throw Exception('Invalid journal entry type');
-    }
+    assert(data != null, "Document has to exist to create a JournalEntryObj");
+    (data as Map<String, dynamic>)['id'] = doc.id;
+    data['runtimeType'] = data['type'];
+    return JournalEntryObj.fromJson(data);
   }
 
+  // TODO: If we just named this runtimeType these conversions would be easier...
   Map<String, dynamic> toDocument() {
-    final json = toJson()
-      ..remove('runtimeType')
-      ..remove('id');
+    final json = toJson();
+    json['type'] = json['runtimeType'];
 
-    if (this is SimpleJournalEntryObj) {
-      return json
-        ..addEntries([MapEntry('type', JournalEntryType.simple.name)]);
-    } else if (this is ChatJournalEntryObj) {
-      return json
-        ..addEntries([MapEntry('type', JournalEntryType.chat.name)]);
-    } else {
-      throw Exception('Invalid journal entry type');
-    }
+    return json
+      ..remove('id')
+      ..remove('runtimeType');
   }
 }

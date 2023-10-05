@@ -13,6 +13,9 @@ _$SimpleJournalEntryObj _$$SimpleJournalEntryObjFromJson(
       name: json['name'] as String,
       date: const DateConverter().fromJson(json['date'] as Timestamp),
       content: json['content'] as String? ?? "",
+      summary: json['summary'] == null
+          ? null
+          : SummaryObj.fromJson(json['summary'] as Map<String, dynamic>),
       $type: json['runtimeType'] as String?,
     );
 
@@ -23,6 +26,7 @@ Map<String, dynamic> _$$SimpleJournalEntryObjToJson(
       'name': instance.name,
       'date': const DateConverter().toJson(instance.date),
       'content': instance.content,
+      'summary': instance.summary,
       'runtimeType': instance.$type,
     };
 
@@ -33,6 +37,9 @@ _$ChatJournalEntryObj _$$ChatJournalEntryObjFromJson(
       name: json['name'] as String,
       date: const DateConverter().fromJson(json['date'] as Timestamp),
       goal: json['goal'] as String?,
+      summary: json['summary'] == null
+          ? null
+          : SummaryObj.fromJson(json['summary'] as Map<String, dynamic>),
       $type: json['runtimeType'] as String?,
     );
 
@@ -43,5 +50,6 @@ Map<String, dynamic> _$$ChatJournalEntryObjToJson(
       'name': instance.name,
       'date': const DateConverter().toJson(instance.date),
       'goal': instance.goal,
+      'summary': instance.summary,
       'runtimeType': instance.$type,
     };

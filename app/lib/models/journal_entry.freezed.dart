@@ -33,33 +33,38 @@ mixin _$JournalEntryObj {
   String get name => throw _privateConstructorUsedError;
   @DateConverter()
   DateTime get date => throw _privateConstructorUsedError;
+  SummaryObj? get summary => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? content)
+    required TResult Function(
+            String? id,
+            String name,
+            @DateConverter() DateTime date,
+            String? content,
+            SummaryObj? summary)
         simple,
     required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? goal)
+            @DateConverter() DateTime date, String? goal, SummaryObj? summary)
         chat,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? content)?
+            String? content, SummaryObj? summary)?
         simple,
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal)?
+            String? goal, SummaryObj? summary)?
         chat,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? content)?
+            String? content, SummaryObj? summary)?
         simple,
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal)?
+            String? goal, SummaryObj? summary)?
         chat,
     required TResult orElse(),
   }) =>
@@ -95,7 +100,13 @@ abstract class $JournalEntryObjCopyWith<$Res> {
           JournalEntryObj value, $Res Function(JournalEntryObj) then) =
       _$JournalEntryObjCopyWithImpl<$Res, JournalEntryObj>;
   @useResult
-  $Res call({String? id, String name, @DateConverter() DateTime date});
+  $Res call(
+      {String? id,
+      String name,
+      @DateConverter() DateTime date,
+      SummaryObj? summary});
+
+  $SummaryObjCopyWith<$Res>? get summary;
 }
 
 /// @nodoc
@@ -114,6 +125,7 @@ class _$JournalEntryObjCopyWithImpl<$Res, $Val extends JournalEntryObj>
     Object? id = freezed,
     Object? name = null,
     Object? date = null,
+    Object? summary = freezed,
   }) {
     return _then(_value.copyWith(
       id: freezed == id
@@ -128,7 +140,23 @@ class _$JournalEntryObjCopyWithImpl<$Res, $Val extends JournalEntryObj>
           ? _value.date
           : date // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      summary: freezed == summary
+          ? _value.summary
+          : summary // ignore: cast_nullable_to_non_nullable
+              as SummaryObj?,
     ) as $Val);
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $SummaryObjCopyWith<$Res>? get summary {
+    if (_value.summary == null) {
+      return null;
+    }
+
+    return $SummaryObjCopyWith<$Res>(_value.summary!, (value) {
+      return _then(_value.copyWith(summary: value) as $Val);
+    });
   }
 }
 
@@ -144,7 +172,11 @@ abstract class _$$SimpleJournalEntryObjCopyWith<$Res>
       {String? id,
       String name,
       @DateConverter() DateTime date,
-      String? content});
+      String? content,
+      SummaryObj? summary});
+
+  @override
+  $SummaryObjCopyWith<$Res>? get summary;
 }
 
 /// @nodoc
@@ -162,6 +194,7 @@ class __$$SimpleJournalEntryObjCopyWithImpl<$Res>
     Object? name = null,
     Object? date = null,
     Object? content = freezed,
+    Object? summary = freezed,
   }) {
     return _then(_$SimpleJournalEntryObj(
       id: freezed == id
@@ -180,6 +213,10 @@ class __$$SimpleJournalEntryObjCopyWithImpl<$Res>
           ? _value.content
           : content // ignore: cast_nullable_to_non_nullable
               as String?,
+      summary: freezed == summary
+          ? _value.summary
+          : summary // ignore: cast_nullable_to_non_nullable
+              as SummaryObj?,
     ));
   }
 }
@@ -192,6 +229,7 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
       required this.name,
       @DateConverter() required this.date,
       this.content = "",
+      this.summary,
       final String? $type})
       : $type = $type ?? 'simple',
         super._();
@@ -209,13 +247,15 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
   @override
   @JsonKey()
   final String? content;
+  @override
+  final SummaryObj? summary;
 
   @JsonKey(name: 'runtimeType')
   final String $type;
 
   @override
   String toString() {
-    return 'JournalEntryObj.simple(id: $id, name: $name, date: $date, content: $content)';
+    return 'JournalEntryObj.simple(id: $id, name: $name, date: $date, content: $content, summary: $summary)';
   }
 
   @override
@@ -226,12 +266,14 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.date, date) || other.date == date) &&
-            (identical(other.content, content) || other.content == content));
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.summary, summary) || other.summary == summary));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, date, content);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, date, content, summary);
 
   @JsonKey(ignore: true)
   @override
@@ -243,42 +285,46 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? content)
+    required TResult Function(
+            String? id,
+            String name,
+            @DateConverter() DateTime date,
+            String? content,
+            SummaryObj? summary)
         simple,
     required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? goal)
+            @DateConverter() DateTime date, String? goal, SummaryObj? summary)
         chat,
   }) {
-    return simple(id, name, date, content);
+    return simple(id, name, date, content, summary);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? content)?
+            String? content, SummaryObj? summary)?
         simple,
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal)?
+            String? goal, SummaryObj? summary)?
         chat,
   }) {
-    return simple?.call(id, name, date, content);
+    return simple?.call(id, name, date, content, summary);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? content)?
+            String? content, SummaryObj? summary)?
         simple,
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal)?
+            String? goal, SummaryObj? summary)?
         chat,
     required TResult orElse(),
   }) {
     if (simple != null) {
-      return simple(id, name, date, content);
+      return simple(id, name, date, content, summary);
     }
     return orElse();
   }
@@ -327,7 +373,8 @@ abstract class SimpleJournalEntryObj extends JournalEntryObj {
       {final String? id,
       required final String name,
       @DateConverter() required final DateTime date,
-      final String? content}) = _$SimpleJournalEntryObj;
+      final String? content,
+      final SummaryObj? summary}) = _$SimpleJournalEntryObj;
   const SimpleJournalEntryObj._() : super._();
 
   factory SimpleJournalEntryObj.fromJson(Map<String, dynamic> json) =
@@ -341,6 +388,8 @@ abstract class SimpleJournalEntryObj extends JournalEntryObj {
   @DateConverter()
   DateTime get date;
   String? get content;
+  @override
+  SummaryObj? get summary;
   @override
   @JsonKey(ignore: true)
   _$$SimpleJournalEntryObjCopyWith<_$SimpleJournalEntryObj> get copyWith =>
@@ -356,7 +405,14 @@ abstract class _$$ChatJournalEntryObjCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? id, String name, @DateConverter() DateTime date, String? goal});
+      {String? id,
+      String name,
+      @DateConverter() DateTime date,
+      String? goal,
+      SummaryObj? summary});
+
+  @override
+  $SummaryObjCopyWith<$Res>? get summary;
 }
 
 /// @nodoc
@@ -374,6 +430,7 @@ class __$$ChatJournalEntryObjCopyWithImpl<$Res>
     Object? name = null,
     Object? date = null,
     Object? goal = freezed,
+    Object? summary = freezed,
   }) {
     return _then(_$ChatJournalEntryObj(
       id: freezed == id
@@ -392,6 +449,10 @@ class __$$ChatJournalEntryObjCopyWithImpl<$Res>
           ? _value.goal
           : goal // ignore: cast_nullable_to_non_nullable
               as String?,
+      summary: freezed == summary
+          ? _value.summary
+          : summary // ignore: cast_nullable_to_non_nullable
+              as SummaryObj?,
     ));
   }
 }
@@ -404,6 +465,7 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
       required this.name,
       @DateConverter() required this.date,
       this.goal,
+      this.summary,
       final String? $type})
       : $type = $type ?? 'chat',
         super._();
@@ -420,13 +482,15 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
   final DateTime date;
   @override
   final String? goal;
+  @override
+  final SummaryObj? summary;
 
   @JsonKey(name: 'runtimeType')
   final String $type;
 
   @override
   String toString() {
-    return 'JournalEntryObj.chat(id: $id, name: $name, date: $date, goal: $goal)';
+    return 'JournalEntryObj.chat(id: $id, name: $name, date: $date, goal: $goal, summary: $summary)';
   }
 
   @override
@@ -437,12 +501,13 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.date, date) || other.date == date) &&
-            (identical(other.goal, goal) || other.goal == goal));
+            (identical(other.goal, goal) || other.goal == goal) &&
+            (identical(other.summary, summary) || other.summary == summary));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, date, goal);
+  int get hashCode => Object.hash(runtimeType, id, name, date, goal, summary);
 
   @JsonKey(ignore: true)
   @override
@@ -454,42 +519,46 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? content)
+    required TResult Function(
+            String? id,
+            String name,
+            @DateConverter() DateTime date,
+            String? content,
+            SummaryObj? summary)
         simple,
     required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? goal)
+            @DateConverter() DateTime date, String? goal, SummaryObj? summary)
         chat,
   }) {
-    return chat(id, name, date, goal);
+    return chat(id, name, date, goal, summary);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? content)?
+            String? content, SummaryObj? summary)?
         simple,
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal)?
+            String? goal, SummaryObj? summary)?
         chat,
   }) {
-    return chat?.call(id, name, date, goal);
+    return chat?.call(id, name, date, goal, summary);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? content)?
+            String? content, SummaryObj? summary)?
         simple,
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal)?
+            String? goal, SummaryObj? summary)?
         chat,
     required TResult orElse(),
   }) {
     if (chat != null) {
-      return chat(id, name, date, goal);
+      return chat(id, name, date, goal, summary);
     }
     return orElse();
   }
@@ -538,7 +607,8 @@ abstract class ChatJournalEntryObj extends JournalEntryObj {
       {final String? id,
       required final String name,
       @DateConverter() required final DateTime date,
-      final String? goal}) = _$ChatJournalEntryObj;
+      final String? goal,
+      final SummaryObj? summary}) = _$ChatJournalEntryObj;
   const ChatJournalEntryObj._() : super._();
 
   factory ChatJournalEntryObj.fromJson(Map<String, dynamic> json) =
@@ -552,6 +622,8 @@ abstract class ChatJournalEntryObj extends JournalEntryObj {
   @DateConverter()
   DateTime get date;
   String? get goal;
+  @override
+  SummaryObj? get summary;
   @override
   @JsonKey(ignore: true)
   _$$ChatJournalEntryObjCopyWith<_$ChatJournalEntryObj> get copyWith =>
