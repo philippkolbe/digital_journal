@@ -98,7 +98,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     if (state is AsyncData && state.value != null) {
       ChatState history = state.value!;
       const loading = AsyncValue<ChatMessageObj>.loading();
-      state = _addChatMessageInState(history, loading, false);
+      state = _addChatMessageInState(history, loading, state.valueOrNull?.modifiedByUser ?? false);
 
       return loading;
     } else {
@@ -148,7 +148,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
 
   Future<ChatMessageObj?> writeChatMessage(
     ChatMessageObj chatMessageObj,
-    { int replaceAt = -1, bool byUser = false }
+    { int replaceAt = -1, bool byUser = false } // TODO: one could read byUser from chatMessageObj type
   ) async {
     try {
       final updatedChatMessageObj = await _createChatMessage(chatMessageObj);
