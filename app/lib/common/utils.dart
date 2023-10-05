@@ -8,6 +8,12 @@ String generateUuid() {
   return _uuid.v4();
 }
 
+String getNowString() {
+  final now = DateTime.now();
+
+  return '${now.day}.${now.month}.${now.year} ${now.hour}:${now.minute}';
+}
+
 DateTime floorDateToDay(DateTime date) {
   return DateTime(date.year, date.month, date.day);
 }
