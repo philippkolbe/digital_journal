@@ -39,6 +39,13 @@ class JournalEntryObj with _$JournalEntryObj {
     assert(data != null, "Document has to exist to create a JournalEntryObj");
     (data as Map<String, dynamic>)['id'] = doc.id;
     data['runtimeType'] = data['type'];
+    if (data.containsKey('summaryContent') && data['summaryContent'] != null) {
+      data['summary'] = {
+        'content': data['summaryContent'],
+        'date': data['summaryDate'],
+        'validUpToId': data['summaryValidUpToId'],
+      };
+    }
     return JournalEntryObj.fromJson(data);
   }
 
@@ -47,8 +54,12 @@ class JournalEntryObj with _$JournalEntryObj {
     final json = toJson();
     json['type'] = json['runtimeType'];
 
+    final summaryJson = summary?.toJournalEntryJson();
+
     return json
+      ..remove('summary')
       ..remove('id')
-      ..remove('runtimeType');
+      ..remove('runtimeType')
+      ..addAll(summaryJson ?? {});
   }
 }
