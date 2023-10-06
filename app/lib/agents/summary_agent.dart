@@ -3,11 +3,12 @@ import 'package:app/models/chat_message.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/models/summary.dart';
 import 'package:app/providers/prompts_providers.dart';
-import 'package:app/providers/summary_provider.dart';
 import 'package:app/services/ai_service.dart';
 
 // ignore: depend_on_referenced_packages
 import 'package:riverpod/riverpod.dart';
+
+final summaryProvider = StateProvider<AsyncValue<SummaryObj?>>((ref) => const AsyncData(null));
 
 final summaryAgentProvider = Provider((ref) {
   final aiService = ref.watch(aiServiceProvider);
