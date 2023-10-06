@@ -1,9 +1,9 @@
+import 'package:app/mocks/data/firebase_test_data.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/providers/encrypter_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:app/repositories/journal_repository.dart';
-import 'firebase_test_data.dart';
 
 void main() {
   group('JournalRepository', () {

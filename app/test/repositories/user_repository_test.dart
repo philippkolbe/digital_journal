@@ -1,9 +1,8 @@
+import 'package:app/mocks/data/firebase_test_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:app/repositories/user_repository.dart';
 import 'package:app/models/user.dart';
-
-import 'firebase_test_data.dart';
 
 void main() {
   group('UserRepository', () {

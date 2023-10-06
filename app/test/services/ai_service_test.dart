@@ -1,9 +1,9 @@
+import 'package:app/mocks/data/ai_api_test_data.dart';
+import 'package:app/mocks/data/firebase_test_data.dart';
 import 'package:app/services/ai_service.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../repositories/ai_api_test_data.dart';
-import '../repositories/firebase_test_data.dart';
-import '../mocks/mock_http_client.dart';
+import 'package:app/mocks/mock_http_client.dart';
 
 void main() {
   group('ChatHistoryRepository', () {

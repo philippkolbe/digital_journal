@@ -1,10 +1,9 @@
+import 'package:app/mocks/data/firebase_test_data.dart';
 import 'package:app/models/information.dart';
 import 'package:app/providers/encrypter_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
 import 'package:app/repositories/information_repository.dart';
-
-import 'firebase_test_data.dart';
 
 void main() {
   group('InformationRepository', () {

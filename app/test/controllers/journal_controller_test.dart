@@ -1,11 +1,11 @@
 import 'package:app/controllers/journal_controller.dart';
+import 'package:app/mocks/data/firebase_test_data.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../repositories/firebase_test_data.dart';
-import '../mocks/mock_chat_history_repository.dart';
-import '../mocks/mock_journal_repository.dart';
+import 'package:app/mocks/mock_chat_history_repository.dart';
+import 'package:app/mocks/mock_journal_repository.dart';
 
 void main() {
   group('JournalControllerTest', () {

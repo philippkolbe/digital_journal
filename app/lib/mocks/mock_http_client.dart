@@ -1,15 +1,14 @@
 import 'dart:convert';
 
+import 'package:app/mocks/data/ai_api_test_data.dart';
 import 'package:app/providers/http_client_provider.dart';
 import 'package:app/services/ai_service.dart';
+// ignore: implementation_imports
 import 'package:http/src/response.dart';
-
-import '../repositories/ai_api_test_data.dart';
 
 class MockHttpClient implements AIHttpClient {
   @override
   final baseUrl = 'mock';
-  @override
   final idToken = 'mock';
 
   @override

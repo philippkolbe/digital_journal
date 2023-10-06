@@ -1,10 +1,9 @@
+import 'package:app/mocks/data/firebase_test_data.dart';
 import 'package:app/models/chat_message.dart';
 import 'package:app/services/ai_service.dart';
 
-import '../repositories/firebase_test_data.dart';
-
 class MockAIService implements BaseAIService {
-  ChatMessageObj mockBotResponse = testChatMessageObj;
+  ChatMessageObj mockBotResponse = testChatBotMessageObj;
   Exception? mockBotException;
   
   @override
@@ -13,7 +12,8 @@ class MockAIService implements BaseAIService {
   }
 
   @override
-  Future<ChatMessageObj> respondToChat(List<ChatMessageObj> history) {
+  Future<ChatMessageObj> respondToChat(List<ChatMessageObj> history) async {
+    await Future.delayed(const Duration(milliseconds: 1500));
     if (mockBotException == null) {
       return Future.value(mockBotResponse);
     } else {
