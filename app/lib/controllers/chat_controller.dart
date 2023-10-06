@@ -98,7 +98,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     if (state is AsyncData && state.value != null) {
       ChatState history = state.value!;
       const loading = AsyncValue<ChatMessageObj>.loading();
-      state = _addChatMessageInState(history, loading, state.valueOrNull?.wasModifiedByUser ?? false);
+      state = _addChatMessageInState(history, loading, false);
 
       return loading;
     } else {
@@ -211,6 +211,7 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     AsyncValue<ChatMessageObj> chatMessage,
     bool byUser
   ) {
+    print("updating chat state");
     return _createLoadedChatState(
       [chatMessage, ...history.chat],
       modifiedByUser: byUser,
