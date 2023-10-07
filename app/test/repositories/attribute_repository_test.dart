@@ -1,4 +1,6 @@
 import 'package:app/mocks/data/firebase_test_data.dart';
+import 'package:app/models/attribute.dart';
+import 'package:app/models/attributes_action.dart';
 import 'package:app/providers/encrypter_provider.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
@@ -47,7 +49,7 @@ void main() {
     });
 
     test('readAttribute should retrieve a specific attribute for a user', () async {
-      final attribute = await repository.readAttribute(testUserId, testAttributeObj.id!);
+      final attribute = await repository.readAttribute(testUserId, testAttributeId);
 
       expect(attribute, isNotNull);
       expect(attribute.description, testAttributeObj.description);
@@ -90,6 +92,55 @@ void main() {
 
       final snapshot = await attributeCollection.get();
       expect(snapshot.exists, isFalse);
+    });
+
+    test('applyAttributesActions should create, update and delete attributes', () async {
+      const attributeIdToUpdate = testAttributeId;
+      const attributeIdToDelete = testFearId;
+      const createGoalDescription = 'Get this test to run';
+      const updatedDescription = 'I want an update';
+      final actions = [
+        const AttributesActionObj.create(type: AttributeType.goal, description: createGoalDescription, level: 10),
+        const AttributesActionObj.update(id: attributeIdToUpdate, description: updatedDescription, level: 1),
+        const AttributesActionObj.delete(id: attributeIdToDelete),
+      ];
+
+      // Execute the method
+      final attributes = await repository.applyAttributesActions(
+        testUserId,
+        actions  
+      );
+
+      final attributeCollection = firestore
+        .collection('users')
+        .doc(testUserId)
+        .collection('attributes');
+
+      // Check if attribute was created
+      final created = attributes.firstWhere((element) => element.description == createGoalDescription);
+      expect(created, isNotNull);
+
+      // Check if document was created
+      final createdSnapshot = await attributeCollection.doc(created.id).get();
+      expect(createdSnapshot.exists, isTrue);
+      expect((await encrypter).decrypt(createdSnapshot.data()!['description']), createGoalDescription);
+
+      // Check if was updated 
+      final updated = attributes.singleWhere((element) => element.id == attributeIdToUpdate);
+      expect(updated.description, equals(updatedDescription));
+      expect(updated.level, equals(1));
+
+      // Check if update was applied in collection
+      final updatedSnapshot = await attributeCollection.doc(attributeIdToUpdate).get();
+      expect(updatedSnapshot.exists, isTrue);
+      expect((await encrypter).decrypt(updatedSnapshot.data()!['description']), updatedDescription);
+
+      // Check if deleted
+      expect(attributes.every((attr) => attr.id != attributeIdToDelete), isTrue);
+
+      // Check if the attribute is deleted from the collection
+      final deletedSnapshot = await attributeCollection.doc(testFearId).get();
+      expect(deletedSnapshot.exists, isFalse);
     });
   });
 }
