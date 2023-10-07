@@ -5,7 +5,7 @@ import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void initializeSummaryUpdateObserver(WidgetRef ref) {
-  final journalController = ref.read(journalControllerProvider.notifier);
+  final journalController = ref.read(journalEntriesProvider.notifier);
 
   ref.listen(summaryProvider, (_, asyncSummaryObj) {
     final summaryObj = asyncSummaryObj.valueOrNull;

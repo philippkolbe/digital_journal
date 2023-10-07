@@ -17,7 +17,7 @@ class JournalListEntryWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
-    final journalController = ref.watch(journalControllerProvider.notifier);
+    final journalController = ref.watch(journalEntriesProvider.notifier);
 
     return Dismissible(
       key: Key(journalEntry.id!),

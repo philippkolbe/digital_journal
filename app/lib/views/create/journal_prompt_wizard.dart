@@ -15,7 +15,7 @@ class JournalPromptWizard extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
-    final journalController = ref.read(journalControllerProvider.notifier);
+    final journalController = ref.read(journalEntriesProvider.notifier);
     final journalPromptController = ref.read(journalPromptControllerProvider.notifier);
     final chatJournalController = ref.watch(chatJournalControllerProvider);
     final asyncSelectedJournalEntry = ref.watch(selectedJournalEntryProvider);

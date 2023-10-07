@@ -18,7 +18,7 @@ class ReflectionDialog extends ConsumerWidget {
     ref.watch(chatJournalControllerProvider);
 
     final chatJournalController = ref.read(chatJournalControllerProvider);
-    final journalController = ref.read(journalControllerProvider.notifier);
+    final journalController = ref.read(journalEntriesProvider.notifier);
     final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
 
     return AlertDialog(

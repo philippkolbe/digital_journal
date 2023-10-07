@@ -89,7 +89,7 @@ class CreationListState extends ConsumerState<CreationList> {
     _pushChatJournalWizardRoute(buildWidget);
 
     try {
-      final journalController = ref.read(journalControllerProvider.notifier);
+      final journalController = ref.read(journalEntriesProvider.notifier);
 
       final newJournalEntryObj = await journalController.addJournalEntry(
         ChatJournalEntryObj(

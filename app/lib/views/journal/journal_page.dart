@@ -12,8 +12,8 @@ class JournalPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final asyncJournalState = ref.watch(journalControllerProvider);
-    final journalController = ref.read(journalControllerProvider.notifier);
+    final asyncJournalState = ref.watch(journalEntriesProvider);
+    final journalController = ref.read(journalEntriesProvider.notifier);
     final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
 
     return Scaffold(

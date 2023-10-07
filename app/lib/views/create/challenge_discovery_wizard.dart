@@ -39,7 +39,7 @@ class ChallengeDiscoveryWizardState extends ConsumerState<ChallengeDiscoveryWiza
   @override
   Widget build(BuildContext context) {
     final asyncSelectedJournalEntry = ref.watch(selectedJournalEntryProvider);
-    final journalController = ref.watch(journalControllerProvider.notifier);
+    final journalController = ref.watch(journalEntriesProvider.notifier);
     final selectedJournalEntryController = ref.watch(selectedJournalEntryProvider.notifier);
     final chatJournalController = ref.watch(chatJournalControllerProvider);
 

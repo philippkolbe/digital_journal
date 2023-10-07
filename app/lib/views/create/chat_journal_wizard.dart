@@ -39,7 +39,7 @@ class ChatJournalWizardState extends ConsumerState<ChatJournalWizard> with Singl
   @override
   Widget build(BuildContext context) {
     final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
-    final journalController = ref.read(journalControllerProvider.notifier);
+    final journalController = ref.read(journalEntriesProvider.notifier);
     final moodStateController = ref.read(moodStateProvider.notifier);
     final chatJournalController = ref.watch(chatJournalControllerProvider);
     final asyncSelectedJournalEntry = ref.watch(selectedJournalEntryProvider);
