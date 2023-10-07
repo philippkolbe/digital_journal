@@ -9,11 +9,15 @@ final encrypterProvider = Provider((ref) {
 
 final encrypterFutureProvider = Provider((ref) async {
   final encryptionKey = await ref.watch(encryptionKeyFutureProvider);
-  return Encrypter(encryptionKey);
+  return MockEncrypter(encryptionKey); //Encrypter(encryptionKey);
 });
 
+abstract class BaseEncrypter {
+  String encrypt(String text);
+  String decrypt(String encryptedText);
+}
 
-class Encrypter {
+class Encrypter  extends BaseEncrypter {
   final _iv = encr.IV.fromLength(16);
   final encr.Key _encryptionKey;
   late final encr.Encrypter _encrypter;
@@ -23,11 +27,13 @@ class Encrypter {
       _encrypter = encr.Encrypter(encr.AES(_encryptionKey, mode: encr.AESMode.cbc));
     }
 
+  @override
   String encrypt(String text) {
     final encrypted = _encrypter.encrypt(text, iv: _iv);
     return encrypted.base64;
   }
 
+  @override
   String decrypt(String encryptedText) {
     try {
       final encrypted = encr.Encrypted.from64(encryptedText);
@@ -37,4 +43,14 @@ class Encrypter {
       return encryptedText;
     }
   }
+}
+
+class MockEncrypter extends Encrypter {
+  MockEncrypter(key) : super(key);
+
+  @override
+  String encrypt(String text) => text;
+
+  @override
+  String decrypt(String encryptedText) => encryptedText;
 }
