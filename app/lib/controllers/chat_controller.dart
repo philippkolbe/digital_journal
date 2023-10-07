@@ -211,7 +211,6 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     AsyncValue<ChatMessageObj> chatMessage,
     bool byUser
   ) {
-    print("updating chat state");
     return _createLoadedChatState(
       [chatMessage, ...history.chat],
       modifiedByUser: byUser,
