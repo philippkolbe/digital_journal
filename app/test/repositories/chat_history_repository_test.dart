@@ -8,7 +8,7 @@ void main() {
   group('ChatHistoryRepository', () {
     late FakeFirebaseFirestore firestore;
     late BaseChatHistoryRepository repository;
-    late Future<Encrypter> encrypter;
+    late Future<BaseEncrypter> encrypter;
     
     setUp(() {
       firestore = setupFakeFirestore(user: true, journal: true, chat: true);

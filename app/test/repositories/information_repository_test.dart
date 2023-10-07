@@ -9,7 +9,7 @@ void main() {
   group('InformationRepository', () {
     late FakeFirebaseFirestore firestore;
     late BaseInformationRepository repository;
-    late Future<Encrypter> encrypter;
+    late Future<BaseEncrypter> encrypter;
 
     setUp(() {
       firestore = setupFakeFirestore(user: true, information: true);

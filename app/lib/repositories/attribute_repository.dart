@@ -22,7 +22,7 @@ abstract class BaseAttributeRepository {
 
 class AttributeRepository implements BaseAttributeRepository {
   final FirebaseFirestore _firestore;
-  final Future<Encrypter> _encrypter;
+  final Future<BaseEncrypter> _encrypter;
 
   AttributeRepository(this._firestore, this._encrypter);
 
@@ -159,7 +159,7 @@ class AttributeRepository implements BaseAttributeRepository {
     AttributesActionObj attributesAction,
     CollectionReference collection,
     WriteBatch batch,
-    Encrypter encrypter,
+    BaseEncrypter encrypter,
   ) {
     return attributesAction.map<void>(
       create: (action) => _addAttributeToBatch(
@@ -186,7 +186,7 @@ class AttributeRepository implements BaseAttributeRepository {
     AttributeObj attribute,
     CollectionReference collection,
     WriteBatch batch,
-    Encrypter encrypter,
+    BaseEncrypter encrypter,
   ) {
     final doc = attribute.id != null ? collection.doc(attribute.id) : collection.doc();
 
@@ -200,7 +200,7 @@ class AttributeRepository implements BaseAttributeRepository {
     UpdateAttributeObj update,
     CollectionReference collection,
     WriteBatch batch,
-    Encrypter encrypter,
+    BaseEncrypter encrypter,
   ) {
     final doc = collection.doc(update.id);
 
@@ -228,7 +228,7 @@ class AttributeRepository implements BaseAttributeRepository {
     batch.delete(doc);
   }
 
-  Map<String, dynamic> _convertAttributeToDocument(AttributeObj attribute, { required Encrypter encrypter }) {
+  Map<String, dynamic> _convertAttributeToDocument(AttributeObj attribute, { required BaseEncrypter encrypter }) {
     return attribute
       .copyWith(
         // Encrypt any sensitive field here

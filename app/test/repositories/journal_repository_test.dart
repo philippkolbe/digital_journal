@@ -9,7 +9,7 @@ void main() {
   group('JournalRepository', () {
     late FirebaseFirestore firestore;
     late BaseJournalRepository repository;
-    late Future<Encrypter> encrypter;
+    late Future<BaseEncrypter> encrypter;
     
     setUp(() {
       firestore = setupFakeFirestore(user: true, journal: true);

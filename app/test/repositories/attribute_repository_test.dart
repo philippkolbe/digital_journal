@@ -8,7 +8,7 @@ void main() {
   group('AttributeRepository', () {
     late FakeFirebaseFirestore firestore;
     late BaseAttributeRepository repository;
-    late Future<Encrypter> encrypter;
+    late Future<BaseEncrypter> encrypter;
 
     setUp(() {
       firestore = setupFakeFirestore(user: true, attribute: true);

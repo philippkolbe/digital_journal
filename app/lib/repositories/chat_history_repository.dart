@@ -19,7 +19,7 @@ abstract class BaseChatHistoryRepository {
 
 class ChatHistoryRepository implements BaseChatHistoryRepository {
   final FirebaseFirestore _firestore;
-  final Future<Encrypter> _encrypter;
+  final Future<BaseEncrypter> _encrypter;
 
   ChatHistoryRepository(this._firestore, this._encrypter);
 

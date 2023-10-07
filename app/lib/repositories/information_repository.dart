@@ -24,7 +24,7 @@ abstract class BaseInformationRepository {
 
 class InformationRepository implements BaseInformationRepository {
   final FirebaseFirestore _firestore;
-  final Future<Encrypter> _encrypter;
+  final Future<BaseEncrypter> _encrypter;
 
   InformationRepository(this._firestore, this._encrypter);
 

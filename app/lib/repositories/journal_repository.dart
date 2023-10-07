@@ -22,7 +22,7 @@ abstract class BaseJournalRepository {
 
 class JournalRepository implements BaseJournalRepository {
   final FirebaseFirestore _firestore;
-  final Future<Encrypter> _encrypter;
+  final Future<BaseEncrypter> _encrypter;
 
   JournalRepository(this._firestore, this._encrypter);
 
