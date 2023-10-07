@@ -50,6 +50,7 @@ void initializeMidnightObserver(WidgetRef ref) {
         ));
 
         final controller = ref.read(progressControllerProvider.notifier);
+        // TODO: This throws on start because user is not loaded
         await controller.loadProgressions();
       });
     }
