@@ -65,7 +65,8 @@ class SummaryAgent {
   bool _isJournalEntryLoading(JournalEntryObj? journalEntry, ChatState? chatState) {
     return (
       journalEntry == null ||
-      journalEntry is ChatJournalEntryObj && journalEntry.id != chatState?.journalEntryId
+      chatState == null ||
+      journalEntry is ChatJournalEntryObj && journalEntry.id != chatState.journalEntryId
     );
   }
 
