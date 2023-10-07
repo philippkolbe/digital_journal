@@ -1,7 +1,6 @@
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/controllers/journal_prompt_controller.dart';
 import 'package:app/models/journal_entry.dart';
-import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:app/views/create/challenge_discovery_wizard.dart';
 import 'package:app/views/create/chat_journal_wizard.dart';
 import 'package:app/views/create/create_challenge_dialog.dart';

@@ -10,7 +10,6 @@ import 'package:app/controllers/chat_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/models/summary.dart';
-import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

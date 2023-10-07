@@ -1,7 +1,6 @@
 import 'package:app/controllers/chat_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/controllers/summary_controller.dart';
-import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void initializeSummaryUpdateObserver(WidgetRef ref) {
