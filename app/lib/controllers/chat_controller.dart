@@ -6,6 +6,7 @@ import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:app/repositories/chat_history_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+// TODO: This is actually a chatProvider...
 final chatControllerProvider = StateNotifierProvider<ChatController, AsyncValue<ChatState?>>((ref) {
   final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
   final authState = ref.watch(authControllerProvider);
