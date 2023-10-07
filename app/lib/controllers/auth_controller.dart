@@ -11,6 +11,11 @@ final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<
   return AuthController(authRepository, userRepository)..appStarted();
 });
 
+final userIdProvider = Provider((ref) {
+  final authState = ref.watch(authControllerProvider);
+  return authState.valueOrNull?.currentUser.id;
+});
+
 class AuthController extends StateNotifier<AsyncValue<AuthState?>> {
   final BaseAuthRepository _authRepository;
   final BaseUserRepository _userRepository;
