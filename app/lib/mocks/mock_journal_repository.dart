@@ -51,10 +51,8 @@ class MockJournalRepository implements BaseJournalRepository {
   Future<JournalEntryObj> updateJournalEntry(String userId, JournalEntryObj entry) {
     final existingEntry = journalEntries[entry.id!];
     if (existingEntry != null) {
-      final mergedJson = {...existingEntry.toJson(), ...entry.toJson()};
-      final mergedEntry = JournalEntryObj.fromJson(mergedJson);
-      journalEntries[entry.id!] = mergedEntry;
-      return Future.value(mergedEntry);
+      journalEntries[entry.id!] = entry;
+      return Future.value(entry);
     } else {
       throw JournalException('Journal entry does not exist.', userId: userId, entryId: entry.id);
     }
