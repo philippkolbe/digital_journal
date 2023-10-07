@@ -5,10 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final progressControllerProvider = StateNotifierProvider<ProgressController, AsyncValue<List<ProgressObj>>>((ref) {
   final progressRepository = ref.watch(progressRepositoryProvider);
-  final userState = ref.watch(authControllerProvider);
-  return ProgressController(
-      progressRepository, userState.valueOrNull?.currentUser.id)
-    ..init();
+  final userId = ref.watch(userIdProvider);
+  return ProgressController(progressRepository, userId)..init();
 });
 
 class ProgressController extends StateNotifier<AsyncValue<List<ProgressObj>>> {
