@@ -1,4 +1,4 @@
-import 'package:app/agents/summary_agent.dart';
+import 'package:app/controllers/summary_controller.dart';
 import 'package:app/common/utils.dart';
 import 'package:app/controllers/attributes_controller.dart';
 import 'package:app/controllers/progress_controller.dart';
