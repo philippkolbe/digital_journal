@@ -50,6 +50,8 @@ class _AppState extends ConsumerState<App> {
 
   @override
   Widget build(BuildContext context) {
+    observeProviders(ref);
+
     return MaterialApp(
       title: 'Digital Journal',
       home: const HomeWidget(),
@@ -83,7 +85,7 @@ class HomeWidget extends ConsumerWidget {
                 SizedBox(height: 10),
                 Text('Signing in...', textScaleFactor: 0.75),
               ]
-              );
+            );
           }
         }
       ),
