@@ -26,7 +26,7 @@ class AttributeRepository implements BaseAttributeRepository {
 
   AttributeRepository(this._firestore, this._encrypter);
 
-  // When calling this function to keep track of all the updates that were made one should 
+  /// returns the list of all attributes in the repository. 
   @override
   Future<List<AttributeObj>> applyAttributesActions(String userId, List<AttributesActionObj> attributesActions) async {
     try {
