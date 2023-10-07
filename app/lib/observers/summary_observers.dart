@@ -1,3 +1,4 @@
+import 'package:app/controllers/chat_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/controllers/summary_controller.dart';
 import 'package:app/providers/selected_journal_entry_provider.dart';
@@ -18,4 +19,9 @@ void initializeSummaryUpdateObserver(WidgetRef ref) {
       );
     }
   });
+}
+
+void initializeChatSummaryObserver(WidgetRef ref) {
+  final summaryController = ref.read(summaryProvider.notifier);
+  ref.listen<AsyncValue<ChatState?>>(chatControllerProvider, summaryController.onChatStateUpdated);
 }

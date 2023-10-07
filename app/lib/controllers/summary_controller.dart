@@ -26,9 +26,6 @@ final summaryProvider = StateNotifierProvider<SummaryController, AsyncValue<Summ
     prompts,
   );
 
-  final subscription = ref.listen<AsyncValue<ChatState?>>(chatControllerProvider, agent.onChatStateUpdated);
-  ref.onDispose(() => subscription.close());
-  
   return agent;
 }); 
 
