@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/controllers/auth_controller.dart';
+// import 'package:app/mocks/mock_ai_service.dart';
 import 'package:app/models/chat_message.dart';
 import 'package:app/providers/http_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final aiServiceProvider = Provider<BaseAIService>((ref) {
   final asyncAuthState = ref.read(authControllerProvider);
   final httpClient = ref.watch(httpClientProvider);
+  // return MockAIService();
   return AIService(
     httpClient: httpClient,
     userId: asyncAuthState.valueOrNull?.currentUser.id
