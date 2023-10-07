@@ -51,6 +51,13 @@ const testAttributeObj = AttributeObj.like(
   level: 5,
 );
 
+const testFearId = 'id_test_fear';
+const testFearObj = AttributeObj.fear(
+  id: testFearId,
+  description: 'I FEAR DARTH VADER',
+  level: 9,
+);
+
 const testInformationId = 'id_test_information';
 final testInformationObj = InformationObj(
   id: testInformationId,
@@ -83,6 +90,9 @@ FakeFirebaseFirestore setupFakeFirestore({ user = false, journal = true, chat = 
       final attributeCollection = userDoc.collection('attributes');
       final attributeDoc = attributeCollection.doc(testAttributeId);
       attributeDoc.set(testAttributeObj.toDocument());
+
+      final fearDoc = attributeCollection.doc(testFearId);
+      fearDoc.set(testFearObj.toDocument());
     }
 
     if (information) {
