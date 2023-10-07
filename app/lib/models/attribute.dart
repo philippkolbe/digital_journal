@@ -1,4 +1,5 @@
 // ignore: depend_on_referenced_packages
+import 'package:app/models/attributes_action.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -6,10 +7,15 @@ part 'attribute.freezed.dart';
 part 'attribute.g.dart';
 
 enum AttributeType {
+  @JsonValue("like")
   like,
+  @JsonValue("dislike")
   dislike,
+  @JsonValue("fear")
   fear,
+  @JsonValue("value")
   value,
+  @JsonValue("goal")
   goal,
 }
 
@@ -64,7 +70,13 @@ class AttributeObj with _$AttributeObj {
     return AttributeObj.fromJson(data);
   }
 
-  // TODO: If we just named this runtimeType these conversions would be easier...
+  factory AttributeObj.fromCreateAction(CreateAttributeObj action) => AttributeObj.fromJson({
+    'runtimeType': action.type.name,
+    'description': action.description,
+    'level': action.level,
+  });
+
+  // TODO: If we used @Freezed(unionKey: 'type') it would be easier
   Map<String, dynamic> toDocument() {
     final json = toJson();
     json['type'] = json['runtimeType'];
