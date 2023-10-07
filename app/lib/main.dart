@@ -38,6 +38,7 @@ class _AppState extends ConsumerState<App> {
   void initState() {
     super.initState();
 
+    // TODO: With ProviderContainer you can move this outside into main (https://codewithandrea.com/articles/riverpod-initialize-listener-app-startup/)
     initializeObservers(ref);
     
     FirebaseMessaging.onMessageOpenedApp.listen((message) =>
