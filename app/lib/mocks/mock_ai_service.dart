@@ -13,7 +13,7 @@ class MockAIService implements BaseAIService {
 
   @override
   Future<ChatMessageObj> respondToChat(List<ChatMessageObj> history) async {
-    await Future.delayed(const Duration(milliseconds: 1500));
+    await Future.delayed(const Duration(milliseconds: 500));
     if (mockBotException == null) {
       return Future.value(mockBotResponse);
     } else {
