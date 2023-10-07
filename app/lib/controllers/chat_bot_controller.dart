@@ -4,11 +4,11 @@ import 'package:app/services/ai_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final chatBotControllerProvider = StateNotifierProvider<ChatBotController, AsyncValue<ChatMessageObj?>>((ref) {
-  final authState = ref.watch(authControllerProvider);
+  final userId = ref.watch(userIdProvider);
   final aiRepository = ref.watch(aiServiceProvider);
 
   return ChatBotController(
-    authState.valueOrNull?.currentUser.id,
+    userId,
     aiRepository,
   );
 });
