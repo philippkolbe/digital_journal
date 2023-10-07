@@ -3,6 +3,7 @@ import 'package:app/models/chat_message.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/models/summary.dart';
 import 'package:app/providers/prompts_providers.dart';
+import 'package:app/providers/selected_journal_entry_provider.dart';
 import 'package:app/services/ai_service.dart';
 
 // ignore: depend_on_referenced_packages
@@ -14,36 +15,72 @@ final summaryAgentProvider = Provider((ref) {
   final aiService = ref.watch(aiServiceProvider);
   final prompts = ref.watch(generalPromptsProvider);
   final summaryController = ref.watch(summaryProvider.notifier);
+  final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
+  final chatController = ref.watch(chatControllerProvider.notifier);
 
-  return SummaryAgent(aiService, prompts, summaryController);
+  final agent = SummaryAgent(
+    selectedJournalEntry.valueOrNull,
+    summaryController,
+    chatController,
+    aiService,
+    prompts,
+  );
+
+  final subscription = ref.listen<AsyncValue<ChatState?>>(chatControllerProvider, agent.onChatStateUpdated);
+  ref.onDispose(() => subscription.close());
+  
+  return agent;
 });
 
 class SummaryAgent {
-  final BaseAIService aiService;
-  final Map<GeneralPrompts, String> prompts;
-  final StateController<AsyncValue<SummaryObj?>> summaryController;
+  final BaseAIService _aiService;
+  final Map<GeneralPrompts, String> _prompts;
+  final StateController<AsyncValue<SummaryObj?>> _summaryController;
+  final ChatController _chatController;
+  final JournalEntryObj? _selectedJournalEntry;
 
   SummaryAgent(
-    this.aiService,
-    this.prompts,
-    this.summaryController,
+    this._selectedJournalEntry,
+    this._summaryController,
+    this._chatController,
+    this._aiService,
+    this._prompts,
   );
+
+  Future<void> onChatStateUpdated(
+    AsyncValue<ChatState?>? prevChatState,
+    AsyncValue<ChatState?> asyncChatState
+  ) async {
+    assert(_selectedJournalEntry != null, "Expected selectedJournal to be loaded when chatState was updated");
+
+    final chatState = asyncChatState.valueOrNull;
+    // First thing: We set flag back to false because we are handling this request now!
+    if (chatState != null && chatState.wasModifiedByUser) {
+      _chatController.setModifiedByUser(_selectedJournalEntry!, false);
+    }
+
+    // Now we do the actual summary. In here the correct update of the summaryProvider is happening 
+    await summarize(
+      _selectedJournalEntry,
+      chatState,
+    );
+  }
 
   Future<void> summarize(
     JournalEntryObj? journalEntry,
     ChatState? chatState,
   ) async {
     if (_isJournalEntryLoading(journalEntry, chatState)) {
-      summaryController.state = const AsyncData(null);
+      _summaryController.state = const AsyncData(null);
       return;
     }
 
     final previousSummary = journalEntry!.summary;
 
     if (chatState != null && chatState.wasModifiedByUser) {
-      summaryController.state = const AsyncLoading();
+      _summaryController.state = const AsyncLoading();
       final summaryDate = DateTime.now();
-      final summary = await _computeSummary(aiService, prompts, previousSummary, chatState.chat);
+      final summary = await _computeSummary(_aiService, _prompts, previousSummary, chatState.chat);
       String? validUpToId;
       for (final asyncChatMessage in chatState.chat) {
         if (asyncChatMessage is AsyncData<ChatMessageObj> && asyncChatMessage.value is UserChatMessageObj) {
@@ -58,7 +95,7 @@ class SummaryAgent {
         validUpToId: validUpToId,
       );
 
-      summaryController.state = AsyncData(summaryObj);
+      _summaryController.state = AsyncData(summaryObj);
     }
   }
 
