@@ -1,4 +1,5 @@
 import 'package:app/models/attribute.dart';
+import 'package:app/models/attributes_action.dart';
 import 'package:app/providers/encrypter_provider.dart';
 import 'package:app/providers/firebase_providers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -11,6 +12,7 @@ final attributeRepositoryProvider = Provider<BaseAttributeRepository>((Ref ref) 
 });
 
 abstract class BaseAttributeRepository {
+  Future<List<AttributeObj>> applyAttributesActions(String userId, List<AttributesActionObj> actions);
   Future<String> createAttribute(String userId, AttributeObj attribute);
   Future<List<AttributeObj>> readAllAttributes(String userId);
   Future<AttributeObj> readAttribute(String userId, String attributeId);
@@ -24,16 +26,42 @@ class AttributeRepository implements BaseAttributeRepository {
 
   AttributeRepository(this._firestore, this._encrypter);
 
+  // When calling this function to keep track of all the updates that were made one should 
+  @override
+  Future<List<AttributeObj>> applyAttributesActions(String userId, List<AttributesActionObj> attributesActions) async {
+    try {
+      final batch = _firestore.batch();
+
+      final collection = _getAttributeCollection(userId); 
+      final encrypter = await _encrypter; 
+      for (final action in attributesActions) {
+        try {
+          _applyAttributesAction(
+            action,
+            collection,
+            batch,
+            encrypter,
+          );
+        } catch (err) {
+          // TODO: How should this error be handled? I don't want all of them to be cancelled just because one id is wrong
+          print('Error while applying attributeAction $action: $err');
+        }
+      }
+
+      await batch.commit();
+    } catch (err) {
+      throw AttributeException('An error occurred while applying the attribute action batch: $err',
+          userId: userId);
+    }
+
+    return readAllAttributes(userId);
+  }
+
   @override
   Future<String> createAttribute(String userId, AttributeObj attribute) async {
     try {
       final collection = _getAttributeCollection(userId);
-      final doc = attribute
-          .copyWith(
-            // Encrypt any sensitive field here
-            description: (await _encrypter).encrypt(attribute.description),
-          )
-          .toDocument();
+      final doc = _convertAttributeToDocument(attribute, encrypter: await _encrypter);
 
       return _addOrSetDocument(collection, doc, attribute.id);
     } catch (e) {
@@ -90,7 +118,7 @@ class AttributeRepository implements BaseAttributeRepository {
       assert(
           attribute.id != null, 'Define an attribute id for updating it.');
       final collection = _getAttributeCollection(userId);
-      final doc = attribute.toDocument();
+      final doc = _convertAttributeToDocument(attribute, encrypter: await _encrypter);
 
       await collection.doc(attribute.id).update(doc);
 
@@ -127,11 +155,93 @@ class AttributeRepository implements BaseAttributeRepository {
     }
   }
 
+  void _applyAttributesAction(
+    AttributesActionObj attributesAction,
+    CollectionReference collection,
+    WriteBatch batch,
+    Encrypter encrypter,
+  ) {
+    return attributesAction.map<void>(
+      create: (action) => _addAttributeToBatch(
+        AttributeObj.fromCreateAction(action),
+        collection,
+        batch,
+        encrypter,
+      ),
+      update: (action) => _updateAttributeInBatch(
+        action,
+        collection,
+        batch,
+        encrypter,  
+      ),
+      delete: (action) => _deleteAttributeInBatch(
+        action.id!,
+        collection,
+        batch
+      ),
+    );
+  }
+
+  void _addAttributeToBatch(
+    AttributeObj attribute,
+    CollectionReference collection,
+    WriteBatch batch,
+    Encrypter encrypter,
+  ) {
+    final doc = attribute.id != null ? collection.doc(attribute.id) : collection.doc();
+
+    batch.set(doc, _convertAttributeToDocument(
+      attribute,
+      encrypter: encrypter
+    ));
+  }
+
+  void _updateAttributeInBatch(
+    UpdateAttributeObj update,
+    CollectionReference collection,
+    WriteBatch batch,
+    Encrypter encrypter,
+  ) {
+    final doc = collection.doc(update.id);
+
+    final encrypted = update.description != null
+      ? update.copyWith(
+        description: encrypter.encrypt(update.description!),
+      )
+      : update;
+ 
+    final updateMap = Map.fromEntries(
+      encrypted.toJson().entries
+        .where((entry) => entry.value != null)
+    );
+
+    batch.update(doc, updateMap);
+  }
+
+  void _deleteAttributeInBatch(
+    String attributeId,
+    CollectionReference collection,
+    WriteBatch batch,
+  ) {
+    final doc = collection.doc(attributeId);
+
+    batch.delete(doc);
+  }
+
+  Map<String, dynamic> _convertAttributeToDocument(AttributeObj attribute, { required Encrypter encrypter }) {
+    return attribute
+      .copyWith(
+        // Encrypt any sensitive field here
+        description: encrypter.encrypt(attribute.description),
+      )
+      .toDocument();
+  }
+
   CollectionReference _getAttributeCollection(String userId) {
     return _firestore
-        .collection('users')
-        .doc(userId)
-        .collection('attributes');
+      .collection('users')
+      .doc(userId)
+      .collection('attributes');
   }
 }
 
