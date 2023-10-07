@@ -1,6 +1,7 @@
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/mocks/data/firebase_test_data.dart';
 import 'package:app/models/journal_entry.dart';
+import 'package:app/models/summary.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
@@ -12,15 +13,17 @@ void main() {
     late JournalController controller;
     late MockJournalRepository repository;
     late MockChatHistoryRepository chatHistoryRepository;
+    late ProviderContainer container;
     setUp(() async {
       repository = MockJournalRepository();
       chatHistoryRepository = MockChatHistoryRepository();
-      controller = JournalController(repository, chatHistoryRepository, testUserId);
+      container = ProviderContainer();
+      controller = _initJournalController(container, repository, chatHistoryRepository, testUserId);
       await controller.init();
     });
 
     test('Initial state is loading', () {
-      final loadingController = JournalController(repository, chatHistoryRepository, testUserId);
+      final loadingController = _initJournalController(container, repository, chatHistoryRepository, testUserId);
       expect(loadingController.debugState, const AsyncValue<List<JournalEntryObj>>.loading());
     });
 
@@ -32,7 +35,7 @@ void main() {
     });
 
     test('Loading journal entries while user unauthorized should throw', () async {
-      final unauthorizedController = JournalController(repository, chatHistoryRepository, null);
+      final unauthorizedController = _initJournalController(container, repository, chatHistoryRepository, null);
 
       await unauthorizedController.loadJournalEntries();
       expect(unauthorizedController.debugState, isA<AsyncError>());
@@ -55,7 +58,9 @@ void main() {
     });
   
     test('Adding journal entry while loading should throw error', () async {
-      final unauthorizedController = JournalController(repository, chatHistoryRepository, null);
+      final container = ProviderContainer();
+      final selectedJournalEntryController = container.read(selectedJournalEntryProvider.notifier);
+      final unauthorizedController = JournalController(repository, chatHistoryRepository, null, selectedJournalEntryController, container.read);
 
       expect(
         () => unauthorizedController.addJournalEntry(testChatJournalEntry),
@@ -63,24 +68,46 @@ void main() {
       );
     });
 
-    test('Delete journal entry successfully', () async {
+    test('Delete selected journal entry successfully', () async {
       expect(controller.debugState, isA<AsyncValue<List<JournalEntryObj>>>());
-      final idToDelete = repository.simpleJournalEntry.id!;
+      final toDelete = repository.simpleJournalEntry;
       final lengthBefore = controller.debugState.value!.length;
-      await controller.deleteJournalEntry(idToDelete);
+      
+      // Select to be deleted object
+      container.read(selectedJournalEntryProvider.notifier).state = AsyncData(toDelete);
+
+      await controller.deleteJournalEntry(toDelete.id!);
 
       expect(controller.debugState, isA<AsyncValue<List<JournalEntryObj>>>());
       expect(controller.debugState.value, hasLength(lengthBefore - 1));
-      expect(controller.debugState.value!.every((entry) => entry.id != idToDelete), isTrue);
+      expect(controller.debugState.value!.every((entry) => entry.id != toDelete.id), isTrue);
       expect(await repository.readAllJournalEntries(testUserId), hasLength(lengthBefore - 1));
+
+      expect(container.read(selectedJournalEntryProvider), equals(const AsyncData(null)));
+    });
+
+    test('Delete not selected journal entry without deselecting', () async {
+      expect(controller.debugState, isA<AsyncValue<List<JournalEntryObj>>>());
+      final toDelete = repository.simpleJournalEntry;
+      
+      // Select to be deleted object
+      final selected = AsyncData<JournalEntryObj?>(repository.chatJournalEntry);
+      container.read(selectedJournalEntryProvider.notifier).state = selected;
+
+      await controller.deleteJournalEntry(toDelete.id!);
+
+      expect(container.read(selectedJournalEntryProvider), equals(selected));
     });
 
     test('Update simple journal entry content successfully', () async {
-      final idToUpdate = repository.simpleJournalEntry.id!;
+      final toUpdate = repository.simpleJournalEntry;
       expect(controller.debugState, isA<AsyncValue<List<JournalEntryObj>>>());
 
+      // Select to be updated object
+      container.read(selectedJournalEntryProvider.notifier).state = AsyncData(toUpdate);
+
       const newContent = 'New content';
-      await controller.updateSimpleJournalEntryContent(idToUpdate, newContent);
+      await controller.updateSimpleJournalEntryContent(toUpdate.id!, newContent);
 
       expect(controller.debugState, isA<AsyncValue<List<JournalEntryObj>>>());
       final updatedEntry = controller.debugState.value!.firstWhere((entry) => entry.id == repository.simpleJournalEntry.id);
@@ -89,6 +116,9 @@ void main() {
     
       final updatedRepositoryEntry = await repository.readJournalEntry(testUserId, repository.simpleJournalEntry.id!);
       expect((updatedRepositoryEntry as SimpleJournalEntryObj).content, newContent);
+
+      final newSelectedObject = container.read(selectedJournalEntryProvider).valueOrNull;
+      expect(newSelectedObject, updatedEntry);
     });
 
     test('Updating chat journal entry content is not allowed', () async {
@@ -100,5 +130,40 @@ void main() {
 
       expect(controller.debugState, isA<AsyncError<List<JournalEntryObj>>>());
     });
+
+    test('Updating summary of selected entry', () async {
+      final toUpdate = repository.chatJournalEntry;
+      expect(controller.debugState, isA<AsyncValue<List<JournalEntryObj>>>());
+
+      // Select to be updated object
+      container.read(selectedJournalEntryProvider.notifier).state = AsyncData(toUpdate);
+
+      const newSummary = 'New summary';
+      await controller.updateJournalEntry(toUpdate.copyWith(
+        summary: SummaryObj(
+          date: DateTime.now(),
+          content: newSummary, 
+        )
+      ));
+
+      expect(controller.debugState, isA<AsyncValue<List<JournalEntryObj>>>());
+      final updatedEntry = controller.debugState.value!.firstWhere((entry) => entry.id == repository.chatJournalEntry.id);
+      expect(updatedEntry, isA<ChatJournalEntryObj>());
+      expect((updatedEntry as ChatJournalEntryObj).summary, isNotNull);
+      expect(updatedEntry.summary!.content, newSummary);
+    
+      final updatedRepositoryEntry = await repository.readJournalEntry(testUserId, repository.chatJournalEntry.id!);
+      expect((updatedRepositoryEntry as ChatJournalEntryObj).summary, isNotNull);
+      expect(updatedRepositoryEntry.summary!.content, newSummary);
+
+      final newSelectedObject = container.read(selectedJournalEntryProvider).valueOrNull;
+      expect(newSelectedObject, updatedEntry);
+    });
   });
+}
+
+JournalController _initJournalController(ProviderContainer container, MockJournalRepository repository, MockChatHistoryRepository chatHistoryRepository, String? userId) {
+  final selectedJournalEntryController = container.read(selectedJournalEntryProvider.notifier);
+  final loadingController = JournalController(repository, chatHistoryRepository, userId, selectedJournalEntryController, container.read);
+  return loadingController;
 }

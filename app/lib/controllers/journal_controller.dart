@@ -10,19 +10,30 @@ final journalEntriesProvider = StateNotifierProvider<JournalController, AsyncVal
   final journalRepository = ref.read(journalRepositoryProvider);
   final chatHistoryRepository = ref.read(chatHistoryRepositoryProvider);
   final userId = ref.watch(userIdProvider);
+  final selectedJournalEntryController = ref.watch(selectedJournalEntryProvider.notifier);
 
-  return JournalController(journalRepository, chatHistoryRepository, userId)..init();
+  return JournalController(
+    journalRepository,
+    chatHistoryRepository,
+    userId,
+    selectedJournalEntryController,
+    ref.read,
+  )..init();
 });
 
 class JournalController extends StateNotifier<AsyncValue<List<JournalEntryObj>>> {
   final BaseJournalRepository _journalRepository;
   final BaseChatHistoryRepository _chatHistoryRepository;
   final String? _userId;
+  final StateController<AsyncValue<JournalEntryObj?>> _selectedJournalEntryController;
+  final T Function<T>(ProviderListenable<T> provider) _read;
 
   JournalController(
     this._journalRepository,
     this._chatHistoryRepository,
     this._userId,
+    this._selectedJournalEntryController,
+    this._read,
   ) : super(const AsyncLoading());
 
   Future<void> init() async {
@@ -75,6 +86,10 @@ class JournalController extends StateNotifier<AsyncValue<List<JournalEntryObj>>>
       await _chatHistoryRepository.deleteChatHistory(_userId!, entryId);
 
       state = AsyncData(state.value!..removeWhere((entry) => entry.id == entryId));
+
+      if (entryId == _getSelectedJournalEntryId()) {
+        _selectedJournalEntryController.state = const AsyncData(null);
+      }
     } catch (error, stackTrace) {
       // TODO: Handle error by showing it in popup instead of this state
       state = AsyncError(error, stackTrace);
@@ -134,15 +149,24 @@ class JournalController extends StateNotifier<AsyncValue<List<JournalEntryObj>>>
   Future<void> updateJournalEntry(JournalEntryObj journalEntryObjUpdate) async {
     try {
       assert(state is AsyncData, "Journal entries must be loaded to update journal entries.");
+      assert(journalEntryObjUpdate.id != null, "Journal entry must have an id to update it.");
 
       final newJournalEntryObj = await _journalRepository.updateJournalEntry(_userId!, journalEntryObjUpdate);
 
       state = AsyncData(state.value!.map((entry) => entry.id == journalEntryObjUpdate.id
         ? newJournalEntryObj
         : entry).toList());
+
+      if (journalEntryObjUpdate.id == _getSelectedJournalEntryId()) {
+        _selectedJournalEntryController.state = AsyncData(newJournalEntryObj);
+      }
     } catch (error, stackTrace) {
       // TODO: Handle error by showing it in popup instead of this state
       state = AsyncError(error, stackTrace);
     }
+  }
+
+  String? _getSelectedJournalEntryId() {
+    return _read(selectedJournalEntryProvider.notifier).state.valueOrNull?.id;
   }
 }
