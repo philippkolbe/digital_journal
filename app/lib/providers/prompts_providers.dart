@@ -1,4 +1,6 @@
+import 'package:app/agents/summary_agent.dart';
 import 'package:app/common/utils.dart';
+import 'package:app/controllers/attributes_controller.dart';
 import 'package:app/controllers/progress_controller.dart';
 import 'package:app/providers/mood_state_provider.dart';
 import 'package:app/providers/reflecting_on_challenge_provider.dart';
@@ -58,15 +60,24 @@ final generalPromptsProvider = Provider<Map<GeneralPrompts, String>>((ref) {
       As a summarizer within a journaling app, continuously summarize the ongoing conversation for other GPT-3.5 instances. The goal is to include all relevant information regarding the user's fears, goals, values, likes, and dislikes. The summary's readability for humans is not a priority; it's solely for other AI instances to analyze. Prioritize maximum brevity without compromising completeness; shorter summaries are preferred when the information is irrelevant.
       If the user provides a summary of the conversation, ensure that the newly created summary includes all relevant information from the user's summary. No need to mention that summarized information was provided. Focus solely on the content's relevance.
     ''', // one could tell the bot how many tokens the conversation is supposed to have...
-    GeneralPrompts.summarizeChatMessage: '''Summarize our conversation up to this point. You're answer does not have to be human readable so be as concise as possible.''',
+    GeneralPrompts.summarizeChatMessage: '''Summarize our conversation up to the message before this one. You're answer does not have to be human readable so be as concise as possible.''',
   };
 });
 
-String createPreviousSummaryUserMessage(String summary) {
-  return '''
-  Here is a summary of our conversation up to this point:
-  $summary
-''';
+final summaryPromptProvider = Provider<AsyncValue<String?>>((ref) {
+  final asyncSummary = ref.watch(summaryProvider);
+  return asyncSummary.whenData((summary) => summary != null 
+    ? createPreviousSummaryUserMessage(summary.content)
+    : null);
+});
+
+String createPreviousSummaryUserMessage(String? summary) {
+  if (summary != null) {
+    return '''Here is a summary of our conversation up to this point:
+$summary''';
+  } else {
+    return "";
+  }
 }
 
 class AnalysisPrompt {
@@ -77,6 +88,11 @@ class AnalysisPrompt {
 }
 
 final analysisPromptsProvider = Provider<Map<AnalysisPrompts, AnalysisPrompt>>((ref) {
+  final attributesState = ref.watch(attributesControllerProvider).valueOrNull;
+  final attributesString = attributesState?.attributes
+    .map((attr) => attr.toJson()..remove('runtimeType'))
+    .join("\n");
+
   return {
     AnalysisPrompts.likeAnalysis: AnalysisPrompt('''
         Your role as an analyst in a journaling app is to manage and update a user's database of likes and dislikes, based on a conversation between the user and their journaling assistant. As the user has lots of conversations with the journaling assistant it is more important to capture general middle- to longterm important attributes than specifics of this conversation. This also means that you should not delete attributes that were not mentioned. Each attribute should follow this format:
@@ -86,33 +102,35 @@ final analysisPromptsProvider = Provider<Map<AnalysisPrompts, AnalysisPrompt>>((
         Your tasks include:
 
         Updating existing entries by referencing their IDs if the user provides changes in the description or level, including generalizing specific entries to broader categories. Output these updates in the following format:
-        {"id": "existing-entry-id", "action": "UPDATE", "description": "new-description", "level": new-level}.
+        {"id": "existing-entry-id", "action": "update", "description": "new-description", "level": new-level}.
         You may leave out the description field if you do not want to update it.
 
         Adding new entries without specifying an ID for any goals, fears, or values that the user explicitly mentions or that can be inferred from their conversation. Output these new entries in the following format:
-        {"action": "NEW", "type": "attribute-type", "description": "Attribute Description", "level": 1-10}
+        {"action": "create", "type": "attribute-type", "description": "Attribute Description", "level": 1-10}
 
         Removing entries by referencing their IDs if the user explicitly states that this attribute is not true anymore. Output these removals in the following format:
-        {"id": "existing-entry-id", "action": "DELETE"}
+        {"id": "existing-entry-id", "action": "delete"}
 
         Your output should be a list of these actions, including updates, new entries, and removals, based on the user's conversation. This list will be used to update the user's database entries. You should not actively participate in the conversation or provide responses; your sole focus is on managing the attributes using IDs.
 
         Only output the new, updated or deleted attributes in json format and don't add any other text. Here is an example output:
-        {"id": "3", "action": "DELETE"}
-        {"id": "2", "action": "UPDATE", "level": 4}
-        {"action": "NEW", "type": "value", "description": "Family", "level": 3}
+        {"id": "3", "action": "delete"}
+        {"id": "2", "action": "update", "level": 4}
+        {"action": "create", "type": "value", "description": "Family", "level": 3}
 
-        Analyze the entire conversation but do not answer it. Only output the updates to the database.
+        Analyze the entire summary of the conversation but do not answer it. Only output the updates to the database. Make sure to only use the allowed types 'like' and 'dislike'.
       ''',
       '''
-        This is a list of the users existing attributes:
-        { placeholder }
+        ${attributesString != null && attributesString.isNotEmpty
+          ? 'This is a list of the users existing attributes: \n $attributesString'
+          : ''}
         Analyze the entire conversation. Only output the new, updated or deleted attributes in json format and don't add any other text. Especially, do not answer the user or finish the conversation.
       '''
     ),
     AnalysisPrompts.valueAnalysis: AnalysisPrompt('''
-        Your role as an psycho-analyst in a journaling app is to manage and update a user's database of personal attributes, including 
-        fears, goals, and values, based on a conversation between the user and their journaling assistant. As the user has lots of conversations with the journaling assistant it is more important to capture general middle- to longterm important attributes than specifics of this conversation. This also means that you should not delete attributes that were not mentioned. You may read through the lines though and add attributes that the user did not explicitly mention as they might not want those attributes to be true but they describe the person well. Each attribute should follow this format:
+        Your role as an psycho-analyst in a journaling app is to manage and update a user's database of personal attributes, holding 
+        fears, goals, and values, based on a conversation between the user and their journaling assistant. As the user has lots of conversations with the journaling assistant it is more important to capture general middle- to longterm important attributes than specifics of this conversation. This also means that you should not delete attributes that were not mentioned.
+        You may read through the lines though and add attributes that the user did not explicitly mention as they might not want those attributes to be true but they describe the person well. Each attribute should follow this format:
 
         Goals: {"id": "goal-1", "type": "goal", "description": "Goal Description", "level": 1-10}
         Fears: {"id": "fear-1", "type": "fear", "description": "Fear Description", "level": 1-10}
@@ -120,48 +138,52 @@ final analysisPromptsProvider = Provider<Map<AnalysisPrompts, AnalysisPrompt>>((
         Your tasks include:
 
         Updating existing entries by referencing their IDs if the user provides changes in the description or level, including generalizing specific entries to broader categories. Output these updates in the following format:
-        {"id": "existing-entry-id", "action": "UPDATE", "description": "new-description", "level": new-level}.
+        {"id": "existing-entry-id", "action": "update", "description": "new-description", "level": new-level}.
         You may leave out the description field if you do not want to update it.
 
         Adding new entries without specifying an ID for any goals, fears, or values that the user explicitly mentions or that can be inferred from their conversation. Output these new entries in the following format:
-        {"action": "NEW", "type": "attribute-type", "description": "Attribute Description", "level": 1-10}
+        {"action": "create", "type": "attribute-type", "description": "Attribute Description", "level": 1-10}
 
         Removing entries by referencing their IDs if the user explicitly states that this attribute is not true anymore. Output these removals in the following format:
-        {"id": "existing-entry-id", "action": "DELETE"}
+        {"id": "existing-entry-id", "action": "delete"}
 
         Your output should be a list of these actions, including updates, new entries, and removals, based on the user's conversation. This list will be used to update the user's database entries. You should not actively participate in the conversation or provide responses; your sole focus is on managing the attributes using IDs.
 
         Only output the new, updated or deleted attributes in json format and don't add any other text. Especially, do not answer the user or finish the conversation. Here is an example output:
-        {"id": "3", "action": "DELETE"}
-        {"action": "UPDATE", "id": "2", "level": 4}
-        {"action": "NEW", "type": "value", "description": "Family", "level": 3}
+        {"id": "3", "action": "delete"}
+        {"action": "update", "id": "2", "level": 4}
+        {"action": "create", "type": "value", "description": "Family", "level": 3}
 
-        Analyze the entire conversation but do not answer it. Only output the updates to the database.
+        Analyze the entire conversation but do not answer it. Only output the updates to the database. Make sure to only use these allowed types 'goal', 'fear' and 'value'.
       ''',
       '''
         This is a list of the users existing attributes:
-        { placeholder }
+        ${attributesState?.attributes
+          .map((attr) => attr.toJson().remove('runtimeType'))
+          .join("\n")
+          ?? 'There are no existing attributes.'}
         Analyze the entire conversation. Only output the new, updated or deleted attributes in json format and don't add any other text. Especially, do not answer the user or finish the conversation.
-      '''
+      ''' // TODO: Map ids to human readable ids like goal1, etc.
+      // TODO: We should add a confidence score
     ),
     AnalysisPrompts.informationAnalysis: AnalysisPrompt('''
       Imagine you are an assistant in a journaling app that helps users keep track of important information from their conversations. You have a 'memory' where each piece of information has an id, a creation date (DD.MM.YYYY HH:MM), a description, an importance score (1-10), and an expiration date (DD.MM.YYYY HH:MM). The 'expiration date' represents when the information may no longer be relevant or important, and it can be an estimation.
-      Your task is to process a conversation between the user and the journaling assistant and make updates to the 'memory' based on the following actions: 'NEW,' 'DELETE,' and 'UPDATE.'
+      Your task is to process a conversation between the user and the journaling assistant and make updates to the 'memory' based on the following actions: 'create,' 'delete,' and 'update.'
 
       Please generate appropriate JSON responses for each action as follows:
 
-      For a 'NEW' action, provide a JSON object with fields for 'action,' 'date,' 'description,' 'importance,' and 'expiresAt'. Make sure to always add a valid expiration date even if it is only an estimation.
-      For a 'DELETE' action, provide a JSON object with the 'id' to be deleted.
-      For an 'UPDATE' action, provide a JSON object with the 'id' to be updated and the field(s) to be modified.
+      For a 'create' action, provide a JSON object with fields for 'action,' 'date,' 'description,' 'importance,' and 'expiresAt'. Make sure to always add a valid expiration date even if it is only an estimation.
+      For a 'delete' action, provide a JSON object with the 'id' to be deleted.
+      For an 'update' action, provide a JSON object with the 'id' to be updated and the field(s) to be modified.
       Ensure that your responses are correctly formatted and follow the provided instructions. You have access to the current date and the list of information stored in memory as a JSON list.
 
       Note: Do not delete information from the memory unless the user explicitly states that the information is no longer valid.
 
       Only output json valid text - do not respond with any other text.
       An example output would be:
-      { "action": "NEW", "date": "04.10.2023 10:00", "description": "Excited about dinner with girlfriend tonight",  "importance": 8, "expiresAt": "11.10.2023 23:59" }
-      { "id": "2", "action": "DELETE" }
-      { "id": "3", "action": "UPDATE", "importance": 3 }
+      { "action": "create", "date": "04.10.2023 10:00", "description": "Excited about dinner with girlfriend tonight",  "importance": 8, "expiresAt": "11.10.2023 23:59" }
+      { "id": "2", "action": "delete" }
+      { "id": "3", "action": "update", "importance": 3 }
     ''',
     '''
       It is ${getNowString()}. Here is a list of the information currently in memory:
