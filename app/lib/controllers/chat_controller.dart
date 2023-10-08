@@ -9,11 +9,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // TODO: This is actually a chatProvider...
 final chatControllerProvider = StateNotifierProvider<ChatController, AsyncValue<ChatState?>>((ref) {
   final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
-  final authState = ref.watch(authControllerProvider);
+  final userId = ref.watch(userIdProvider);
   final chatHistoryRepository = ref.read(chatHistoryRepositoryProvider);
 
   return ChatController(
-    authState.valueOrNull?.currentUser.id,
+    userId,
     selectedJournalEntry,
     chatHistoryRepository,
   );
