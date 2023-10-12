@@ -25,6 +25,7 @@ class AttributeObj with _$AttributeObj {
 
   const factory AttributeObj.like({
     String? id,
+    String? countingId,
     @Default(AttributeType.like) AttributeType type,
     required String description,
     required int level,
@@ -32,6 +33,7 @@ class AttributeObj with _$AttributeObj {
 
   const factory AttributeObj.dislike({
     String? id,
+    String? countingId,
     @Default(AttributeType.dislike) AttributeType type,
     required String description,
     required int level,
@@ -39,6 +41,7 @@ class AttributeObj with _$AttributeObj {
 
   const factory AttributeObj.fear({
     String? id,
+    String? countingId,
     @Default(AttributeType.fear) AttributeType type,
     required String description,
     required int level,
@@ -46,6 +49,7 @@ class AttributeObj with _$AttributeObj {
 
   const factory AttributeObj.value({
     String? id,
+    String? countingId,
     @Default(AttributeType.value) AttributeType type,
     required String description,
     required int level,
@@ -53,6 +57,7 @@ class AttributeObj with _$AttributeObj {
 
   const factory AttributeObj.goal({
     String? id,
+    String? countingId,
     @Default(AttributeType.goal) AttributeType type,
     required String description,
     required int level,
@@ -83,6 +88,7 @@ class AttributeObj with _$AttributeObj {
 
     return json
       ..remove('id')
+      ..remove('countingId')
       ..remove('runtimeType');
   }
 }

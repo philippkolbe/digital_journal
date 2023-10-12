@@ -9,6 +9,7 @@ part of 'attribute.dart';
 _$LikeAttributeObj _$$LikeAttributeObjFromJson(Map<String, dynamic> json) =>
     _$LikeAttributeObj(
       id: json['id'] as String?,
+      countingId: json['countingId'] as String?,
       type: $enumDecodeNullable(_$AttributeTypeEnumMap, json['type']) ??
           AttributeType.like,
       description: json['description'] as String,
@@ -19,6 +20,7 @@ _$LikeAttributeObj _$$LikeAttributeObjFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$LikeAttributeObjToJson(_$LikeAttributeObj instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'countingId': instance.countingId,
       'type': _$AttributeTypeEnumMap[instance.type]!,
       'description': instance.description,
       'level': instance.level,
@@ -37,6 +39,7 @@ _$DislikeAttributeObj _$$DislikeAttributeObjFromJson(
         Map<String, dynamic> json) =>
     _$DislikeAttributeObj(
       id: json['id'] as String?,
+      countingId: json['countingId'] as String?,
       type: $enumDecodeNullable(_$AttributeTypeEnumMap, json['type']) ??
           AttributeType.dislike,
       description: json['description'] as String,
@@ -48,6 +51,7 @@ Map<String, dynamic> _$$DislikeAttributeObjToJson(
         _$DislikeAttributeObj instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'countingId': instance.countingId,
       'type': _$AttributeTypeEnumMap[instance.type]!,
       'description': instance.description,
       'level': instance.level,
@@ -57,6 +61,7 @@ Map<String, dynamic> _$$DislikeAttributeObjToJson(
 _$FearAttributeObj _$$FearAttributeObjFromJson(Map<String, dynamic> json) =>
     _$FearAttributeObj(
       id: json['id'] as String?,
+      countingId: json['countingId'] as String?,
       type: $enumDecodeNullable(_$AttributeTypeEnumMap, json['type']) ??
           AttributeType.fear,
       description: json['description'] as String,
@@ -67,6 +72,7 @@ _$FearAttributeObj _$$FearAttributeObjFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$FearAttributeObjToJson(_$FearAttributeObj instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'countingId': instance.countingId,
       'type': _$AttributeTypeEnumMap[instance.type]!,
       'description': instance.description,
       'level': instance.level,
@@ -76,6 +82,7 @@ Map<String, dynamic> _$$FearAttributeObjToJson(_$FearAttributeObj instance) =>
 _$ValueAttributeObj _$$ValueAttributeObjFromJson(Map<String, dynamic> json) =>
     _$ValueAttributeObj(
       id: json['id'] as String?,
+      countingId: json['countingId'] as String?,
       type: $enumDecodeNullable(_$AttributeTypeEnumMap, json['type']) ??
           AttributeType.value,
       description: json['description'] as String,
@@ -86,6 +93,7 @@ _$ValueAttributeObj _$$ValueAttributeObjFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$ValueAttributeObjToJson(_$ValueAttributeObj instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'countingId': instance.countingId,
       'type': _$AttributeTypeEnumMap[instance.type]!,
       'description': instance.description,
       'level': instance.level,
@@ -95,6 +103,7 @@ Map<String, dynamic> _$$ValueAttributeObjToJson(_$ValueAttributeObj instance) =>
 _$GoalAttributeObj _$$GoalAttributeObjFromJson(Map<String, dynamic> json) =>
     _$GoalAttributeObj(
       id: json['id'] as String?,
+      countingId: json['countingId'] as String?,
       type: $enumDecodeNullable(_$AttributeTypeEnumMap, json['type']) ??
           AttributeType.goal,
       description: json['description'] as String,
@@ -105,6 +114,7 @@ _$GoalAttributeObj _$$GoalAttributeObjFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$$GoalAttributeObjToJson(_$GoalAttributeObj instance) =>
     <String, dynamic>{
       'id': instance.id,
+      'countingId': instance.countingId,
       'type': _$AttributeTypeEnumMap[instance.type]!,
       'description': instance.description,
       'level': instance.level,

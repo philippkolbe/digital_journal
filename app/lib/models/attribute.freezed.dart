@@ -36,63 +36,64 @@ AttributeObj _$AttributeObjFromJson(Map<String, dynamic> json) {
 /// @nodoc
 mixin _$AttributeObj {
   String? get id => throw _privateConstructorUsedError;
+  String? get countingId => throw _privateConstructorUsedError;
   AttributeType get type => throw _privateConstructorUsedError;
   String get description => throw _privateConstructorUsedError;
   int get level => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         like,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         dislike,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         fear,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         value,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         goal,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
     required TResult orElse(),
   }) =>
@@ -137,7 +138,12 @@ abstract class $AttributeObjCopyWith<$Res> {
           AttributeObj value, $Res Function(AttributeObj) then) =
       _$AttributeObjCopyWithImpl<$Res, AttributeObj>;
   @useResult
-  $Res call({String? id, AttributeType type, String description, int level});
+  $Res call(
+      {String? id,
+      String? countingId,
+      AttributeType type,
+      String description,
+      int level});
 }
 
 /// @nodoc
@@ -154,6 +160,7 @@ class _$AttributeObjCopyWithImpl<$Res, $Val extends AttributeObj>
   @override
   $Res call({
     Object? id = freezed,
+    Object? countingId = freezed,
     Object? type = null,
     Object? description = null,
     Object? level = null,
@@ -162,6 +169,10 @@ class _$AttributeObjCopyWithImpl<$Res, $Val extends AttributeObj>
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      countingId: freezed == countingId
+          ? _value.countingId
+          : countingId // ignore: cast_nullable_to_non_nullable
               as String?,
       type: null == type
           ? _value.type
@@ -187,7 +198,12 @@ abstract class _$$LikeAttributeObjCopyWith<$Res>
       __$$LikeAttributeObjCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, AttributeType type, String description, int level});
+  $Res call(
+      {String? id,
+      String? countingId,
+      AttributeType type,
+      String description,
+      int level});
 }
 
 /// @nodoc
@@ -202,6 +218,7 @@ class __$$LikeAttributeObjCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? countingId = freezed,
     Object? type = null,
     Object? description = null,
     Object? level = null,
@@ -210,6 +227,10 @@ class __$$LikeAttributeObjCopyWithImpl<$Res>
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      countingId: freezed == countingId
+          ? _value.countingId
+          : countingId // ignore: cast_nullable_to_non_nullable
               as String?,
       type: null == type
           ? _value.type
@@ -232,6 +253,7 @@ class __$$LikeAttributeObjCopyWithImpl<$Res>
 class _$LikeAttributeObj extends LikeAttributeObj {
   const _$LikeAttributeObj(
       {this.id,
+      this.countingId,
       this.type = AttributeType.like,
       required this.description,
       required this.level,
@@ -245,6 +267,8 @@ class _$LikeAttributeObj extends LikeAttributeObj {
   @override
   final String? id;
   @override
+  final String? countingId;
+  @override
   @JsonKey()
   final AttributeType type;
   @override
@@ -257,7 +281,7 @@ class _$LikeAttributeObj extends LikeAttributeObj {
 
   @override
   String toString() {
-    return 'AttributeObj.like(id: $id, type: $type, description: $description, level: $level)';
+    return 'AttributeObj.like(id: $id, countingId: $countingId, type: $type, description: $description, level: $level)';
   }
 
   @override
@@ -266,6 +290,8 @@ class _$LikeAttributeObj extends LikeAttributeObj {
         (other.runtimeType == runtimeType &&
             other is _$LikeAttributeObj &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.countingId, countingId) ||
+                other.countingId == countingId) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -274,7 +300,8 @@ class _$LikeAttributeObj extends LikeAttributeObj {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, type, description, level);
+  int get hashCode =>
+      Object.hash(runtimeType, id, countingId, type, description, level);
 
   @JsonKey(ignore: true)
   @override
@@ -285,69 +312,69 @@ class _$LikeAttributeObj extends LikeAttributeObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         like,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         dislike,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         fear,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         value,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         goal,
   }) {
-    return like(id, type, description, level);
+    return like(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
   }) {
-    return like?.call(id, type, description, level);
+    return like?.call(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
     required TResult orElse(),
   }) {
     if (like != null) {
-      return like(id, type, description, level);
+      return like(id, countingId, type, description, level);
     }
     return orElse();
   }
@@ -403,6 +430,7 @@ class _$LikeAttributeObj extends LikeAttributeObj {
 abstract class LikeAttributeObj extends AttributeObj {
   const factory LikeAttributeObj(
       {final String? id,
+      final String? countingId,
       final AttributeType type,
       required final String description,
       required final int level}) = _$LikeAttributeObj;
@@ -413,6 +441,8 @@ abstract class LikeAttributeObj extends AttributeObj {
 
   @override
   String? get id;
+  @override
+  String? get countingId;
   @override
   AttributeType get type;
   @override
@@ -433,7 +463,12 @@ abstract class _$$DislikeAttributeObjCopyWith<$Res>
       __$$DislikeAttributeObjCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, AttributeType type, String description, int level});
+  $Res call(
+      {String? id,
+      String? countingId,
+      AttributeType type,
+      String description,
+      int level});
 }
 
 /// @nodoc
@@ -448,6 +483,7 @@ class __$$DislikeAttributeObjCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? countingId = freezed,
     Object? type = null,
     Object? description = null,
     Object? level = null,
@@ -456,6 +492,10 @@ class __$$DislikeAttributeObjCopyWithImpl<$Res>
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      countingId: freezed == countingId
+          ? _value.countingId
+          : countingId // ignore: cast_nullable_to_non_nullable
               as String?,
       type: null == type
           ? _value.type
@@ -478,6 +518,7 @@ class __$$DislikeAttributeObjCopyWithImpl<$Res>
 class _$DislikeAttributeObj extends DislikeAttributeObj {
   const _$DislikeAttributeObj(
       {this.id,
+      this.countingId,
       this.type = AttributeType.dislike,
       required this.description,
       required this.level,
@@ -491,6 +532,8 @@ class _$DislikeAttributeObj extends DislikeAttributeObj {
   @override
   final String? id;
   @override
+  final String? countingId;
+  @override
   @JsonKey()
   final AttributeType type;
   @override
@@ -503,7 +546,7 @@ class _$DislikeAttributeObj extends DislikeAttributeObj {
 
   @override
   String toString() {
-    return 'AttributeObj.dislike(id: $id, type: $type, description: $description, level: $level)';
+    return 'AttributeObj.dislike(id: $id, countingId: $countingId, type: $type, description: $description, level: $level)';
   }
 
   @override
@@ -512,6 +555,8 @@ class _$DislikeAttributeObj extends DislikeAttributeObj {
         (other.runtimeType == runtimeType &&
             other is _$DislikeAttributeObj &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.countingId, countingId) ||
+                other.countingId == countingId) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -520,7 +565,8 @@ class _$DislikeAttributeObj extends DislikeAttributeObj {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, type, description, level);
+  int get hashCode =>
+      Object.hash(runtimeType, id, countingId, type, description, level);
 
   @JsonKey(ignore: true)
   @override
@@ -532,69 +578,69 @@ class _$DislikeAttributeObj extends DislikeAttributeObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         like,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         dislike,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         fear,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         value,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         goal,
   }) {
-    return dislike(id, type, description, level);
+    return dislike(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
   }) {
-    return dislike?.call(id, type, description, level);
+    return dislike?.call(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
     required TResult orElse(),
   }) {
     if (dislike != null) {
-      return dislike(id, type, description, level);
+      return dislike(id, countingId, type, description, level);
     }
     return orElse();
   }
@@ -650,6 +696,7 @@ class _$DislikeAttributeObj extends DislikeAttributeObj {
 abstract class DislikeAttributeObj extends AttributeObj {
   const factory DislikeAttributeObj(
       {final String? id,
+      final String? countingId,
       final AttributeType type,
       required final String description,
       required final int level}) = _$DislikeAttributeObj;
@@ -660,6 +707,8 @@ abstract class DislikeAttributeObj extends AttributeObj {
 
   @override
   String? get id;
+  @override
+  String? get countingId;
   @override
   AttributeType get type;
   @override
@@ -680,7 +729,12 @@ abstract class _$$FearAttributeObjCopyWith<$Res>
       __$$FearAttributeObjCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, AttributeType type, String description, int level});
+  $Res call(
+      {String? id,
+      String? countingId,
+      AttributeType type,
+      String description,
+      int level});
 }
 
 /// @nodoc
@@ -695,6 +749,7 @@ class __$$FearAttributeObjCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? countingId = freezed,
     Object? type = null,
     Object? description = null,
     Object? level = null,
@@ -703,6 +758,10 @@ class __$$FearAttributeObjCopyWithImpl<$Res>
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      countingId: freezed == countingId
+          ? _value.countingId
+          : countingId // ignore: cast_nullable_to_non_nullable
               as String?,
       type: null == type
           ? _value.type
@@ -725,6 +784,7 @@ class __$$FearAttributeObjCopyWithImpl<$Res>
 class _$FearAttributeObj extends FearAttributeObj {
   const _$FearAttributeObj(
       {this.id,
+      this.countingId,
       this.type = AttributeType.fear,
       required this.description,
       required this.level,
@@ -738,6 +798,8 @@ class _$FearAttributeObj extends FearAttributeObj {
   @override
   final String? id;
   @override
+  final String? countingId;
+  @override
   @JsonKey()
   final AttributeType type;
   @override
@@ -750,7 +812,7 @@ class _$FearAttributeObj extends FearAttributeObj {
 
   @override
   String toString() {
-    return 'AttributeObj.fear(id: $id, type: $type, description: $description, level: $level)';
+    return 'AttributeObj.fear(id: $id, countingId: $countingId, type: $type, description: $description, level: $level)';
   }
 
   @override
@@ -759,6 +821,8 @@ class _$FearAttributeObj extends FearAttributeObj {
         (other.runtimeType == runtimeType &&
             other is _$FearAttributeObj &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.countingId, countingId) ||
+                other.countingId == countingId) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -767,7 +831,8 @@ class _$FearAttributeObj extends FearAttributeObj {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, type, description, level);
+  int get hashCode =>
+      Object.hash(runtimeType, id, countingId, type, description, level);
 
   @JsonKey(ignore: true)
   @override
@@ -778,69 +843,69 @@ class _$FearAttributeObj extends FearAttributeObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         like,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         dislike,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         fear,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         value,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         goal,
   }) {
-    return fear(id, type, description, level);
+    return fear(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
   }) {
-    return fear?.call(id, type, description, level);
+    return fear?.call(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
     required TResult orElse(),
   }) {
     if (fear != null) {
-      return fear(id, type, description, level);
+      return fear(id, countingId, type, description, level);
     }
     return orElse();
   }
@@ -896,6 +961,7 @@ class _$FearAttributeObj extends FearAttributeObj {
 abstract class FearAttributeObj extends AttributeObj {
   const factory FearAttributeObj(
       {final String? id,
+      final String? countingId,
       final AttributeType type,
       required final String description,
       required final int level}) = _$FearAttributeObj;
@@ -906,6 +972,8 @@ abstract class FearAttributeObj extends AttributeObj {
 
   @override
   String? get id;
+  @override
+  String? get countingId;
   @override
   AttributeType get type;
   @override
@@ -926,7 +994,12 @@ abstract class _$$ValueAttributeObjCopyWith<$Res>
       __$$ValueAttributeObjCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, AttributeType type, String description, int level});
+  $Res call(
+      {String? id,
+      String? countingId,
+      AttributeType type,
+      String description,
+      int level});
 }
 
 /// @nodoc
@@ -941,6 +1014,7 @@ class __$$ValueAttributeObjCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? countingId = freezed,
     Object? type = null,
     Object? description = null,
     Object? level = null,
@@ -949,6 +1023,10 @@ class __$$ValueAttributeObjCopyWithImpl<$Res>
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      countingId: freezed == countingId
+          ? _value.countingId
+          : countingId // ignore: cast_nullable_to_non_nullable
               as String?,
       type: null == type
           ? _value.type
@@ -971,6 +1049,7 @@ class __$$ValueAttributeObjCopyWithImpl<$Res>
 class _$ValueAttributeObj extends ValueAttributeObj {
   const _$ValueAttributeObj(
       {this.id,
+      this.countingId,
       this.type = AttributeType.value,
       required this.description,
       required this.level,
@@ -984,6 +1063,8 @@ class _$ValueAttributeObj extends ValueAttributeObj {
   @override
   final String? id;
   @override
+  final String? countingId;
+  @override
   @JsonKey()
   final AttributeType type;
   @override
@@ -996,7 +1077,7 @@ class _$ValueAttributeObj extends ValueAttributeObj {
 
   @override
   String toString() {
-    return 'AttributeObj.value(id: $id, type: $type, description: $description, level: $level)';
+    return 'AttributeObj.value(id: $id, countingId: $countingId, type: $type, description: $description, level: $level)';
   }
 
   @override
@@ -1005,6 +1086,8 @@ class _$ValueAttributeObj extends ValueAttributeObj {
         (other.runtimeType == runtimeType &&
             other is _$ValueAttributeObj &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.countingId, countingId) ||
+                other.countingId == countingId) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -1013,7 +1096,8 @@ class _$ValueAttributeObj extends ValueAttributeObj {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, type, description, level);
+  int get hashCode =>
+      Object.hash(runtimeType, id, countingId, type, description, level);
 
   @JsonKey(ignore: true)
   @override
@@ -1024,69 +1108,69 @@ class _$ValueAttributeObj extends ValueAttributeObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         like,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         dislike,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         fear,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         value,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         goal,
   }) {
-    return value(id, type, description, level);
+    return value(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
   }) {
-    return value?.call(id, type, description, level);
+    return value?.call(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
     required TResult orElse(),
   }) {
     if (value != null) {
-      return value(id, type, description, level);
+      return value(id, countingId, type, description, level);
     }
     return orElse();
   }
@@ -1142,6 +1226,7 @@ class _$ValueAttributeObj extends ValueAttributeObj {
 abstract class ValueAttributeObj extends AttributeObj {
   const factory ValueAttributeObj(
       {final String? id,
+      final String? countingId,
       final AttributeType type,
       required final String description,
       required final int level}) = _$ValueAttributeObj;
@@ -1152,6 +1237,8 @@ abstract class ValueAttributeObj extends AttributeObj {
 
   @override
   String? get id;
+  @override
+  String? get countingId;
   @override
   AttributeType get type;
   @override
@@ -1172,7 +1259,12 @@ abstract class _$$GoalAttributeObjCopyWith<$Res>
       __$$GoalAttributeObjCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String? id, AttributeType type, String description, int level});
+  $Res call(
+      {String? id,
+      String? countingId,
+      AttributeType type,
+      String description,
+      int level});
 }
 
 /// @nodoc
@@ -1187,6 +1279,7 @@ class __$$GoalAttributeObjCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
+    Object? countingId = freezed,
     Object? type = null,
     Object? description = null,
     Object? level = null,
@@ -1195,6 +1288,10 @@ class __$$GoalAttributeObjCopyWithImpl<$Res>
       id: freezed == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      countingId: freezed == countingId
+          ? _value.countingId
+          : countingId // ignore: cast_nullable_to_non_nullable
               as String?,
       type: null == type
           ? _value.type
@@ -1217,6 +1314,7 @@ class __$$GoalAttributeObjCopyWithImpl<$Res>
 class _$GoalAttributeObj extends GoalAttributeObj {
   const _$GoalAttributeObj(
       {this.id,
+      this.countingId,
       this.type = AttributeType.goal,
       required this.description,
       required this.level,
@@ -1230,6 +1328,8 @@ class _$GoalAttributeObj extends GoalAttributeObj {
   @override
   final String? id;
   @override
+  final String? countingId;
+  @override
   @JsonKey()
   final AttributeType type;
   @override
@@ -1242,7 +1342,7 @@ class _$GoalAttributeObj extends GoalAttributeObj {
 
   @override
   String toString() {
-    return 'AttributeObj.goal(id: $id, type: $type, description: $description, level: $level)';
+    return 'AttributeObj.goal(id: $id, countingId: $countingId, type: $type, description: $description, level: $level)';
   }
 
   @override
@@ -1251,6 +1351,8 @@ class _$GoalAttributeObj extends GoalAttributeObj {
         (other.runtimeType == runtimeType &&
             other is _$GoalAttributeObj &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.countingId, countingId) ||
+                other.countingId == countingId) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.description, description) ||
                 other.description == description) &&
@@ -1259,7 +1361,8 @@ class _$GoalAttributeObj extends GoalAttributeObj {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, type, description, level);
+  int get hashCode =>
+      Object.hash(runtimeType, id, countingId, type, description, level);
 
   @JsonKey(ignore: true)
   @override
@@ -1270,69 +1373,69 @@ class _$GoalAttributeObj extends GoalAttributeObj {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         like,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         dislike,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         fear,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         value,
-    required TResult Function(
-            String? id, AttributeType type, String description, int level)
+    required TResult Function(String? id, String? countingId,
+            AttributeType type, String description, int level)
         goal,
   }) {
-    return goal(id, type, description, level);
+    return goal(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult? Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult? Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
   }) {
-    return goal?.call(id, type, description, level);
+    return goal?.call(id, countingId, type, description, level);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         like,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         dislike,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         fear,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         value,
-    TResult Function(
-            String? id, AttributeType type, String description, int level)?
+    TResult Function(String? id, String? countingId, AttributeType type,
+            String description, int level)?
         goal,
     required TResult orElse(),
   }) {
     if (goal != null) {
-      return goal(id, type, description, level);
+      return goal(id, countingId, type, description, level);
     }
     return orElse();
   }
@@ -1388,6 +1491,7 @@ class _$GoalAttributeObj extends GoalAttributeObj {
 abstract class GoalAttributeObj extends AttributeObj {
   const factory GoalAttributeObj(
       {final String? id,
+      final String? countingId,
       final AttributeType type,
       required final String description,
       required final int level}) = _$GoalAttributeObj;
@@ -1398,6 +1502,8 @@ abstract class GoalAttributeObj extends AttributeObj {
 
   @override
   String? get id;
+  @override
+  String? get countingId;
   @override
   AttributeType get type;
   @override
