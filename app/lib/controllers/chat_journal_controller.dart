@@ -9,14 +9,12 @@ final chatJournalControllerProvider = Provider<ChatJournalController>((ref) {
   final chatController = ref.read(chatControllerProvider.notifier);
   final chatBotController = ref.read(chatBotControllerProvider.notifier);
   final goalPrompts = ref.watch(goalPromptsProvider);
-  final controller = ChatJournalController(
+  return ChatJournalController(
     chatHistory.valueOrNull?.chat,
     goalPrompts,
     chatController,
     chatBotController,
   );
-
-  return controller;
 });
 
 class ChatJournalController {
