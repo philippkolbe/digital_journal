@@ -1,6 +1,7 @@
 import 'package:app/common/error_widget.dart' as err;
 import 'package:app/common/loading_widget.dart';
 import 'package:app/common/utils.dart';
+// ignore: depend_on_referenced_packages
 import 'package:tuple/tuple.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -8,7 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class AsyncWidget<T> extends StatelessWidget {
   final AsyncValue<T> asyncValue;
   final Widget Function(T) buildWidget;
-  final Widget? Function(Object, StackTrace)? buildErrorWidget;
+  final Widget Function(Object, StackTrace)? buildErrorWidget;
   final void Function()? onRetryAfterError;
   final String? retryText;
 
@@ -23,13 +24,11 @@ class AsyncWidget<T> extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: asyncValue.when(
-        data: (T data) => buildWidget(data),
-        error: buildErrorWidget ??
-          err.buildErrorWidget(onRetry: onRetryAfterError, retryText: retryText),
-        loading: () => const LoadingWidget(),
-      ),
+    return asyncValue.when(
+      data: (T data) => buildWidget(data),
+      error: buildErrorWidget ??
+        err.buildErrorWidget(onRetry: onRetryAfterError, retryText: retryText),
+      loading: () => const LoadingWidget(),
     );
   }
 }
