@@ -13,72 +13,74 @@ import 'package:riverpod/riverpod.dart';
 /// Note that it does not hold the summary of conversations that were selected but the user not written into again.
 /// That value should be saved in the selectedJournalEntry though. The advantage like this is that we don't analyze old summaries that have already been analyzed
 /// but one could think about changing this.
-final summaryProvider = StateNotifierProvider<SummaryController, AsyncValue<SummaryObj?>>((ref) {
+final summaryProvider = StateProvider<AsyncValue<SummaryObj?>>((ref) => const AsyncData(null));
+
+final summaryControllerProvider = Provider<SummaryController>((ref) {
   final aiService = ref.watch(aiServiceProvider);
   final prompts = ref.watch(generalPromptsProvider);
-  final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
+  // TODO: Why is it null??
+  // final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
   final chatController = ref.watch(chatControllerProvider.notifier);
 
-  final agent = SummaryController(
-    selectedJournalEntry.valueOrNull,
+  final summaryStateController = ref.read(summaryProvider.notifier);
+
+  return SummaryController(
     chatController,
+    summaryStateController,
     aiService,
     prompts,
   );
+});
 
-  return agent;
-}); 
-
-class SummaryController extends StateNotifier<AsyncValue<SummaryObj?>> {
+class SummaryController {
   final BaseAIService _aiService;
   final Map<GeneralPrompts, String> _prompts;
   final ChatController _chatController;
-  final JournalEntryObj? _selectedJournalEntry;
+  final StateController<AsyncValue<SummaryObj?>> _summaryStateController;
 
   SummaryController(
-    this._selectedJournalEntry,
     this._chatController,
+    this._summaryStateController,
     this._aiService,
     this._prompts,
-  ) : super(const AsyncData(null));
+  );
 
   /// We use this method mainly for testing
   void setSummary(AsyncValue<SummaryObj?> summaryObj) {
-    state = summaryObj;
+    _summaryStateController.state = summaryObj;
   }
 
   Future<void> onChatStateUpdated(
     AsyncValue<ChatState?>? prevChatState,
-    AsyncValue<ChatState?> asyncChatState
+    AsyncValue<ChatState?> asyncChatState,
+    JournalEntryObj? selectedJournalEntry,
   ) async {
-    assert(_selectedJournalEntry != null, "Expected selectedJournal to be loaded when chatState was updated");
-
     final chatState = asyncChatState.valueOrNull;
-    // First thing: We set flag back to false because we are handling this request now!
-    if (chatState != null && chatState.wasModifiedByUser) {
-      _chatController.setModifiedByUser(_selectedJournalEntry!, false);
-    }
+    if (chatState != null && selectedJournalEntry != null && chatState.wasModifiedByUser) {
+      // First thing: We set flag back to false because we are handling this request now!
+      _chatController.setModifiedByUser(selectedJournalEntry, false);
 
-    // Now we do the actual summary. In here the correct update of the summaryProvider is happening 
-    await summarize(
-      _selectedJournalEntry,
-      chatState,
-    );
+      if (_isCorrectJournalEntryLoaded(selectedJournalEntry, chatState)) {
+        // Now we do the actual summary. In here the correct update of the summaryProvider is happening 
+        await summarize(
+          selectedJournalEntry,
+          chatState,
+        );
+
+      } else {
+        _summaryStateController.state = const AsyncData(null);
+      }
+    }
   }
 
   Future<void> summarize(
-    JournalEntryObj? journalEntry,
-    ChatState? chatState,
+    JournalEntryObj journalEntry,
+    ChatState chatState,
   ) async {
-    if (_isJournalEntryLoading(journalEntry, chatState)) {
-      state = const AsyncData(null);
-      return;
-    }
+    final previousSummary = journalEntry.summary;
 
-    final previousSummary = journalEntry!.summary;
-
-    if (chatState != null && chatState.wasModifiedByUser) {
-      state = const AsyncLoading();
+    if (chatState.wasModifiedByUser) {
+      _summaryStateController.state = const AsyncLoading();
       final summaryDate = DateTime.now();
       final summary = await _computeSummary(_aiService, _prompts, previousSummary, chatState.chat);
       String? validUpToId;
@@ -95,16 +97,12 @@ class SummaryController extends StateNotifier<AsyncValue<SummaryObj?>> {
         validUpToId: validUpToId,
       );
 
-      state = AsyncData(summaryObj);
+      _summaryStateController.state = AsyncData(summaryObj);
     }
   }
 
-  bool _isJournalEntryLoading(JournalEntryObj? journalEntry, ChatState? chatState) {
-    return (
-      journalEntry == null ||
-      chatState == null ||
-      journalEntry is ChatJournalEntryObj && journalEntry.id != chatState.journalEntryId
-    );
+  bool _isCorrectJournalEntryLoaded(JournalEntryObj journalEntry, ChatState chatState) {
+    return journalEntry is! ChatJournalEntryObj || journalEntry.id == chatState.journalEntryId;
   }
 
   Future<String> _computeSummary(
