@@ -8,13 +8,18 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 // TODO: This is actually a chatProvider...
 final chatControllerProvider = StateNotifierProvider<ChatController, AsyncValue<ChatState?>>((ref) {
-  final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
+  // It's enough to read the journal entry because we are being updated when the id changes (which depends on the journalEntry)
+  // We don't want to watch it as summary updates etc. that neither affect the loaded state nor the selected id made this controller rebuild during usage
+  // Note that this means that the selected journalEntry might not be up to date.
+  final asyncSelectedJournalEntry = ref.read(selectedJournalEntryProvider);
+  final selectedJournalEntryId = ref.watch(selectedJournalEntryIdProvider);
   final userId = ref.watch(userIdProvider);
-  final chatHistoryRepository = ref.read(chatHistoryRepositoryProvider);
+  final chatHistoryRepository = ref.watch(chatHistoryRepositoryProvider);
 
   return ChatController(
     userId,
-    selectedJournalEntry,
+    selectedJournalEntryId,
+    asyncSelectedJournalEntry,
     chatHistoryRepository,
   );
 });
@@ -31,16 +36,17 @@ class ChatState {
 
 class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   final String? _userId;
-  final AsyncValue<JournalEntryObj?> _asyncSelectedJournalEntry;
+  final String? _selectedJournalEntryId;
   final BaseChatHistoryRepository _chatHistoryRepository;
 
   ChatController(
     this._userId,
-    this._asyncSelectedJournalEntry,
+    this._selectedJournalEntryId,
+    asyncSelectedJournalEntry,
     this._chatHistoryRepository,
   ) : super(const AsyncData(null)) {
     if (_userId != null) {
-      state = _initState();
+      state = _initState(asyncSelectedJournalEntry);
     }
   }
 
@@ -108,6 +114,9 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   }
 
   void setModifiedByUser(JournalEntryObj entry, bool wasModifiedByUser) {
+    if (!mounted) {
+      return;
+    }
     final chatState = state.valueOrNull;
     if (state is AsyncData && chatState!.journalEntryId == entry.id) {
       state = AsyncData(ChatState(
@@ -118,8 +127,8 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     }
   }
 
-  AsyncValue<ChatState?> _initState() {
-    return _asyncSelectedJournalEntry.when<AsyncValue<ChatState?>>(
+  AsyncValue<ChatState?> _initState(AsyncValue<JournalEntryObj?> asyncSelectedJournalEntry) {
+    return asyncSelectedJournalEntry.when<AsyncValue<ChatState?>>(
       data: (selectedJournalEntry) {
         if (selectedJournalEntry is ChatJournalEntryObj) {
           return _tryLoadingChatHistory(selectedJournalEntry);
@@ -173,13 +182,17 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
 
       return updatedChatMessageObj;
     } catch (err, st) {
-      state = _createLoadedChatState(
-        state.value!.chat.map(
-          (asyncMessage) => asyncMessage.valueOrNull == chatMessageObj
-            ? AsyncError<ChatMessageObj>(err, st)
-            : asyncMessage
-        ).toList(),
-      );
+      if (state is AsyncData) {
+        state = state.whenData((value) => _createChatState(
+          value!.chat.map(
+            (asyncMessage) => asyncMessage.valueOrNull == chatMessageObj
+              ? AsyncError<ChatMessageObj>(err, st)
+              : asyncMessage
+          ).toList()),
+        );
+      } else {
+        state = AsyncError(err, st);
+      }
       
       return null;
     }
@@ -222,18 +235,21 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
     ChatHistory chat,
     { bool modifiedByUser = false }
   ) {
-    return AsyncData(ChatState(
-      journalEntryId: _asyncSelectedJournalEntry.valueOrNull?.id,
+    return AsyncData(_createChatState(chat, modifiedByUser: modifiedByUser));
+  }
+
+  ChatState _createChatState(ChatHistory chat, { bool modifiedByUser = false }) {
+    return ChatState(
+      journalEntryId: _selectedJournalEntryId,
       chat: chat,
       wasModifiedByUser: modifiedByUser,
-    ));
+    );
   }
 
   Future<ChatMessageObj> _createChatMessage(ChatMessageObj chatMessageObj) async {
     assert(_userId != null, 'User must be authenticated to write chat messages.');
-    final journalEntryId = _asyncSelectedJournalEntry.valueOrNull?.id;
-    assert(journalEntryId != null, 'Journal Entries must be loaded and have an id to write chat messages.');
+    assert(_selectedJournalEntryId != null, 'Journal Entries must be loaded and have an id to write chat messages.');
 
-    return _chatHistoryRepository.createChatMessage(_userId!, journalEntryId!, chatMessageObj);
+    return _chatHistoryRepository.createChatMessage(_userId!, _selectedJournalEntryId!, chatMessageObj);
   }
 }

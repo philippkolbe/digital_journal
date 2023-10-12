@@ -7,6 +7,7 @@ class MockChatController extends ChatController {
   /// initializeEmpty = false -> then the respository will load a default value of 2 items
   MockChatController({ bool initializeEmpty = false }) : super(
     testUserId,
+    testChatJournalEntryId,
     AsyncData(testChatJournalEntry),
     MockChatHistoryRepository(
       chatHistory: initializeEmpty ? [] : null
