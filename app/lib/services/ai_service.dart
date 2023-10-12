@@ -7,12 +7,12 @@ import 'package:app/providers/http_client_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final aiServiceProvider = Provider<BaseAIService>((ref) {
-  final asyncAuthState = ref.read(authControllerProvider);
+  final userId = ref.watch(userIdProvider);
   final httpClient = ref.watch(httpClientProvider);
   // return MockAIService();
   return AIService(
     httpClient: httpClient,
-    userId: asyncAuthState.valueOrNull?.currentUser.id
+    userId: userId
   );
 });
 
