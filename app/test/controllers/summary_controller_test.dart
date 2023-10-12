@@ -15,37 +15,39 @@ void main() {
     late MockAIService mockAIService;
     late ChatController chatController;
     late SummaryController summaryController;
+    late StateController<AsyncValue<SummaryObj?>> summaryStateController;
 
     setUp(() {
       mockAIService = MockAIService();
       chatController = MockChatController();
+      summaryStateController = StateController(const AsyncData(null));
       summaryController = SummaryController(
-        testChatJournalEntry,
         chatController,
+        summaryStateController,
         mockAIService,
         mockGeneralPrompts,
       );
     });
 
     test('Test summarize method when journal entry is loading', () async {    
-      final chatState = ChatState(journalEntryId: '123', wasModifiedByUser: false, chat: []);
+      final chatState = AsyncData(ChatState(journalEntryId: '123', wasModifiedByUser: false, chat: []));
 
-      await summaryController.summarize(null, chatState);
+      await summaryController.onChatStateUpdated(null, chatState, null);
 
-      expect(summaryController.debugState, equals(const AsyncData<SummaryObj?>(null)));
+      expect(summaryStateController.debugState, equals(const AsyncData<SummaryObj?>(null)));
     });
 
     test('Test summarize method when chat state loading', () async {
-      await summaryController.summarize(testChatJournalEntry, null);
+      await summaryController.onChatStateUpdated(null, const AsyncLoading(), testChatJournalEntry);
       
-      expect(summaryController.debugState, equals(const AsyncData<SummaryObj?>(null)));
+      expect(summaryStateController.debugState, equals(const AsyncData<SummaryObj?>(null)));
     });
 
     test('Test summarize method when different journalEntry loaded', () async {    
       final chatState = ChatState(journalEntryId: '${testChatJournalEntryId}abc', wasModifiedByUser: false, chat: []);  
-      await summaryController.summarize(testChatJournalEntry, chatState);
+      await summaryController.onChatStateUpdated(null, AsyncData(chatState), testChatJournalEntry);
 
-      expect(summaryController.debugState, equals(const AsyncData<SummaryObj?>(null)));
+      expect(summaryStateController.debugState, equals(const AsyncData<SummaryObj?>(null)));
     });
 
     test('Test summarize method for loading state', () {
@@ -53,7 +55,7 @@ void main() {
 
       summaryController.summarize(testChatJournalEntry, chatState);
 
-      expect(summaryController.debugState, isA<AsyncLoading<SummaryObj?>>());
+      expect(summaryStateController.debugState, isA<AsyncLoading<SummaryObj?>>());
     });
 
     test('Test summarize method when chatState is modified by user', () async {
@@ -61,8 +63,8 @@ void main() {
 
       await summaryController.summarize(testChatJournalEntry, chatState);
 
-      expect(summaryController.debugState, isA<AsyncData<SummaryObj?>>());
-      final data = summaryController.debugState.value;
+      expect(summaryStateController.debugState, isA<AsyncData<SummaryObj?>>());
+      final data = summaryStateController.debugState.value;
       expect(data, isNotNull);
       expect(data!.validUpToId, equals(testChatMessageObj.id));
       expect(data.content, equals(mockAIService.mockBotResponse.content));
@@ -79,7 +81,7 @@ void main() {
       await summaryController.summarize(testChatJournalEntry, chatState);
 
       // Summary agent shouldnt change anything since the summary is taken from the user message
-      expect(summaryController.debugState.value, equals(oldSummaryObj));
+      expect(summaryStateController.debugState.value, equals(oldSummaryObj));
     });
     test('Test summarize method when bot has replied', () async {
       final chatState = ChatState(journalEntryId: testChatJournalEntry.id, wasModifiedByUser: false, chat: [
@@ -92,18 +94,18 @@ void main() {
       await summaryController.summarize(testChatJournalEntry, chatState);
 
       // Summary agent shouldnt change anything since the summary is taken from the user message
-      expect(summaryController.debugState.value, equals(oldSummaryObj));
+      expect(summaryStateController.debugState.value, equals(oldSummaryObj));
     });
 
     test('Test onChatStateUpdated method', () async {
       final chatState = ChatState(journalEntryId: testChatJournalEntry.id, wasModifiedByUser: true, chat: [AsyncData(testChatMessageObj)]);
 
-      final future = summaryController.onChatStateUpdated(null, AsyncData(chatState));
+      final future = summaryController.onChatStateUpdated(null, AsyncData(chatState), testChatJournalEntry);
 
       expect(chatController.debugState.valueOrNull?.wasModifiedByUser, isFalse);
 
       await future;
-      expect(summaryController.debugState.valueOrNull, isNotNull);    
+      expect(summaryStateController.debugState.valueOrNull, isNotNull);    
     });
   });
 }
