@@ -36,7 +36,7 @@ final attributeAnalysisAgentsProvider = Provider<List<AttributesAgent>>((ref) {
 
 final valuesAgentProvider = Provider<AttributesAgent>((ref) {
   final aiService = ref.watch(aiServiceProvider);
-  final attributesController = ref.watch(attributesControllerProvider.notifier);
+  final attributesController = ref.watch(attributesProvider.notifier);
   final prompts = ref.watch(analysisPromptsProvider);
 
   return AttributesAgent(
@@ -48,7 +48,7 @@ final valuesAgentProvider = Provider<AttributesAgent>((ref) {
 
 final likesAgentProvider = Provider<AttributesAgent>((ref) {
   final aiService = ref.watch(aiServiceProvider);
-  final attributesController = ref.watch(attributesControllerProvider.notifier);
+  final attributesController = ref.watch(attributesProvider.notifier);
   final prompts = ref.watch(analysisPromptsProvider);
 
   return AttributesAgent(
