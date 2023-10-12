@@ -18,7 +18,7 @@ class AttributesActionObj with _$AttributesActionObj {
 
   @Assert('level == null || level > 0 && level <= 10')
   const factory AttributesActionObj.update({
-    String? id,
+    required String id,
     String? description,
     int? level,
   }) = UpdateAttributeObj;

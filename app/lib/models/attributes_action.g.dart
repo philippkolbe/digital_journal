@@ -33,7 +33,7 @@ const _$AttributeTypeEnumMap = {
 
 _$UpdateAttributeObj _$$UpdateAttributeObjFromJson(Map<String, dynamic> json) =>
     _$UpdateAttributeObj(
-      id: json['id'] as String?,
+      id: json['id'] as String,
       description: json['description'] as String?,
       level: json['level'] as int?,
       $type: json['action'] as String?,

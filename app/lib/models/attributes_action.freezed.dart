@@ -35,7 +35,7 @@ mixin _$AttributesActionObj {
   TResult when<TResult extends Object?>({
     required TResult Function(AttributeType type, String description, int level)
         create,
-    required TResult Function(String? id, String? description, int? level)
+    required TResult Function(String id, String? description, int? level)
         update,
     required TResult Function(String id) delete,
   }) =>
@@ -44,14 +44,14 @@ mixin _$AttributesActionObj {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(AttributeType type, String description, int level)?
         create,
-    TResult? Function(String? id, String? description, int? level)? update,
+    TResult? Function(String id, String? description, int? level)? update,
     TResult? Function(String id)? delete,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(AttributeType type, String description, int level)? create,
-    TResult Function(String? id, String? description, int? level)? update,
+    TResult Function(String id, String? description, int? level)? update,
     TResult Function(String id)? delete,
     required TResult orElse(),
   }) =>
@@ -197,7 +197,7 @@ class _$CreateAttributeObj extends CreateAttributeObj {
   TResult when<TResult extends Object?>({
     required TResult Function(AttributeType type, String description, int level)
         create,
-    required TResult Function(String? id, String? description, int? level)
+    required TResult Function(String id, String? description, int? level)
         update,
     required TResult Function(String id) delete,
   }) {
@@ -209,7 +209,7 @@ class _$CreateAttributeObj extends CreateAttributeObj {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(AttributeType type, String description, int level)?
         create,
-    TResult? Function(String? id, String? description, int? level)? update,
+    TResult? Function(String id, String? description, int? level)? update,
     TResult? Function(String id)? delete,
   }) {
     return create?.call(type, description, level);
@@ -219,7 +219,7 @@ class _$CreateAttributeObj extends CreateAttributeObj {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(AttributeType type, String description, int level)? create,
-    TResult Function(String? id, String? description, int? level)? update,
+    TResult Function(String id, String? description, int? level)? update,
     TResult Function(String id)? delete,
     required TResult orElse(),
   }) {
@@ -295,7 +295,7 @@ abstract class _$$UpdateAttributeObjCopyWith<$Res> {
           $Res Function(_$UpdateAttributeObj) then) =
       __$$UpdateAttributeObjCopyWithImpl<$Res>;
   @useResult
-  $Res call({String? id, String? description, int? level});
+  $Res call({String id, String? description, int? level});
 }
 
 /// @nodoc
@@ -309,15 +309,15 @@ class __$$UpdateAttributeObjCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
+    Object? id = null,
     Object? description = freezed,
     Object? level = freezed,
   }) {
     return _then(_$UpdateAttributeObj(
-      id: freezed == id
+      id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
       description: freezed == description
           ? _value.description
           : description // ignore: cast_nullable_to_non_nullable
@@ -334,7 +334,7 @@ class __$$UpdateAttributeObjCopyWithImpl<$Res>
 @JsonSerializable()
 class _$UpdateAttributeObj extends UpdateAttributeObj {
   const _$UpdateAttributeObj(
-      {this.id, this.description, this.level, final String? $type})
+      {required this.id, this.description, this.level, final String? $type})
       : assert(level == null || level > 0 && level <= 10),
         $type = $type ?? 'update',
         super._();
@@ -343,7 +343,7 @@ class _$UpdateAttributeObj extends UpdateAttributeObj {
       _$$UpdateAttributeObjFromJson(json);
 
   @override
-  final String? id;
+  final String id;
   @override
   final String? description;
   @override
@@ -384,7 +384,7 @@ class _$UpdateAttributeObj extends UpdateAttributeObj {
   TResult when<TResult extends Object?>({
     required TResult Function(AttributeType type, String description, int level)
         create,
-    required TResult Function(String? id, String? description, int? level)
+    required TResult Function(String id, String? description, int? level)
         update,
     required TResult Function(String id) delete,
   }) {
@@ -396,7 +396,7 @@ class _$UpdateAttributeObj extends UpdateAttributeObj {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(AttributeType type, String description, int level)?
         create,
-    TResult? Function(String? id, String? description, int? level)? update,
+    TResult? Function(String id, String? description, int? level)? update,
     TResult? Function(String id)? delete,
   }) {
     return update?.call(id, description, level);
@@ -406,7 +406,7 @@ class _$UpdateAttributeObj extends UpdateAttributeObj {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(AttributeType type, String description, int level)? create,
-    TResult Function(String? id, String? description, int? level)? update,
+    TResult Function(String id, String? description, int? level)? update,
     TResult Function(String id)? delete,
     required TResult orElse(),
   }) {
@@ -460,7 +460,7 @@ class _$UpdateAttributeObj extends UpdateAttributeObj {
 
 abstract class UpdateAttributeObj extends AttributesActionObj {
   const factory UpdateAttributeObj(
-      {final String? id,
+      {required final String id,
       final String? description,
       final int? level}) = _$UpdateAttributeObj;
   const UpdateAttributeObj._() : super._();
@@ -468,7 +468,7 @@ abstract class UpdateAttributeObj extends AttributesActionObj {
   factory UpdateAttributeObj.fromJson(Map<String, dynamic> json) =
       _$UpdateAttributeObj.fromJson;
 
-  String? get id;
+  String get id;
   String? get description;
   int? get level;
   @JsonKey(ignore: true)
@@ -552,7 +552,7 @@ class _$DeleteAttributeObj extends DeleteAttributeObj {
   TResult when<TResult extends Object?>({
     required TResult Function(AttributeType type, String description, int level)
         create,
-    required TResult Function(String? id, String? description, int? level)
+    required TResult Function(String id, String? description, int? level)
         update,
     required TResult Function(String id) delete,
   }) {
@@ -564,7 +564,7 @@ class _$DeleteAttributeObj extends DeleteAttributeObj {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(AttributeType type, String description, int level)?
         create,
-    TResult? Function(String? id, String? description, int? level)? update,
+    TResult? Function(String id, String? description, int? level)? update,
     TResult? Function(String id)? delete,
   }) {
     return delete?.call(id);
@@ -574,7 +574,7 @@ class _$DeleteAttributeObj extends DeleteAttributeObj {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(AttributeType type, String description, int level)? create,
-    TResult Function(String? id, String? description, int? level)? update,
+    TResult Function(String id, String? description, int? level)? update,
     TResult Function(String id)? delete,
     required TResult orElse(),
   }) {
