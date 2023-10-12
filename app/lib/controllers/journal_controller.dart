@@ -4,6 +4,10 @@ import 'package:app/repositories/chat_history_repository.dart';
 import 'package:app/repositories/journal_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+final selectedJournalEntryIdProvider = Provider<String?>(
+  (ref) => ref.watch(selectedJournalEntryProvider).valueOrNull?.id
+);
+
 final selectedJournalEntryProvider = StateProvider<AsyncValue<JournalEntryObj?>>((ref) => const AsyncData(null));
 
 final journalEntriesProvider = StateNotifierProvider<JournalController, AsyncValue<List<JournalEntryObj>>>((ref) {
