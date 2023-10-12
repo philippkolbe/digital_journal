@@ -44,14 +44,21 @@ class AttributeRepository implements BaseAttributeRepository {
           );
         } catch (err) {
           // TODO: How should this error be handled? I don't want all of them to be cancelled just because one id is wrong
-          print('Error while applying attributeAction $action: $err');
+          print('Error while applying attributeAction $action: ${err.toString()}');
         }
       }
 
       await batch.commit();
     } catch (err) {
-      throw AttributeException('An error occurred while applying the attribute action batch: $err',
-          userId: userId);
+      if (err is FirebaseException && err.code == 'not-found') {
+        final all = (await readAllAttributes(userId)).map((e) => e.id);
+        final wrongIds = attributesActions.where((act) => act.map(create: (_) => false, update: (u) => !all.contains(u.id), delete: (d) => all.contains(d.id)));
+        throw AttributeException('Could not find attributes with ids in attributes batch: ${wrongIds.toString()}',
+            userId: userId);
+      } else {
+        throw AttributeException('An error occurred while applying the attribute action batch: ${err.toString()}',
+            userId: userId);
+      }
     }
 
     return readAllAttributes(userId);
