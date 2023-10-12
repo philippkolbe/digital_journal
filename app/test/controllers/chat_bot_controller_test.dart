@@ -20,7 +20,7 @@ void main() {
       aiRepository = MockAIService();
       chatHistoryRepository = MockChatHistoryRepository();
       final asyncJournalEntry = testChatJournalEntry;
-      chatController = ChatController(testUserId, AsyncData(asyncJournalEntry), chatHistoryRepository);
+      chatController = ChatController(testUserId, testChatJournalEntryId, AsyncData(asyncJournalEntry), chatHistoryRepository);
       chatBotController = ChatBotController(testUserId, aiRepository);
     });
 

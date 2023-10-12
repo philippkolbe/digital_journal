@@ -18,6 +18,7 @@ void main() {
       mockChatHistoryRepository = MockChatHistoryRepository();
       chatController = ChatController(
         testUserId,
+        testChatJournalEntryId,
         AsyncValue.data(testChatJournalEntry),
         mockChatHistoryRepository,
       );
