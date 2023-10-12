@@ -1,3 +1,5 @@
+import 'package:app/common/async_widget.dart';
+import 'package:app/controllers/attributes_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/controllers/journal_prompt_controller.dart';
 import 'package:app/models/journal_entry.dart';
@@ -21,9 +23,11 @@ class CreationList extends ConsumerStatefulWidget {
 class CreationListState extends ConsumerState<CreationList> {
   @override
   Widget build(BuildContext context) {
+    // We need to wait for the attributes so the prompts can be loaded properly
+    final asyncAttributesState = ref.watch(attributesProvider);
     return Padding(
       padding: const EdgeInsets.all(16.0),
-      child: Column(
+      child: AsyncWidget(asyncValue: asyncAttributesState, buildWidget: (attributesState) => Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           ElevatedButton(
@@ -43,7 +47,7 @@ class CreationListState extends ConsumerState<CreationList> {
             child: const Text('Journal Prompt'),
           ),
         ],
-      ),
+      )),
     );
   }
 
