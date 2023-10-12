@@ -15,7 +15,6 @@ enum ChatJournalType {
 }
 
 enum GeneralPrompts {
-  journalingPrompt,
   conversationSummary,
   summarizeChatMessage,
 }
@@ -55,7 +54,6 @@ final goalPromptsProvider = Provider<Map<ChatJournalType, String>>((ref) {
 
 final generalPromptsProvider = Provider<Map<GeneralPrompts, String>>((ref) {
   return {
-    GeneralPrompts.journalingPrompt: 'Write a journaling prompt.', // last prompt user journaled about, last prompt if user requested a different one, interests, goals, fears, values, memory information.
     GeneralPrompts.conversationSummary: '''
       As a summarizer within a journaling app, continuously summarize the ongoing conversation for other GPT-3.5 instances. The goal is to include all relevant information regarding the user's fears, goals, values, likes, and dislikes. The summary's readability for humans is not a priority; it's solely for other AI instances to analyze. Prioritize maximum brevity without compromising completeness; shorter summaries are preferred when the information is irrelevant.
       If the user provides a summary of the conversation, ensure that the newly created summary includes all relevant information from the user's summary. No need to mention that summarized information was provided. Focus solely on the content's relevance.
@@ -88,9 +86,15 @@ class AnalysisPrompt {
 }
 
 final analysisPromptsProvider = Provider<Map<AnalysisPrompts, AnalysisPrompt>>((ref) {
-  final attributesState = ref.watch(attributesControllerProvider).valueOrNull;
+  final attributesState = ref.watch(attributesProvider).valueOrNull;
   final attributesString = attributesState?.attributes
-    .map((attr) => attr.toJson()..remove('runtimeType'))
+    .map((attr) {
+      final json = attr.toJson();
+      json['id'] = json['countingId'];
+      return json
+        ..remove('countingId')
+        ..remove('runtimeType');
+    })
     .join("\n");
 
   return {
@@ -132,9 +136,9 @@ final analysisPromptsProvider = Provider<Map<AnalysisPrompts, AnalysisPrompt>>((
         fears, goals, and values, based on a conversation between the user and their journaling assistant. As the user has lots of conversations with the journaling assistant it is more important to capture general middle- to longterm important attributes than specifics of this conversation. This also means that you should not delete attributes that were not mentioned.
         You may read through the lines though and add attributes that the user did not explicitly mention as they might not want those attributes to be true but they describe the person well. Each attribute should follow this format:
 
-        Goals: {"id": "goal-1", "type": "goal", "description": "Goal Description", "level": 1-10}
-        Fears: {"id": "fear-1", "type": "fear", "description": "Fear Description", "level": 1-10}
-        Values: {"id": "value-1", "type": "value", "description": "Value Description", "level": 1-10}
+        Goals: {"id": "goal1", "type": "goal", "description": "Goal Description", "level": 1-10}
+        Fears: {"id": "fear1", "type": "fear", "description": "Fear Description", "level": 1-10}
+        Values: {"id": "value1", "type": "value", "description": "Value Description", "level": 1-10}
         Your tasks include:
 
         Updating existing entries by referencing their IDs if the user provides changes in the description or level, including generalizing specific entries to broader categories. Output these updates in the following format:
@@ -150,8 +154,8 @@ final analysisPromptsProvider = Provider<Map<AnalysisPrompts, AnalysisPrompt>>((
         Your output should be a list of these actions, including updates, new entries, and removals, based on the user's conversation. This list will be used to update the user's database entries. You should not actively participate in the conversation or provide responses; your sole focus is on managing the attributes using IDs.
 
         Only output the new, updated or deleted attributes in json format and don't add any other text. Especially, do not answer the user or finish the conversation. Here is an example output:
-        {"id": "3", "action": "delete"}
-        {"action": "update", "id": "2", "level": 4}
+        {"id": "value3", "action": "delete"}
+        {"action": "update", "id": "goal2", "level": 4}
         {"action": "create", "type": "value", "description": "Family", "level": 3}
 
         Analyze the entire conversation but do not answer it. Only output the updates to the database. Make sure to only use these allowed types 'goal', 'fear' and 'value'.
@@ -182,12 +186,12 @@ final analysisPromptsProvider = Provider<Map<AnalysisPrompts, AnalysisPrompt>>((
       Only output json valid text - do not respond with any other text.
       An example output would be:
       { "action": "create", "date": "04.10.2023 10:00", "description": "Excited about dinner with girlfriend tonight",  "importance": 8, "expiresAt": "11.10.2023 23:59" }
-      { "id": "2", "action": "delete" }
-      { "id": "3", "action": "update", "importance": 3 }
+      { "id": "info2", "action": "delete" }
+      { "id": "info3", "action": "update", "importance": 3 }
     ''',
     '''
       It is ${getNowString()}. Here is a list of the information currently in memory:
-      { "id": "1", "date": "04.10.2023 10:00", "description": "Excited about dinner with girlfriend tonight",  "importance": 8, "expiresAt": "11.10.2023 23:59" }.
+      { "id": "info1", "date": "04.10.2023 10:00", "description": "Excited about dinner with girlfriend tonight",  "importance": 8, "expiresAt": "11.10.2023 23:59" }.
 
       Extract all of the relevant information from our conversation. Only output json valid text and don't respond with any other text. You may write several information entries or update or delete existing ones.
     '''),
