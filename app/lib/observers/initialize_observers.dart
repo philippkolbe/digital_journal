@@ -9,4 +9,5 @@ void initializeObservers(WidgetRef ref) {
 void observeProviders(WidgetRef ref) {
   initializeSummaryUpdateObserver(ref);
   initializeChatSummaryObserver(ref);
+  initializeAttributesAgentsObserver(ref);
 }
