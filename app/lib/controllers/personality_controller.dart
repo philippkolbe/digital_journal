@@ -3,10 +3,6 @@ import 'package:app/models/personality.dart';
 import 'package:app/repositories/personality_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-final selectedPersonalityIdProvider = Provider<String?>(
-  (ref) => ref.watch(selectedPersonalityProvider)?.id
-);
-
 final selectedPersonalityProvider = StateProvider<PersonalityObj?>((ref) => null);
 
 final personalitiesProvider = StateNotifierProvider<PersonalityController, AsyncValue<List<PersonalityObj>>>((ref) {
