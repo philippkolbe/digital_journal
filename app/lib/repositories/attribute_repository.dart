@@ -218,8 +218,7 @@ class AttributeRepository implements BaseAttributeRepository {
       : update;
 
     final updateMap = Map<String, dynamic>.fromEntries(
-      encrypted.toJson()
-        .remove('action')
+      encrypted.toDocument()
         .entries
         .where((entry) => entry.value != null)
     );

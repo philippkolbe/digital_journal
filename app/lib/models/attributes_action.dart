@@ -28,4 +28,10 @@ class AttributesActionObj with _$AttributesActionObj {
   }) = DeleteAttributeObj;
 
   factory AttributesActionObj.fromJson(Map<String, dynamic> json) => _$AttributesActionObjFromJson(json);
+
+  Map<String, dynamic> toDocument() {
+    return toJson()
+      ..remove('id')
+      ..remove('action');
+  }
 }
