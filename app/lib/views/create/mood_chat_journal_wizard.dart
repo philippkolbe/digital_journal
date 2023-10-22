@@ -8,14 +8,14 @@ import 'package:app/views/common/mood_check_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-class ChatJournalWizard extends ConsumerStatefulWidget {
-  const ChatJournalWizard({Key? key}) : super(key: key);
+class MoodChatJournalWizard extends ConsumerStatefulWidget {
+  const MoodChatJournalWizard({Key? key}) : super(key: key);
 
   @override
-  ChatJournalWizardState createState() => ChatJournalWizardState();
+  MoodChatJournalWizardState createState() => MoodChatJournalWizardState();
 }
 
-class ChatJournalWizardState extends ConsumerState<ChatJournalWizard> with SingleTickerProviderStateMixin {
+class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -66,7 +66,7 @@ class ChatJournalWizardState extends ConsumerState<ChatJournalWizard> with Singl
               );
             },
           ),
-          title: const Text("Journal Entry"),
+          title: const Text("Mood Check"),
         ),
         body: Center(
           child: selectedJournalEntry != null
