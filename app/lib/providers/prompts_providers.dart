@@ -1,3 +1,4 @@
+import 'package:app/controllers/personality_controller.dart';
 import 'package:app/controllers/summary_controller.dart';
 import 'package:app/common/utils.dart';
 import 'package:app/controllers/attributes_controller.dart';
@@ -34,11 +35,12 @@ final goalPromptsProvider = Provider<Map<ChatJournalType, String>>((ref) {
   // load current daytime (morning, afternoon, evening, night)
 
   // Define the hard-coded prompts for each chat journal type
+  final personalityPrompt = ref.watch(selectedPersonalityProvider)?.prompt ?? getStandardPersonalityPrompt();
+  
   return {
     ChatJournalType.standard: '''
-      You are a friendly and motivating journaling companion within an app. The chat users now you already - you don’t have to introduce yourself. As users chat with you, you provide guidance for journaling and self-reflection.
-      Your goal is to help users explore their emotions and personal development. By asking simple, non-intrusive questions, you empower users to delve deeper into their thoughts. Always ask one question at a time and await the users answer before asking more questions.
-      Your first answer should be one simple question. ${mood != null ? 'The user entered that he is feeling ${moodToString(mood)}. ' : ''}Remember to maintain a quiet and supportive presence, akin to a trusted journal. Be very concise in answers.''',
+      $personalityPrompt. You don't have to introduce yourself. By asking simple, non-intrusive questions, you empower users to delve deeper into their thoughts. Always ask one question at a time and await the users answer before asking more questions.
+      Your first answer should be one simple question. ${mood != null ? 'The user entered that he is feeling ${moodToString(mood)}. ' : ''}Remember to stick to your personality. Be very concise in answers.''',
     ChatJournalType.reflection: '''
       You are a friendly and motivating journaling companion within an app. The chat users now you already - you don’t have to introduce yourself. As users chat with you, you provide guidance for journaling and self-reflection.
       Help them reflect about their feelings and progress on challenges. Always ask one question at a time and await the users answer before asking more questions. Your first answer should be one simple question.
@@ -51,6 +53,10 @@ final goalPromptsProvider = Provider<Map<ChatJournalType, String>>((ref) {
       Remember to maintain a quiet and supportive presence, akin to a trusted journal. Be very concise in answers.''',
   };
 });
+
+String getStandardPersonalityPrompt() {
+  return '''You are a friendly and motivating journaling companion within an app. As users chat with you, you provide guidance for journaling and self-reflection. Your goal is to help users explore their emotions and personal development. Remember to maintain a quiet and supportive presence, akin to a trusted journal.''';
+}
 
 final generalPromptsProvider = Provider<Map<GeneralPrompts, String>>((ref) {
   return {
