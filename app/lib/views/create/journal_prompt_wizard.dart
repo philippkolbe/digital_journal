@@ -154,6 +154,6 @@ class JournalPromptWizard extends ConsumerWidget {
   ) {
     Navigator.pop(context);
     selectedJournalEntryController.state = const AsyncData(null);
-    journalPromptController.reset();;
+    journalPromptController.reset();
   }
 }

@@ -182,7 +182,7 @@ class AttributeRepository implements BaseAttributeRepository {
         encrypter,  
       ),
       delete: (action) => _deleteAttributeInBatch(
-        action.id!,
+        action.id,
         collection,
         batch
       ),

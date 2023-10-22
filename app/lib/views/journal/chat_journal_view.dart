@@ -1,16 +1,10 @@
-import 'package:app/controllers/summary_controller.dart';
-import 'package:app/agents/values_agent.dart';
 import 'package:app/common/async_widget.dart';
 import 'package:app/common/chat_widget.dart';
 import 'package:app/common/loading_widget.dart';
-import 'package:app/controllers/attributes_controller.dart';
 import 'package:app/controllers/auth_controller.dart';
 import 'package:app/controllers/chat_journal_controller.dart';
 import 'package:app/controllers/chat_controller.dart';
-import 'package:app/controllers/journal_controller.dart';
-import 'package:app/models/attributes_action.dart';
 import 'package:app/models/journal_entry.dart';
-import 'package:app/models/summary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

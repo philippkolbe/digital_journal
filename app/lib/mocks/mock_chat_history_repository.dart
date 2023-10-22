@@ -10,7 +10,7 @@ class MockChatHistoryRepository implements BaseChatHistoryRepository {
       ChatMessageObj.user(id: '2', date: DateTime(2023, 6, 16, 10, 51), content: 'Hi Im a test.'),
       ChatMessageObj.assistant(id: '1', date: DateTime(2023, 6, 16, 10, 50), content: 'Hello tell me about yourself.'),
     ];
-    idCount = this.chatHistory!.length;
+    idCount = this.chatHistory.length;
   }
 
   /// Its assuming that there is only one user and journal entry

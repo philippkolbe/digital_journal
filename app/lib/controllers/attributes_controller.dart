@@ -114,7 +114,7 @@ class AttributesController extends StateNotifier<AsyncValue<AttributesState>> {
       state = AsyncData(AttributesState(attributes: attributesAfterUpdates.map((attribute) => attribute.copyWith(
         countingId: _getCountingId(attribute)
       )).toList()));
-    } catch (error, stackTrace) {
+    } catch (error) {
       // TODO: handle this error. E.g. if some inputted id did not exist the request will fail.
       print("Error while applying attributes Actions ${attributesActions.toString()}: ${error.toString()}");
       // state = AsyncError(error, stackTrace);
