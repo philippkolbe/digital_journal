@@ -17,8 +17,6 @@ final summaryProvider = StateProvider<AsyncValue<SummaryObj?>>((ref) => const As
 final summaryControllerProvider = Provider<SummaryController>((ref) {
   final aiService = ref.watch(aiServiceProvider);
   final prompts = ref.watch(generalPromptsProvider);
-  // TODO: Why is it null??
-  // final selectedJournalEntry = ref.watch(selectedJournalEntryProvider);
   final chatController = ref.watch(chatControllerProvider.notifier);
 
   final summaryStateController = ref.read(summaryProvider.notifier);
