@@ -102,6 +102,7 @@ class InformationRepository implements BaseInformationRepository {
       final collection = _getInformationCollection(userId);
       final doc = informationObj.toDocument();
 
+      // TODO: Encrypt
       await collection.doc(informationObj.id).update(doc);
 
       // Retrieve and decrypt the updated information
