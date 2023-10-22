@@ -4,7 +4,8 @@ import 'package:app/controllers/journal_controller.dart';
 import 'package:app/controllers/journal_prompt_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/views/create/challenge_discovery_wizard.dart';
-import 'package:app/views/create/chat_journal_wizard.dart';
+import 'package:app/views/create/journal_conversation_wizard.dart';
+import 'package:app/views/create/mood_chat_journal_wizard.dart';
 import 'package:app/views/create/create_challenge_dialog.dart';
 import 'package:app/views/create/journal_prompt_wizard.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +40,11 @@ class CreationListState extends ConsumerState<CreationList> {
             child: const Text('Challenge Discovery'),
           ),
           ElevatedButton(
-            onPressed: _onCreateChatJournalEntry,
+            onPressed: _onCreateMoodCheckJournalEntry,
+            child: const Text('Mood Check'),
+          ),
+          ElevatedButton(
+            onPressed: _onCreateJournalConversation,
             child: const Text('Journal Conversation'),
           ),
           ElevatedButton(
@@ -68,11 +73,18 @@ class CreationListState extends ConsumerState<CreationList> {
     _onAddJournalEntry((context) => const ChallengeDiscoveryWizard(), 'Challenge Discovery');
   }
 
-  void _onCreateChatJournalEntry() {
+  void _onCreateMoodCheckJournalEntry() {
     widget.hideSelf();
     widget.setSelectedPage(2);
 
-    _onAddJournalEntry((context) => const ChatJournalWizard(), 'New Journal Conversation');
+    _onAddJournalEntry((context) => const MoodChatJournalWizard(), 'Mood Check');
+  }
+
+  void _onCreateJournalConversation() {
+    widget.hideSelf();
+    widget.setSelectedPage(2);
+
+    _onAddJournalEntry((context) => const JournalConversationWizard(), 'Journal Conversation');
   }
 
   void _onCreateJournalPrompt() {
