@@ -1,5 +1,6 @@
 import 'package:app/common/utils.dart';
 import 'package:app/models/chat_message.dart';
+import 'package:app/models/personality.dart';
 import 'package:app/models/user.dart';
 import 'package:flutter/material.dart';
 // ignore: depend_on_referenced_packages
@@ -10,15 +11,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class ChatWidget extends StatelessWidget {
   late final List<types.Message> messages;
   late final types.User user;
-  final assistantUser = const types.User(
-    id: 'chat_bot_user_id',
-    firstName: 'Journal',
-  );
+  late final types.User assistantUser;
 
   final Function(String) onMessageAdded;
 
   ChatWidget({
     required UserObj user,
+    PersonalityObj? assistantPersonality,
     required this.onMessageAdded,
     required List<AsyncValue<ChatMessageObj>> messages,
     super.key,
@@ -27,6 +26,16 @@ class ChatWidget extends StatelessWidget {
       id: user.id,
       firstName: 'You',
     );
+
+    this.assistantUser = assistantPersonality != null
+      ? types.User(
+        id: assistantPersonality.id!,
+        firstName: assistantPersonality.name,
+      )
+      : const types.User(
+        id: 'chat_bot_user_id',
+        firstName: 'Journal',
+      );
 
     // TODO: Think about this performace... every time we add a new Chat message the entire widget is reloaded and all the messages are reconverted
     this.messages = messages

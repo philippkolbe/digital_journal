@@ -4,6 +4,7 @@ import 'package:app/common/loading_widget.dart';
 import 'package:app/controllers/auth_controller.dart';
 import 'package:app/controllers/chat_journal_controller.dart';
 import 'package:app/controllers/chat_controller.dart';
+import 'package:app/controllers/personality_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -23,6 +24,7 @@ class ChatJournalView extends ConsumerWidget {
     final chatJournalController = ref.watch(chatJournalControllerProvider);
     final asyncChatState = ref.watch(chatControllerProvider);
     final authState = ref.watch(authControllerProvider);
+    final assistantPersonality = ref.watch(selectedPersonalityProvider);
   
     return AsyncWidget(
       asyncValue: asyncChatState,
@@ -35,6 +37,7 @@ class ChatJournalView extends ConsumerWidget {
         final userObj = authState.value!.currentUser;
         return ChatWidget(
           user: userObj,
+          assistantPersonality: assistantPersonality,
           onMessageAdded: (String content) async {
             await chatJournalController.onChatJournalMessageSent(content);
           },
