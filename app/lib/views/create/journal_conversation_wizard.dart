@@ -100,12 +100,18 @@ class JournalConversationWizardState extends ConsumerState<JournalConversationWi
   Widget _buildPersonalitiesDropdown(
     List<PersonalityObj> personalities,
     PersonalityObj? selectedPersonality,
-
   ) {
     return DropdownButton<PersonalityObj>(
       value: selectedPersonality,
       onChanged: (PersonalityObj? newSelectedPersonality) {
         ref.read(selectedPersonalityProvider.notifier).state = newSelectedPersonality;
+
+        final selectedJournalEntry = ref.read(selectedJournalEntryProvider).valueOrNull;
+        if (newSelectedPersonality != null && selectedJournalEntry != null) {
+          ref.read(journalEntriesProvider.notifier).updateJournalEntry((selectedJournalEntry as ChatJournalEntryObj).copyWith(
+            personalityId: newSelectedPersonality.id,
+          ));
+        }
       },
       items: personalities.map((PersonalityObj personality) {
         return DropdownMenuItem(

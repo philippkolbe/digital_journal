@@ -40,6 +40,7 @@ _$ChatJournalEntryObj _$$ChatJournalEntryObjFromJson(
       summary: json['summary'] == null
           ? null
           : SummaryObj.fromJson(json['summary'] as Map<String, dynamic>),
+      personalityId: json['personalityId'] as String?,
       $type: json['runtimeType'] as String?,
     );
 
@@ -51,5 +52,6 @@ Map<String, dynamic> _$$ChatJournalEntryObjToJson(
       'date': const DateConverter().toJson(instance.date),
       'goal': instance.goal,
       'summary': instance.summary,
+      'personalityId': instance.personalityId,
       'runtimeType': instance.$type,
     };

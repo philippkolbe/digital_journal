@@ -32,7 +32,7 @@ final goalPromptsProvider = Provider<Map<ChatJournalType, String>>((ref) {
   final challenges = ref.watch(progressControllerProvider).valueOrNull;
   // load attributes (likes, dislikes, goals, values, fears)
   // load information from memory
-  // load current daytime (morning, afternoon, evening, night)
+  // load current daytime (morning, afternoon, evening, night), day of week, date
 
   // Define the hard-coded prompts for each chat journal type
   final personalityPrompt = ref.watch(selectedPersonalityProvider)?.prompt ?? getStandardPersonalityPrompt();

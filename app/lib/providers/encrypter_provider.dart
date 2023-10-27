@@ -9,7 +9,7 @@ final encrypterProvider = Provider((ref) {
 
 final encrypterFutureProvider = Provider((ref) async {
   final encryptionKey = await ref.watch(encryptionKeyFutureProvider);
-  return MockEncrypter(encryptionKey); //Encrypter(encryptionKey);
+  return Encrypter(encryptionKey);
 });
 
 abstract class BaseEncrypter {

@@ -2,6 +2,7 @@ import 'package:app/common/async_widget.dart';
 import 'package:app/controllers/attributes_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/controllers/journal_prompt_controller.dart';
+import 'package:app/controllers/personality_controller.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/views/create/challenge_discovery_wizard.dart';
 import 'package:app/views/create/journal_conversation_wizard.dart';
@@ -110,6 +111,7 @@ class CreationListState extends ConsumerState<CreationList> {
         ChatJournalEntryObj(
           name: name,
           date: DateTime.now(),
+          personalityId: ref.read(selectedPersonalityProvider)?.id,
         ),
       );
 

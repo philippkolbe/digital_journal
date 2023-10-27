@@ -43,8 +43,13 @@ mixin _$JournalEntryObj {
             String? content,
             SummaryObj? summary)
         simple,
-    required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? goal, SummaryObj? summary)
+    required TResult Function(
+            String? id,
+            String name,
+            @DateConverter() DateTime date,
+            String? goal,
+            SummaryObj? summary,
+            String? personalityId)
         chat,
   }) =>
       throw _privateConstructorUsedError;
@@ -54,7 +59,7 @@ mixin _$JournalEntryObj {
             String? content, SummaryObj? summary)?
         simple,
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal, SummaryObj? summary)?
+            String? goal, SummaryObj? summary, String? personalityId)?
         chat,
   }) =>
       throw _privateConstructorUsedError;
@@ -64,7 +69,7 @@ mixin _$JournalEntryObj {
             String? content, SummaryObj? summary)?
         simple,
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal, SummaryObj? summary)?
+            String? goal, SummaryObj? summary, String? personalityId)?
         chat,
     required TResult orElse(),
   }) =>
@@ -292,8 +297,13 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
             String? content,
             SummaryObj? summary)
         simple,
-    required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? goal, SummaryObj? summary)
+    required TResult Function(
+            String? id,
+            String name,
+            @DateConverter() DateTime date,
+            String? goal,
+            SummaryObj? summary,
+            String? personalityId)
         chat,
   }) {
     return simple(id, name, date, content, summary);
@@ -306,7 +316,7 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
             String? content, SummaryObj? summary)?
         simple,
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal, SummaryObj? summary)?
+            String? goal, SummaryObj? summary, String? personalityId)?
         chat,
   }) {
     return simple?.call(id, name, date, content, summary);
@@ -319,7 +329,7 @@ class _$SimpleJournalEntryObj extends SimpleJournalEntryObj {
             String? content, SummaryObj? summary)?
         simple,
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal, SummaryObj? summary)?
+            String? goal, SummaryObj? summary, String? personalityId)?
         chat,
     required TResult orElse(),
   }) {
@@ -409,7 +419,8 @@ abstract class _$$ChatJournalEntryObjCopyWith<$Res>
       String name,
       @DateConverter() DateTime date,
       String? goal,
-      SummaryObj? summary});
+      SummaryObj? summary,
+      String? personalityId});
 
   @override
   $SummaryObjCopyWith<$Res>? get summary;
@@ -431,6 +442,7 @@ class __$$ChatJournalEntryObjCopyWithImpl<$Res>
     Object? date = null,
     Object? goal = freezed,
     Object? summary = freezed,
+    Object? personalityId = freezed,
   }) {
     return _then(_$ChatJournalEntryObj(
       id: freezed == id
@@ -453,6 +465,10 @@ class __$$ChatJournalEntryObjCopyWithImpl<$Res>
           ? _value.summary
           : summary // ignore: cast_nullable_to_non_nullable
               as SummaryObj?,
+      personalityId: freezed == personalityId
+          ? _value.personalityId
+          : personalityId // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -466,6 +482,7 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
       @DateConverter() required this.date,
       this.goal,
       this.summary,
+      this.personalityId,
       final String? $type})
       : $type = $type ?? 'chat',
         super._();
@@ -484,13 +501,15 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
   final String? goal;
   @override
   final SummaryObj? summary;
+  @override
+  final String? personalityId;
 
   @JsonKey(name: 'runtimeType')
   final String $type;
 
   @override
   String toString() {
-    return 'JournalEntryObj.chat(id: $id, name: $name, date: $date, goal: $goal, summary: $summary)';
+    return 'JournalEntryObj.chat(id: $id, name: $name, date: $date, goal: $goal, summary: $summary, personalityId: $personalityId)';
   }
 
   @override
@@ -502,12 +521,15 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.date, date) || other.date == date) &&
             (identical(other.goal, goal) || other.goal == goal) &&
-            (identical(other.summary, summary) || other.summary == summary));
+            (identical(other.summary, summary) || other.summary == summary) &&
+            (identical(other.personalityId, personalityId) ||
+                other.personalityId == personalityId));
   }
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, date, goal, summary);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, date, goal, summary, personalityId);
 
   @JsonKey(ignore: true)
   @override
@@ -526,11 +548,16 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
             String? content,
             SummaryObj? summary)
         simple,
-    required TResult Function(String? id, String name,
-            @DateConverter() DateTime date, String? goal, SummaryObj? summary)
+    required TResult Function(
+            String? id,
+            String name,
+            @DateConverter() DateTime date,
+            String? goal,
+            SummaryObj? summary,
+            String? personalityId)
         chat,
   }) {
-    return chat(id, name, date, goal, summary);
+    return chat(id, name, date, goal, summary, personalityId);
   }
 
   @override
@@ -540,10 +567,10 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
             String? content, SummaryObj? summary)?
         simple,
     TResult? Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal, SummaryObj? summary)?
+            String? goal, SummaryObj? summary, String? personalityId)?
         chat,
   }) {
-    return chat?.call(id, name, date, goal, summary);
+    return chat?.call(id, name, date, goal, summary, personalityId);
   }
 
   @override
@@ -553,12 +580,12 @@ class _$ChatJournalEntryObj extends ChatJournalEntryObj {
             String? content, SummaryObj? summary)?
         simple,
     TResult Function(String? id, String name, @DateConverter() DateTime date,
-            String? goal, SummaryObj? summary)?
+            String? goal, SummaryObj? summary, String? personalityId)?
         chat,
     required TResult orElse(),
   }) {
     if (chat != null) {
-      return chat(id, name, date, goal, summary);
+      return chat(id, name, date, goal, summary, personalityId);
     }
     return orElse();
   }
@@ -608,7 +635,8 @@ abstract class ChatJournalEntryObj extends JournalEntryObj {
       required final String name,
       @DateConverter() required final DateTime date,
       final String? goal,
-      final SummaryObj? summary}) = _$ChatJournalEntryObj;
+      final SummaryObj? summary,
+      final String? personalityId}) = _$ChatJournalEntryObj;
   const ChatJournalEntryObj._() : super._();
 
   factory ChatJournalEntryObj.fromJson(Map<String, dynamic> json) =
@@ -624,6 +652,7 @@ abstract class ChatJournalEntryObj extends JournalEntryObj {
   String? get goal;
   @override
   SummaryObj? get summary;
+  String? get personalityId;
   @override
   @JsonKey(ignore: true)
   _$$ChatJournalEntryObjCopyWith<_$ChatJournalEntryObj> get copyWith =>

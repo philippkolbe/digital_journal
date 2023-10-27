@@ -1,21 +1,46 @@
 import 'package:app/controllers/auth_controller.dart';
+import 'package:app/controllers/journal_controller.dart';
+import 'package:app/models/journal_entry.dart';
 import 'package:app/models/personality.dart';
 import 'package:app/repositories/personality_repository.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:collection/collection.dart';
 
-final selectedPersonalityProvider = StateProvider<PersonalityObj?>((ref) => null);
+final StateProvider<PersonalityObj?> selectedPersonalityProvider = StateProvider<PersonalityObj?>((ref) => null);
 
 final personalitiesProvider = StateNotifierProvider<PersonalityController, AsyncValue<List<PersonalityObj>>>((ref) {
   final personalityRepository = ref.read(personalityRepositoryProvider);
   final userId = ref.watch(userIdProvider);
   final selectedPersonalityController = ref.watch(selectedPersonalityProvider.notifier);
 
-  return PersonalityController(
+  final controller = PersonalityController(
     personalityRepository,
     userId,
     selectedPersonalityController,
     ref.read,
   )..init();
+
+  ref.listen(selectedJournalEntryProvider, (asyncPrevJournalEntry, asyncJournalEntry) {
+    ChatJournalEntryObj? lastChatJournalEntry;
+    final journalEntry = asyncJournalEntry.valueOrNull;
+    if (journalEntry != null) {
+      if (journalEntry is ChatJournalEntryObj) {
+        lastChatJournalEntry = journalEntry;
+      }
+    } else {
+      final prevJournalEntry = asyncPrevJournalEntry?.valueOrNull;
+      if (prevJournalEntry is ChatJournalEntryObj) {
+        lastChatJournalEntry = prevJournalEntry;
+      }
+    }
+    
+    final id = lastChatJournalEntry?.personalityId;
+    if (id != null) {
+      ref.read(selectedPersonalityProvider.notifier).state = controller.getPersonalityFromId(id);
+    }
+  });
+
+  return controller;
 });
 
 class PersonalityController extends StateNotifier<AsyncValue<List<PersonalityObj>>> {
@@ -102,5 +127,9 @@ class PersonalityController extends StateNotifier<AsyncValue<List<PersonalityObj
 
   String? _getSelectedPersonalityId() {
     return _read(selectedPersonalityProvider.notifier).state?.id;
+  }
+
+  PersonalityObj? getPersonalityFromId(String id) {
+    return state.valueOrNull?.firstWhereOrNull((personality) => personality.id == id);
   }
 }

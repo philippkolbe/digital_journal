@@ -29,6 +29,7 @@ class JournalEntryObj with _$JournalEntryObj {
     @DateConverter() required DateTime date,
     String? goal, 
     SummaryObj? summary,
+    String? personalityId,
   }) = ChatJournalEntryObj;
 
   factory JournalEntryObj.fromJson(Map<String,dynamic> json) => _$JournalEntryObjFromJson(json);

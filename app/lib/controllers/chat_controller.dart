@@ -87,6 +87,9 @@ class ChatController extends StateNotifier<AsyncValue<ChatState?>> {
   }
 
   Future<void> writeAssistantChatMessage(AsyncValue<ChatMessageObj> asyncChatMessageObj) async {
+    if (!mounted) {
+      return;
+    }
     final indexOfLoadingMessage = _findLoadingMessageIndex();
     if (asyncChatMessageObj is AsyncData) {
       final chatMessageObj = asyncChatMessageObj.value!.copyWith(
