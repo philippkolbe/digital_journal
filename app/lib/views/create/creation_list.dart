@@ -91,7 +91,7 @@ class CreationListState extends ConsumerState<CreationList> {
   void _onCreateJournalPrompt() {
     widget.hideSelf();
     widget.setSelectedPage(2);
-    
+
     final journalPromptController = ref.read(journalPromptControllerProvider.notifier);
     journalPromptController.reload();
 
