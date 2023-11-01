@@ -1,4 +1,5 @@
 import 'package:app/views/create/creation_list.dart';
+import 'package:app/views/home/home_page.dart';
 import 'package:app/views/journal/journal_page.dart';
 import 'package:app/views/tracking/tracking_page.dart';
 import 'package:flutter/material.dart';
@@ -15,8 +16,10 @@ class _NavigationViewState extends ConsumerState<NavigationView> with SingleTick
   int _currentPageIndex = 0;
   int _currentButtonIndex = 0;
   bool _isOptionsVisible = false;
+  final int _createButtonIndex = 2;
 
   final List<Widget> _pages = [
+    const HomePage(),
     const TrackingPage(),
     const JournalPage(),
   ];
@@ -65,15 +68,24 @@ class _NavigationViewState extends ConsumerState<NavigationView> with SingleTick
             ),
             child: SlideTransition(
               position: _animationOffset,
-              child: CreationList(_hideOptions, _setCurrentIndex),
+              child: CreationList(_hideOptions, _setCurrentPage),
             ),
           ),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Theme.of(context).colorScheme.onBackground,
+        unselectedLabelStyle: TextStyle(
+          color: Theme.of(context).colorScheme.onBackground,
+        ),
         currentIndex: _currentButtonIndex,
         onTap: (index) => _onNavigationButtonPress(index),
         items: [
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.wb_sunny_outlined),
+            label: 'Home',
+          ),
           const BottomNavigationBarItem(
             icon: Icon(Icons.trending_up_rounded),
             label: 'Tracking',
@@ -81,7 +93,7 @@ class _NavigationViewState extends ConsumerState<NavigationView> with SingleTick
           BottomNavigationBarItem(
             icon: GestureDetector(
               onTap: () {
-                _setCurrentIndex(1);
+                _setCurrentIndex(_createButtonIndex);
                 _toggleOptionVisibility();
               },
               child: Container(
@@ -107,17 +119,21 @@ class _NavigationViewState extends ConsumerState<NavigationView> with SingleTick
   void _onNavigationButtonPress(int index) {
     _setCurrentIndex(index);
 
-    if (index == 1) {
+    if (index == _createButtonIndex) {
       _toggleOptionVisibility();
     } else {
       _hideOptions();
     }
   }
 
+  void _setCurrentPage(Type pageType) {
+    final idx = _pages.indexWhere((element) => element.runtimeType == pageType);
+    _setCurrentIndex(idx);
+  }
+
   void _setCurrentIndex(int buttonIndex) {
-    const createButtonIndex = 1;
-    if (buttonIndex != createButtonIndex) {
-      final index = buttonIndex < createButtonIndex ? buttonIndex : buttonIndex - 1;
+    if (buttonIndex != _createButtonIndex) {
+      final index = buttonIndex < _createButtonIndex ? buttonIndex : buttonIndex - 1;
       setState(() {
         _currentPageIndex = index;
         _currentButtonIndex = buttonIndex;

@@ -9,12 +9,14 @@ import 'package:app/views/create/journal_conversation_wizard.dart';
 import 'package:app/views/create/mood_chat_journal_wizard.dart';
 import 'package:app/views/create/create_challenge_dialog.dart';
 import 'package:app/views/create/journal_prompt_wizard.dart';
+import 'package:app/views/journal/journal_page.dart';
+import 'package:app/views/tracking/tracking_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class CreationList extends ConsumerStatefulWidget {
   final VoidCallback hideSelf;
-  final Function(int) setSelectedPage;
+  final Function(Type) setSelectedPage;
   
   const CreationList(this.hideSelf, this.setSelectedPage, {super.key});
 
@@ -59,7 +61,7 @@ class CreationListState extends ConsumerState<CreationList> {
 
   void _onCreateChallenge() {
     widget.hideSelf();
-    widget.setSelectedPage(1);
+    widget.setSelectedPage(TrackingPage);
 
     showDialog(
       context: context,
@@ -69,28 +71,28 @@ class CreationListState extends ConsumerState<CreationList> {
 
   void _onStartChallengeDiscovery() {
     widget.hideSelf();
-    widget.setSelectedPage(1);
+    widget.setSelectedPage(TrackingPage);
 
     _onAddJournalEntry((context) => const ChallengeDiscoveryWizard(), 'Challenge Discovery');
   }
 
   void _onCreateMoodCheckJournalEntry() {
     widget.hideSelf();
-    widget.setSelectedPage(2);
+    widget.setSelectedPage(JournalPage);
 
     _onAddJournalEntry((context) => const MoodChatJournalWizard(), 'Mood Check');
   }
 
   void _onCreateJournalConversation() {
     widget.hideSelf();
-    widget.setSelectedPage(2);
+    widget.setSelectedPage(JournalPage);
 
     _onAddJournalEntry((context) => const JournalConversationWizard(), 'Journal Conversation');
   }
 
   void _onCreateJournalPrompt() {
     widget.hideSelf();
-    widget.setSelectedPage(2);
+    widget.setSelectedPage(JournalPage);
 
     final journalPromptController = ref.read(journalPromptControllerProvider.notifier);
     journalPromptController.reload();

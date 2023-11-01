@@ -2,6 +2,7 @@ import 'package:app/common/async_widget.dart';
 import 'package:app/controllers/chat_journal_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/models/journal_entry.dart';
+import 'package:app/models/mood.dart';
 import 'package:app/providers/mood_state_provider.dart';
 import 'package:app/views/journal/journal_entry_view.dart';
 import 'package:app/views/common/mood_check_widget.dart';

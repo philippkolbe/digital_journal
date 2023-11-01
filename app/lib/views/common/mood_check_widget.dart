@@ -1,3 +1,4 @@
+import 'package:app/models/mood.dart';
 import 'package:app/providers/mood_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
