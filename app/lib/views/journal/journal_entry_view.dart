@@ -3,6 +3,7 @@ import 'package:app/common/error_widget.dart' as error;
 import 'package:app/common/loading_widget.dart';
 import 'package:app/controllers/journal_controller.dart';
 import 'package:app/models/journal_entry.dart';
+import 'package:app/models/mood.dart';
 import 'package:app/providers/mood_state_provider.dart';
 import 'package:app/views/journal/chat_journal_view.dart';
 import 'package:flutter/material.dart';
