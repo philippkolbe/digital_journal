@@ -22,6 +22,6 @@ There is a REST backend component which provides the connection to the OpenAI AP
 ## Setup
 
 Create an `.env` file in the root directory. It should contain:
-| Variable         | Description                                    |
-| ---------------- | ---------------------------------------------- |
-| BACKEND_URL      | URL pointing to the Backend of the application |
+| Variable         | Description                                    | Example value                               |
+| ---------------- | ---------------------------------------------- | ------------------------------------------- |
+| BACKEND_URL      | URL pointing to the Backend of the application | e.g. read it from here https://console.cloud.google.com/functions/details/us-central1/chat?env=gen1&hl=de&project=digital-journal-389119&supportedpurview=project,organizationId,folder&tab=testing |
