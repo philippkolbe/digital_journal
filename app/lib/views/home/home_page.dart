@@ -2,13 +2,14 @@ import 'package:app/common/async_widget.dart';
 import 'package:app/models/daily_card.dart';
 import 'package:app/providers/assets_provider.dart';
 import 'package:app/providers/daily_cards_provider.dart';
+import 'package:app/views/home/daily_card.dart';
 import 'package:app/views/home/home_calendar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class HomePage extends ConsumerStatefulWidget {
   const HomePage({super.key});
-  
+
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => HomePageState();
 }
@@ -44,7 +45,8 @@ class HomePageState extends ConsumerState {
     );
   }
 
-  Widget _buildHeader(BuildContext context, WidgetRef ref, ColorScheme colorScheme) {
+  Widget _buildHeader(
+      BuildContext context, WidgetRef ref, ColorScheme colorScheme) {
     return Padding(
       padding: const EdgeInsets.fromLTRB(8, 16, 8, 4),
       child: Stack(
@@ -77,10 +79,10 @@ class HomePageState extends ConsumerState {
 
   Widget _buildBackground(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final diameter = screenWidth*2.66;
+    final diameter = screenWidth * 2.66;
 
     return Positioned(
-      top: -diameter*0.75,
+      top: -diameter * 0.75,
       left: (screenWidth - diameter) / 2,
       child: Container(
         width: diameter,
@@ -102,10 +104,14 @@ class HomePageState extends ConsumerState {
               height: 48,
               margin: const EdgeInsetsDirectional.only(top: 8),
               decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.white,
-                boxShadow: [BoxShadow(color: Colors.black87, blurRadius: 8, offset: Offset(0, 2.5))]
-              ),
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  boxShadow: [
+                    BoxShadow(
+                        color: Colors.black87,
+                        blurRadius: 8,
+                        offset: Offset(0, 2.5))
+                  ]),
               child: ref.read(logoProvider),
             ),
           ],
@@ -119,6 +125,6 @@ class HomePageState extends ConsumerState {
   }
 
   Widget _buildDailyCard(DailyCardObj cardObj) {
-    return Container();
+    return DailyCardBuilder(cardObj);
   }
 }
