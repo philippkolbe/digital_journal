@@ -10,7 +10,8 @@ final httpClientProvider = Provider((ref) {
   final user = ref.watch(authControllerProvider).valueOrNull?.firestoreUser;
   final env = ref.watch(dotEnvProvider);
   final baseUrl = env['BACKEND_URL'];
-  assert(baseUrl != null, "Backend Url has to be defined to use AI Http Client");
+  assert(
+      baseUrl != null, "Backend Url has to be defined to use AI Http Client");
 
   return AIHttpClient(baseUrl!, user);
 });
@@ -25,14 +26,13 @@ class AIHttpClient {
   Future<http.Response> get(String endpoint) async {
     final url = Uri.parse('$baseUrl/$endpoint');
     final idToken = await _getIdToken();
-    final headers = {
-      if (idToken != null) 'Authorization': 'Bearer $idToken'
-    };
+    final headers = {if (idToken != null) 'Authorization': 'Bearer $idToken'};
 
     return _httpClient.get(url, headers: headers);
   }
 
-  Future<http.Response> post(String endpoint, {Map<String, dynamic> body = const {}}) async {
+  Future<http.Response> post(String endpoint,
+      {Map<String, dynamic> body = const {}}) async {
     final url = Uri.parse('$baseUrl$endpoint');
     final idToken = await _getIdToken();
     final headers = {
@@ -45,7 +45,7 @@ class AIHttpClient {
     return _httpClient.post(url, headers: headers, body: encodedBody);
   }
 
-  Future<String>? _getIdToken() {
+  Future<String?>? _getIdToken() {
     return _user?.getIdToken();
   }
 }
