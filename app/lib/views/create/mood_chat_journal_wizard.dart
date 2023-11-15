@@ -1,8 +1,11 @@
 import 'package:app/common/async_widget.dart';
 import 'package:app/controllers/chat_journal_controller.dart';
+import 'package:app/controllers/daily_cards_controller.dart';
 import 'package:app/controllers/journal_controller.dart';
+import 'package:app/models/daily_card.dart';
 import 'package:app/models/journal_entry.dart';
 import 'package:app/models/mood.dart';
+import 'package:app/providers/daily_cards_provider.dart';
 import 'package:app/providers/mood_state_provider.dart';
 import 'package:app/views/journal/journal_entry_view.dart';
 import 'package:app/views/common/mood_check_widget.dart';
@@ -10,13 +13,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class MoodChatJournalWizard extends ConsumerStatefulWidget {
-  const MoodChatJournalWizard({Key? key}) : super(key: key);
+  final MoodCheckDailyCardObj? dailyCard;
+
+  const MoodChatJournalWizard({this.dailyCard, Key? key}) : super(key: key);
 
   @override
   MoodChatJournalWizardState createState() => MoodChatJournalWizardState();
 }
 
-class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard> with SingleTickerProviderStateMixin {
+class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard>
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _animation;
 
@@ -27,7 +33,8 @@ class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard> wi
       duration: const Duration(milliseconds: 500),
       vsync: this,
     );
-    _animation = CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
+    _animation =
+        CurvedAnimation(parent: _animationController, curve: Curves.easeInOut);
   }
 
   @override
@@ -38,7 +45,8 @@ class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard> wi
 
   @override
   Widget build(BuildContext context) {
-    final selectedJournalEntryController = ref.read(selectedJournalEntryProvider.notifier);
+    final selectedJournalEntryController =
+        ref.read(selectedJournalEntryProvider.notifier);
     final journalController = ref.read(journalEntriesProvider.notifier);
     final moodStateController = ref.read(moodStateProvider.notifier);
     final chatJournalController = ref.watch(chatJournalControllerProvider);
@@ -84,7 +92,8 @@ class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard> wi
                           child: child,
                         );
                       },
-                      child: _buildStartJournalingButton(ref, chatJournalController) ,
+                      child: _buildStartJournalingButton(
+                          ref, chatJournalController),
                     ),
                   ],
                 )
@@ -111,7 +120,8 @@ class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard> wi
         ),
       ),
       child: const Row(
-        mainAxisSize: MainAxisSize.min, // Adjust the button width based on the content
+        mainAxisSize:
+            MainAxisSize.min, // Adjust the button width based on the content
         children: [
           Icon(Icons.arrow_forward),
           SizedBox(width: 8.0),
@@ -128,6 +138,15 @@ class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard> wi
   ) {
     chatJournalController.onChatJournalEntryCreated();
 
+    if (widget.dailyCard != null) {
+      ref
+          .read(dailyCardsControllerProvider)
+          .updateDailyCard(
+              widget.dailyCard!.copyWith(mood: ref.read(moodStateProvider)))
+          .then((value) =>
+              ref.refresh(dailyCardsProviderFamily(widget.dailyCard!.date)));
+    }
+
     Navigator.pushReplacement(
       context,
       MaterialPageRoute(builder: (context) => const JournalEntryView()),
@@ -136,7 +155,8 @@ class MoodChatJournalWizardState extends ConsumerState<MoodChatJournalWizard> wi
 
   void _closeJournalEntryView(
     BuildContext context,
-    StateController<AsyncValue<JournalEntryObj?>> selectedJournalEntryController,
+    StateController<AsyncValue<JournalEntryObj?>>
+        selectedJournalEntryController,
     StateController<Mood?> moodStateController,
   ) {
     Navigator.pop(context);

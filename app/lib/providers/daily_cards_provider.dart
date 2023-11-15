@@ -1,4 +1,5 @@
 import 'package:app/controllers/auth_controller.dart';
+import 'package:app/controllers/personality_controller.dart';
 import 'package:app/models/daily_card.dart';
 import 'package:app/providers/current_day_provider.dart';
 import 'package:app/repositories/daily_card_repository.dart';
@@ -17,7 +18,24 @@ final dailyCardsProviderFamily =
     return const [FutureDailyCardObj()];
   }
 
-  return await ref
-      .read(dailyCardRepositoryProvider)
-      .readDailyCardsByDate(userId, day);
+  final dailyCardRepository = ref.read(dailyCardRepositoryProvider);
+
+  var allCards = await dailyCardRepository.readDailyCardsByDate(userId, day);
+
+  final todaysPersonality = ref.watch(personalityByDayProviderFamily(day));
+  if (allCards.isEmpty && todaysPersonality.valueOrNull != null) {
+    allCards = await Future.wait([
+      dailyCardRepository.createDailyCard(
+          userId,
+          PersonalityPromptDailyCardObj(
+              date: day, personalityId: todaysPersonality.valueOrNull!.id!)),
+      dailyCardRepository.createDailyCard(
+          userId,
+          MoodCheckDailyCardObj(
+            date: day,
+          )),
+    ]);
+  }
+
+  return allCards;
 });

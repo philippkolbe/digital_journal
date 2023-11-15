@@ -15,6 +15,23 @@ final personalityProviderFamily =
       personalities.singleWhere((personality) => personality.id == id));
 });
 
+final personalityNamesByWeekday = {
+  1: "Monday",
+  2: "Tuesday",
+  3: "Wednesday",
+  4: "Thursday",
+  5: "Friday",
+  6: "Saturday",
+  7: "Sunday",
+};
+final personalityByDayProviderFamily =
+    ProviderFamily<AsyncValue<PersonalityObj>, DateTime>((ref, dateTime) {
+  final name = personalityNamesByWeekday[dateTime.weekday];
+
+  return ref.watch(personalitiesProvider).whenData((personalities) =>
+      personalities.singleWhere((personality) => personality.name == name));
+});
+
 final personalitiesProvider = StateNotifierProvider<PersonalityController,
     AsyncValue<List<PersonalityObj>>>((ref) {
   final personalityRepository = ref.read(personalityRepositoryProvider);

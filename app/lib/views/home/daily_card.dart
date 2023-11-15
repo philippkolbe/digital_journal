@@ -78,7 +78,8 @@ abstract class DailyCardDefinition<T> extends ConsumerWidget {
   }
 
   void _onAddJournalEntry(BuildContext context, WidgetRef ref,
-      Widget Function(BuildContext) buildWidget, String name) async {
+      Widget Function(BuildContext) buildWidget, String name,
+      {String? personalityId}) async {
     final selectedJournalEntryController =
         ref.read(selectedJournalEntryProvider.notifier);
     selectedJournalEntryController.state = const AsyncLoading();
@@ -92,7 +93,7 @@ abstract class DailyCardDefinition<T> extends ConsumerWidget {
         ChatJournalEntryObj(
           name: name,
           date: DateTime.now(),
-          personalityId: ref.read(selectedPersonalityProvider)?.id,
+          personalityId: personalityId,
         ),
       );
 
@@ -138,8 +139,9 @@ class PersonalityPromptCard
   }
 
   void _onCreateJournalPrompt(BuildContext context, WidgetRef ref) {
-    _onAddJournalEntry(
-        context, ref, (context) => const JournalPromptWizard(), 'Daily Prompt');
+    _onAddJournalEntry(context, ref,
+        (context) => JournalPromptWizard(dailyCard: card), 'Daily Prompt',
+        personalityId: card.personalityId);
   }
 }
 
@@ -169,8 +171,8 @@ class MoodCheckDailyCard extends DailyCardDefinition<MoodCheckDailyCardObj> {
   }
 
   void _onCreateMoodCheckJournalEntry(BuildContext context, WidgetRef ref) {
-    _onAddJournalEntry(
-        context, ref, (context) => const MoodChatJournalWizard(), 'Mood Check');
+    _onAddJournalEntry(context, ref,
+        (context) => MoodChatJournalWizard(dailyCard: card), 'Mood Check');
   }
 }
 
