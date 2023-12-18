@@ -1,5 +1,5 @@
-import 'package:tuple/tuple.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 
 var _uuid = const Uuid();

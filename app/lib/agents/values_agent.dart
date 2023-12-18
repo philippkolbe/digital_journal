@@ -6,6 +6,7 @@ import 'package:app/models/chat_message.dart';
 import 'package:app/providers/prompts_providers.dart';
 import 'package:app/services/ai_service.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:developer' as logger;
 
 final attributesActionsProvider = FutureProvider<List<AttributesActionObj>>((ref) async {
   final asyncSummaryPrompt = ref.watch(summaryPromptProvider);
@@ -69,19 +70,19 @@ class AttributesAgent {
     try {
       return await analyze(summaryPrompt);
     } catch (err) {
-      print('Error while analyzing the summary');
-      print(err);
+      logger.log('Error while analyzing the summary');
+      logger.log(err.toString());
       return [];
     }
   }
 
   Future<List<AttributesActionObj>> analyze(String summaryPrompt) async {
     final chatWithPrompts = _createChatWithPrompts(summaryPrompt);
-    print(chatWithPrompts[0].content);
-    print(chatWithPrompts[1].content);
-    print(chatWithPrompts[2].content);
+    logger.log(chatWithPrompts[0].content);
+    logger.log(chatWithPrompts[1].content);
+    logger.log(chatWithPrompts[2].content);
     final aiResponse = await aiService.respondToChat(chatWithPrompts);
-    print(aiResponse);
+    logger.log(aiResponse.toString());
     return _parseAttributeActionsFromAIResponse(aiResponse.content);
   }
 
@@ -127,7 +128,7 @@ class AttributesAgent {
     try {
       return AttributesActionObj.fromJson(json.decode(jsonString));
     } catch (err) {
-      print(err);
+      logger.log(err.toString());
       // TODO: how to error handle here?
       return null;
     }

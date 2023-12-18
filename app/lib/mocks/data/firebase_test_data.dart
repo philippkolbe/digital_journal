@@ -4,7 +4,7 @@ import 'package:app/models/journal_entry.dart';
 import 'package:app/models/summary.dart';
 import 'package:app/models/user.dart';
 import 'package:app/models/attribute.dart';
-import 'package:fake_cloud_firestore/fake_cloud_firestore.dart';
+
 
 const testUserId = 'id_test_user';
 const testUser = UserObj(id: testUserId, name: 'John Doe');

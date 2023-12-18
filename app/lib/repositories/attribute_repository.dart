@@ -4,6 +4,7 @@ import 'package:app/providers/encrypter_provider.dart';
 import 'package:app/providers/firebase_providers.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:developer' as logger;
 
 final attributeRepositoryProvider = Provider<BaseAttributeRepository>((Ref ref) {
   final firestore = ref.read(firebaseFirestoreProvider);

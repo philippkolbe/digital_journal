@@ -19,7 +19,7 @@ class ChatWidget extends StatelessWidget {
     required UserObj user,
     PersonalityObj? assistantPersonality,
     required this.onMessageAdded,
-    required List<AsyncValue<ChatMessageObj>> messages,
+    required List<types.Message> messages,
     super.key,
   }) {
     this.user = types.User(
@@ -27,7 +27,7 @@ class ChatWidget extends StatelessWidget {
       firstName: 'You',
     );
 
-    this.assistantUser = assistantPersonality != null
+    assistantUser = assistantPersonality != null
       ? types.User(
         id: assistantPersonality.id!,
         firstName: assistantPersonality.name,
@@ -38,7 +38,7 @@ class ChatWidget extends StatelessWidget {
       );
 
     // TODO: Think about this performace... every time we add a new Chat message the entire widget is reloaded and all the messages are reconverted
-    this.messages = messages
+    messages = messages
       .map(_toTextMessage)
       .whereType<types.Message>()
       .toList();
