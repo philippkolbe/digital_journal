@@ -9,7 +9,7 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class ChatWidget extends StatelessWidget {
-  late final List<types.Message> messages;
+  late final List<Message> messages;
   late final types.User user;
   late final types.User assistantUser;
 
@@ -19,7 +19,7 @@ class ChatWidget extends StatelessWidget {
     required UserObj user,
     PersonalityObj? assistantPersonality,
     required this.onMessageAdded,
-    required List<AsyncValue<ChatMessageObj>> messages,
+    required List<Message> messages,
     super.key,
   }) {
     this.user = types.User(
