@@ -12,7 +12,12 @@ void initializeMidnightObserver(WidgetRef ref) {
   final authStream = ref.read(authRepositoryProvider).authStateChangesStream;
 
   StreamSubscription? sub;
-  authStream.listen((newUser) {
+  authStream.listen((newUser) async { // Add async to allow use of await
+  while (newUser == null) {
+    await Future.delayed(Duration.zero);
+  }
+
+  if (newUser != null) {
     sub?.cancel();
 
     if (newUser != null) {
