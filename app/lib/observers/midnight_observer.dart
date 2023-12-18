@@ -21,10 +21,7 @@ void initializeMidnightObserver(WidgetRef ref) {
 
   if (newUser != null) {
     sub?.cancel();
-
-  }
-
-  if (newUser != null) {
+    sub = currentDayStream.listen((DateTime currentDay) async {
       sub = currentDayStream.listen((DateTime currentDay) async {
         final progressRepository = ref.read(progressRepositoryProvider);      
 
