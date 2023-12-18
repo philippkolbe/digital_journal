@@ -13,6 +13,9 @@ void initializeMidnightObserver(WidgetRef ref) {
 
   StreamSubscription? sub;
   authStream.listen((newUser) async { // Add async to allow use of await
+  {
+  }
+
   while (newUser == null) {
     await Future.delayed(Duration.zero);
   }
@@ -20,7 +23,9 @@ void initializeMidnightObserver(WidgetRef ref) {
   if (newUser != null) {
     sub?.cancel();
 
-    if (newUser != null) {
+  }
+
+  if (newUser != null) {
       sub = currentDayStream.listen((DateTime currentDay) async {
         final progressRepository = ref.read(progressRepositoryProvider);      
 
