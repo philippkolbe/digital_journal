@@ -13,8 +13,7 @@ void initializeMidnightObserver(WidgetRef ref) {
 
   StreamSubscription? sub;
   authStream.listen((newUser) async { // Add async to allow use of await
-  {
-  }
+
 
   while (newUser == null) {
     await Future.delayed(Duration.zero);
